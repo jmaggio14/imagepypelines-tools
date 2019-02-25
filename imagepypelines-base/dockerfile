@@ -4,6 +4,9 @@ FROM nvidia/cudagl:10.0-devel
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
+# fix for gpg key server issue: https://github.com/inversepath/usbarmory-debian-base_image/issues/9
+RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
+
 # BASE DEPENDENCIES
 # The following was originally modified from buildpack-deps
 # https://github.com/docker-library/buildpack-deps/blob/3fd6bc9602ab42ec1f11dd5680e528d2266f3325/bionic/Dockerfile
