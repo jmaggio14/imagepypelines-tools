@@ -217,10 +217,21 @@ RUN apt-get update && \
   libpq-dev \
 	libgtk2.0-dev \
 	libavcodec-dev \
+	libdc1394-22-dev \
 	autotools-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Eigen, Lapack
+# TODO add CUSTOM HAL support
+RUN apt-get update && apt-get install -y \
 	libeigen3-dev \
-	libblas-dev \
+	libxvidcore-dev \
+	libx264-dev \
+	libatlas-base-dev \
+	gfortran \
+	libopenblas-dev \
 	liblapack-dev \
+	liblapacke-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 # numpy for opencv-python
