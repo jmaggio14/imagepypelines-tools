@@ -1,6 +1,13 @@
+# inherit from an NVIDIA ubuntu build
+# this will setup an image with CUDA and OPENGL preinstalled
 FROM nvidia/cudagl:10.0-devel
+# disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
+# BASE DEPENDENCIES
+# The following was originally modified from buildpack-deps
+# https://github.com/docker-library/buildpack-deps/blob/3fd6bc9602ab42ec1f11dd5680e528d2266f3325/bionic/Dockerfile
+################################################################################
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		ca-certificates \
 		curl \
@@ -84,7 +91,8 @@ RUN set -ex; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-# --------------------- PYTHON INSTALLATION
+# PYTHON INSTALLATION
+################################################################################
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
@@ -144,7 +152,7 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 19.0.2
+ENV PYTHON_PIP_VERSION 19.0.3
 
 RUN set -ex; \
 	\
@@ -166,6 +174,8 @@ RUN set -ex; \
 	rm -f get-pip.py
 
 
+# OPENCV INSTALLATION
+################################################################################
 # gstreamer
 RUN  apt-get update -y && apt-get install -y \
             libgstreamer1.0-0 \
@@ -187,45 +197,34 @@ RUN apt-get update && apt-get install -y \
 						libgtkglext1-dev \
 						&& rm -rf /var/lib/apt/lists/*
 
-
 # other opencv dependencies
 RUN apt-get update && \
-        apt-get install -y \
-        build-essential \
-        cmake \
-        git \
-        wget \
-        unzip \
-        yasm \
-        pkg-config \
-        libswscale-dev \
-        libtbb2 \
-        libtbb-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libtiff-dev \
-        libavformat-dev \
-        libpq-dev \
-				libgtk2.0-dev \
-				libavcodec-dev \
-				autotools-dev \
-				libeigen3-dev \
-				libblas-dev \
-				liblapack-dev \
-				&& rm -rf /var/lib/apt/lists/*
+  apt-get install -y \
+  build-essential \
+  cmake \
+  git \
+  wget \
+  unzip \
+  yasm \
+  pkg-config \
+  libswscale-dev \
+  libtbb2 \
+  libtbb-dev \
+  libjpeg-dev \
+  libpng-dev \
+  libtiff-dev \
+  libavformat-dev \
+  libpq-dev \
+	libgtk2.0-dev \
+	libavcodec-dev \
+	autotools-dev \
+	libeigen3-dev \
+	libblas-dev \
+	liblapack-dev \
+	&& rm -rf /var/lib/apt/lists/*
 
-
-# install imagepypelines base dependencies
-RUN pip install tensorflow-gpu==1.12 \
-								setuptools>=39.0 \
-								Pillow>=4.0 \
-								colorama>=0.4.0 \
-								keras>=2.2.4 \
-								numpy>=1.14 \
-								scikit_learn>=0.20.0 \
-								scipy>=1.1.0 \
-								termcolor>=1.0
-
+# numpy for opencv-python
+RUN pip install numpy
 
 WORKDIR /
 ENV OPENCV_VERSION="4.0.1"
@@ -262,3 +261,17 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
 && rm -r /opencv-${OPENCV_VERSION}
+
+# BASE IMAGEPYPEPLINES DEPENDENCIES
+RUN pip install tensorflow-gpu==1.12 \
+	setuptools>=39.0 \
+	Pillow>=4.0 \
+	colorama>=0.4.0 \
+	keras>=2.2.4 \
+	numpy>=1.14 \
+	scikit_learn>=0.20.0 \
+	scipy>=1.1.0 \
+	termcolor>=1.0
+
+
+RUN rm -rf /var/lib/apt/lists/*
