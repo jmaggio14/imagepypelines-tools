@@ -2,10 +2,10 @@ FROM jmaggio14/imagepypelines:base
 
 # install imagepypelines-dev dependencies
 RUN pip install Sphinx \
- 								sphinx_bootstrap_theme \
-								m2r \
-								pytest \
-								pytest-cov \
-								hypothesis \
-								coverage \
-								codecov
+  sphinx_bootstrap_theme \
+  m2r \
+  pytest \
+  pytest-cov \
+  hypothesis \
+  coverage \
+  codecov
