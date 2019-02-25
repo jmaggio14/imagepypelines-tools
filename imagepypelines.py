@@ -32,7 +32,7 @@ CMD = ['docker',
         '--net=host',
         '--ulimit', 'rtprio=99:99',
         '--ulimit', 'nice=-20:-20',
-        # clion setup
+        # X11 
         '-e', 'DISPLAY={0}'.format(args.display),
         '-e', 'QT_X11_NO_MITSHM=1',
         # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
