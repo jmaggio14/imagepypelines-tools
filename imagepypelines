@@ -38,7 +38,7 @@ check : to check if all imagepypelines dependencies are installed
                     )
 # action == 'shell' | subcommand options
 parser.add_argument('--image-overload',
-                    default='imagepypelines',
+                    default='jmaggio14/imagepypelines:base',
                     # default='jmaggio14/imagepypelines',
                     help="the name of the docker image you wish to run instead of the default")
 parser.add_argument('--display',
