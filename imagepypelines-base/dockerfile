@@ -277,15 +277,13 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && rm -r /opencv-${OPENCV_VERSION}
 
 # BASE IMAGEPYPEPLINES DEPENDENCIES
-RUN pip install tensorflow-gpu==1.12 \
-	setuptools>=39.0 \
-	Pillow>=4.0 \
-	colorama>=0.4.0 \
-	keras>=2.2.4 \
-	numpy>=1.14 \
-	scikit_learn>=0.20.0 \
-	scipy>=1.1.0 \
-	termcolor>=1.0
-
+RUN pip install tensorflow-gpu==1.12 imagepypelines
 
 RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y vim
+
+
+# Copy the startup script into the docker image
+COPY ./startup.sh /root/startup.sh
+
+RUN echo '/root/startup.sh' >> /root/.bashrc
