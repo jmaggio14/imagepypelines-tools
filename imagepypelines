@@ -60,7 +60,7 @@ if args.action == "shell":
 			stdin=DEVNULL,
 			stdout=DEVNULL,
 			stderr=DEVNULL)
-	except subprocess.CalledProcessError, FileNotFoundError:
+	except (subprocess.CalledProcessError, FileNotFoundError):
 		print("error: docker must be installed prior to using the imagepypelines shell")
 		print("for installation help: https://docs.docker.com/install/")
 		exit(1)
