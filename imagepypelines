@@ -55,15 +55,15 @@ args = parser.parse_args()
 # SHELL action --> launch docker container for running imagepypelines apps
 if args.action == "shell":
     # TODO check if docker is installed
-	ret = subprocess.call('docker --version',
-		stdin=DEVNULL,
-		stdout=DEVNULL,
-		stderr=DEVNULL)
-
-	if ret != 0:
+	try:
+		ret = subprocess.call('docker --version',
+			stdin=DEVNULL,
+			stdout=DEVNULL,
+			stderr=DEVNULL)
+	except subprocess.CalledProcessError as e:
 		print("error: docker must be installed prior to using the imagepypelines shell")
 		print("for installation help: https://docs.docker.com/install/")
-		exit(1)
+		exit(e.returncode)
 
     # ---- prep the docker command ----
 	CMD = ['docker',
