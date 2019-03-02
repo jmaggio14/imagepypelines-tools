@@ -15,6 +15,9 @@ username: <your username>
 password: <your password>
 ```
 
+# Make sure that you have properly incremented the version
+this can be done by modifying the __version__ variable in version_info.py
+
 # if you have previously pushed to pypi
 rm dist/*
 
@@ -25,5 +28,5 @@ python setup.py sdist bdist_wheel
 # ensure twine is installed
 pip install twine
 
-# if no error occurs then push to the real pypi
+# push to pypi
 twine upload dist/*
