@@ -1,0 +1,11 @@
+FROM jmaggio14/imagepypelines:gpu
+
+# install imagepypelines-dev dependencies
+RUN pip install Sphinx \
+  sphinx_bootstrap_theme \
+  m2r \
+  pytest \
+  pytest-cov \
+  hypothesis \
+  coverage \
+  codecov
