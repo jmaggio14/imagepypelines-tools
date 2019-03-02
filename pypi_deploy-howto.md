@@ -1,4 +1,4 @@
-# setup your ~/pypirc file
+### setup your ~/pypirc file
 ```
 index-servers =
     pypi
@@ -15,18 +15,25 @@ username: <your username>
 password: <your password>
 ```
 
-# Make sure that you have properly incremented the version
+### Make sure that you have properly incremented the version
 this can be done by modifying the __version__ variable in version_info.py
 
-# if you have previously pushed to pypi
+### if you have previously pushed to pypi
+```
 rm dist/*
+```
 
-# create the necessary dists using setup.py
-# this will put the wheel and source in dist/
+### create the necessary dists using setup.py, this will put the wheel and source in dist/
+```
 python setup.py sdist bdist_wheel
+```
 
-# ensure twine is installed
+### ensure twine is installed
+```
 pip install twine
+```
 
-# push to pypi
+### push to pypi
+```
 twine upload dist/*
+```
