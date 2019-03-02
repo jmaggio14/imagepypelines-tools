@@ -50,8 +50,10 @@ def main():
                         action='append',
                         default=[])
     parser.add_argument('--with-gpu',
+                        help='launch the container with dependencies that attempt to access the gpu',
                         action='store_true')
     parser.add_argument('--dev',
+                        help='launch the container in development mode which contains development dependencies',
                         action='store_true')
 
 
