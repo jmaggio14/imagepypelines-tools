@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+
+"""
+Quick how to
+
+imagepypelines shell # normal
+imagepypelines shell --with-gpu # gpu
+imagepypelines shell --dev # dev
+imagepypelines shell --with-gpu --dev # dev-gpu
+"""
+
 import argparse
 import os
 import subprocess
@@ -18,7 +28,8 @@ else:
 	POSIX_PATH = os.path.join('/root',CURRENT_DIR).replace(os.sep,'/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-
+DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base','imagepypelines/imagepypelines-tools:base'],
+					[['imagepypelines/imagepypelines-tools:gpu','imagepypelines/imagepypelines-tools:dev-gpu']]]
 
 def main():
     # parsing command line arguments
@@ -31,16 +42,18 @@ def main():
 	"""
                         )
     # action == 'shell' | subcommand options
-    parser.add_argument('--image-overload',
-                        default='jmaggio14/imagepypelines:base',
-                        # default='jmaggio14/imagepypelines',
-                        help="the name of the docker image you wish to run instead of the default")
     parser.add_argument('--display',
                         default=':0',
                         help="overload the display variable for X11 access")
     parser.add_argument('-v', '--volume',
                         action='append',
                         default=[])
+	parser.add_argument('--with-gpu',
+                        action='store_true')
+	parser.add_argument('--dev',
+                        action='store_true')
+
+	image = DEFAULT_IMAGES[args.with_gpu][args.dev]
 
     args = parser.parse_args()
 
@@ -85,7 +98,7 @@ def main():
         CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
 
         # append the image name to the command
-        CMD.append(args.image_overload)
+        CMD.append(image)
         CMD.append("bash")
 
         # launch the shell
