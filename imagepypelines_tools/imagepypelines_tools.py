@@ -86,7 +86,7 @@ def main():
 
     elif args.action == "check":
         # check to see if all imagepypelines dependencies are installed
-		print("this feature is temporarily disabled")
+        print("this feature is temporarily disabled")
         # requirements = {'setuptools': '39.0.0',
         #                 'PIL': '4.0',
         #                 'colorama': '0.4.0',
