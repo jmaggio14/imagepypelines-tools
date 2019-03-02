@@ -8,7 +8,7 @@ import importlib
 import sys
 
 HOME = os.path.expanduser('~')
-CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+CURRENT_DIR = os.path.abspath( os.getcwd() )
 POSIX_PATH = CURRENT_DIR.replace(HOME, '/root').replace(os.sep, '/')
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
 

@@ -32,8 +32,5 @@ setup(name='imagepypelines-tools',
       classifiers=__classifiers__,
       packages=find_packages(),
       include_package_data=True,
-      entry_points="""\
-[console_scripts]
-import_sessions = imagepypelines_tools.imagepypelines_tools:main
-"""
+      entry_points={'console_scripts': ['imagepypelines = imagepypelines_tools:main'],}
       )
