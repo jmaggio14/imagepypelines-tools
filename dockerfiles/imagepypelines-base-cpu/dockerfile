@@ -1,3 +1,0 @@
-FROM jmaggio14/imagepypelines:base
-
-RUN pip install tensorflow==1.12.0

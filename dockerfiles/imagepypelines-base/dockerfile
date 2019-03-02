@@ -252,13 +252,13 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && cmake -DBUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
   -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib-${OPENCV_VERSION}/modules \
-  -DWITH_CUDA=ON \
+  -DWITH_CUDA=OFF \
   -DWITH_OPENGL=ON \
 	-D WITH_GSTREAMER=ON \
 	-D WITH_GSTREAMER_0_10=OFF \
   -DENABLE_FAST_MATH=1 \
-  -DCUDA_FAST_MATH=1 \
-  -DWITH_CUBLAS=1 \
+  -DCUDA_FAST_MATH=0 \
+  -DWITH_CUBLAS=0 \
   -DWITH_OPENCL=OFF \
   -DWITH_IPP=ON \
   -DWITH_TBB=ON \
@@ -276,8 +276,8 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && rm /${OPENCV_VERSION}.zip \
 && rm -r /opencv-${OPENCV_VERSION}
 
-# BASE IMAGEPYPEPLINES DEPENDENCIES
-RUN pip install tensorflow-gpu==1.12 imagepypelines
+# BASE IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
+RUN pip install tensorflow==1.12 imagepypelines
 
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y vim
