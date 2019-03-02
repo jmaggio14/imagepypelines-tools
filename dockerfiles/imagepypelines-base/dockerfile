@@ -281,15 +281,12 @@ RUN pip install tensorflow-gpu==1.12 imagepypelines
 
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y vim
+# Install X11 dependencies for future graphics support (March 2nd, 2019)
+RUN apt-get update && apt-get install -y libxtst-dev
 
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
-
-
-# Install X11 dependencies for future graphics support (March 2nd, 2019)
-RUN apt-get update && apt-get install -y libxtst-dev
-
 
 
 RUN echo '/root/startup.sh' >> /root/.bashrc
