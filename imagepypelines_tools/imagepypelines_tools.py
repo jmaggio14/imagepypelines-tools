@@ -23,13 +23,14 @@ CURRENT_DIR = os.path.abspath(os.getcwd())
 drive = pathlib.Path(CURRENT_DIR).drive
 
 if drive != '':
-	POSIX_PATH = CURRENT_DIR.replace(drive,'/root').replace(os.sep,'/')
+    POSIX_PATH = CURRENT_DIR.replace(drive, '/root').replace(os.sep, '/')
 else:
-	POSIX_PATH = os.path.join('/root',CURRENT_DIR).replace(os.sep,'/')
+    POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base','imagepypelines/imagepypelines-tools:base'],
-					[['imagepypelines/imagepypelines-tools:gpu','imagepypelines/imagepypelines-tools:dev-gpu']]]
+DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base', 'imagepypelines/imagepypelines-tools:base'],
+                  ['imagepypelines/imagepypelines-tools:gpu', 'imagepypelines/imagepypelines-tools:dev-gpu']]
+
 
 def main():
     # parsing command line arguments
@@ -48,12 +49,12 @@ def main():
     parser.add_argument('-v', '--volume',
                         action='append',
                         default=[])
-	parser.add_argument('--with-gpu',
+    parser.add_argument('--with-gpu',
                         action='store_true')
-	parser.add_argument('--dev',
+    parser.add_argument('--dev',
                         action='store_true')
 
-	image = DEFAULT_IMAGES[args.with_gpu][args.dev]
+    image = DEFAULT_IMAGES[args.with_gpu][args.dev]
 
     args = parser.parse_args()
 
@@ -119,22 +120,22 @@ def main():
         #                 'cv2': '3.4.0',
         #                 }
         # bad_packages = set()
-		#
+        #
         # for req, version in requirements.items():
         #     # see if package is importable
         #     try:
         #         package = importlib.import_module(req)
-		#
+        #
         #     except ImportError:
         #         print("unable to import {}".format(req))
         #         bad_packages.add(req)
-		#
+        #
         #     # check version of package
         #     if version > package.__version__:
         #         print("({}) requires version {}, but you have {}".format(
         #             req, version, package.__version__))
         #         bad_packages.add(req)
-		#
+        #
         #     # print success of failure
         # if len(bad_packages) == 0:  # success
         #     print("all package dependencies are met")
