@@ -1,4 +1,4 @@
-### setup your ~/pypirc file
+### setup your ~/.pypirc file
 ```
 index-servers =
     pypi
