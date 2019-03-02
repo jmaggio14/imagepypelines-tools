@@ -84,6 +84,8 @@ def main():
                '--net=host',
                '--ulimit', 'rtprio=99:99',
                '--ulimit', 'nice=-20:-20',
+               # automatically remove the container
+               '--rm',
                # X11
                '-e', 'DISPLAY={0}'.format(args.display),
                '-e', 'QT_X11_NO_MITSHM=1',
