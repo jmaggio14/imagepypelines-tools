@@ -54,10 +54,10 @@ def main():
     parser.add_argument('--dev',
                         action='store_true')
 
-    image = DEFAULT_IMAGES[args.with_gpu][args.dev]
 
     args = parser.parse_args()
 
+    image = DEFAULT_IMAGES[args.with_gpu][args.dev]
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
         # TODO check if docker is installed
