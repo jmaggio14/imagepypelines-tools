@@ -12,23 +12,6 @@ CURRENT_DIR = os.path.abspath( os.getcwd() )
 POSIX_PATH = CURRENT_DIR.replace(HOME, '/root').replace(os.sep, '/')
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
 
-WELCOME_MSG_TEMPLATE = """
-Welcome to the imagepypelines virtual container!
-
-This docker image contains all dependencies you need to run vanilla imagepypelines apps. The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools/blob/master/dockerfiles/imagepypelines-base/dockerfile
-
-the following folders have been mounted to this container:
-{}
-
-you can mount additional folders with the following
-	imagepypelines shell -v /path/to/folder/on/host:/where/you/want/to/mount/it
-
-some things to note:
-	> as of now, graphics are not supported in this container
-	> any changes made to folders not listed above will NOT be persistent
-	> you are root. so no need to use sudo :p
-"""
-
 def main():
 	# parsing command line arguments
 	parser = argparse.ArgumentParser()
@@ -92,9 +75,7 @@ def main():
 		for path in volumes:
 		    CMD.extend(['-v', path])
 		# add environmental variable containing all the mounted paths
-		CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format("|".join(volumes))])
-		welcome_msg = WELCOME_MSG_TEMPLATE.format(''.join(["  {}\n".format(v) for v in volumes]))
-		CMD.extend(['-e', 'WELCOME_MSG="{}"'.format(welcome_msg)])
+		CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
 
 		# append the image name to the command
 		CMD.append(args.image_overload)
