@@ -13,7 +13,7 @@ CURRENT_DIR = os.path.abspath(os.getcwd())
 drive = pathlib.Path(CURRENT_DIR).drive
 
 if drive != '':
-	POSIX_PATH = str(CURRENT_DIR).replace(drive,'/root').replace(os.sep,'/')
+	POSIX_PATH = CURRENT_DIR.replace(drive,'/root').replace(os.sep,'/')
 else:
 	POSIX_PATH = os.path.join('/root',CURRENT_DIR).replace(os.sep,'/')
 
