@@ -39,7 +39,7 @@ else:
     POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base', 'imagepypelines/imagepypelines-tools:base'],
+DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base', 'imagepypelines/imagepypelines-tools:dev'],
                   ['imagepypelines/imagepypelines-tools:gpu', 'imagepypelines/imagepypelines-tools:dev-gpu']]
 
 def main():
@@ -118,6 +118,7 @@ def main():
         CMD.append("bash")
 
         # launch the shell
+        print("launching docker image: {}".format(image))
         subprocess.call(CMD)
 
     elif args.action == "check":

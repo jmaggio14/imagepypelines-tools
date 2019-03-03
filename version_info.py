@@ -26,7 +26,7 @@ __all__ = [
 
 
 __name__ = 'imagepypelines-tools'
-__version__ = '0.1.11-alpha'
+__version__ = '0.1.12-alpha'
 __description__ = 'accessory library to augment the image processing library imagepypelines'
 __author__ = 'Jeff Maggio, Nathan Dileas, Ryan Hartzell'
 __email__ = "jmaggio14@gmail.com"

@@ -3,7 +3,6 @@ Welcome to the imagepypelines virtual container! This docker image contains all 
 
 the following folders have been mounted to this container:
 $MOUNTED_VOLUMES
-
 you can mount additional folders with the following
 	imagepypelines shell -v /path/to/folder/on/host:/where/you/want/to/mount/it
 
