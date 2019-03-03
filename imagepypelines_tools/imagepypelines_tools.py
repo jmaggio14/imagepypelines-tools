@@ -2,12 +2,22 @@
 
 
 """
-Quick how to
+    CPU-only:
+        $ imagepypelines shell
 
-imagepypelines shell # normal
-imagepypelines shell --with-gpu # gpu
-imagepypelines shell --dev # dev
-imagepypelines shell --with-gpu --dev # dev-gpu
+    GPU mode (*Linux only* requires CUDA and nvidia-docker):
+        $ imagepypelines shell --with-gpu
+
+    CPU-only development:
+        $ imagepypelines shell --dev
+
+    GPU development:
+        $ imagepypelines shell --with-gpu --dev
+
+imagepypelines [-h] [--display DISPLAY] [-v VOLUME]
+                               [--with-gpu] [--dev]
+                               action
+
 """
 
 import argparse
@@ -17,6 +27,7 @@ from subprocess import DEVNULL
 import importlib
 import sys
 import pathlib
+import sys
 
 HOME = os.path.expanduser('~')
 CURRENT_DIR = os.path.abspath(os.getcwd())
@@ -31,10 +42,10 @@ DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
 DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base', 'imagepypelines/imagepypelines-tools:base'],
                   ['imagepypelines/imagepypelines-tools:gpu', 'imagepypelines/imagepypelines-tools:dev-gpu']]
 
-
 def main():
     # parsing command line arguments
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='imagepypelines',
+                                    usage=sys.modules[__name__].__doc__ )
 
     # primary argument
     parser.add_argument('action', help="""
