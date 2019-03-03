@@ -138,6 +138,7 @@ RUN set -ex \
 	&& mkdir -p /usr/src/python \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
 	&& rm python.tar.xz \
+	&& rm -rf python.tar.xz.asc \
 	\
 	&& cd /usr/src/python \
 	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
@@ -290,7 +291,9 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
   .. \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
-&& rm -r /opencv-${OPENCV_VERSION}
+&& rm -r /opencv-${OPENCV_VERSION} \
+&& rm -r /opencv_contrib-${OPENCV_VERSION}
+
 
 # BASE IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
 RUN pip install tensorflow==1.12 imagepypelines
