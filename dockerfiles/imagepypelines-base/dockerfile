@@ -1,6 +1,6 @@
 # inherit from an NVIDIA ubuntu build
 # this will setup an image with CUDA and OPENGL preinstalled
-FROM nvidia/cudagl:10.0-devel
+# FROM nvidia/cudagl:10.0-devel
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
