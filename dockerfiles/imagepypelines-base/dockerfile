@@ -296,13 +296,25 @@ RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
   .. \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
-&& rm -r /opencv-${OPENCV_VERSION} \
-&& rm -r /opencv_contrib-${OPENCV_VERSION}
+&& rm -rf /opencv-${OPENCV_VERSION} \
+&& rm -rf /opencv_contrib-${OPENCV_VERSION}
 
-
-# BASE IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
+# IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
+################################################################################
 RUN pip install tensorflow==1.12 imagepypelines
+# dev dependencies
+RUN pip install Sphinx \
+	  sphinx_bootstrap_theme \
+	  m2r \
+	  pytest \
+	  pytest-cov \
+	  hypothesis \
+	  coverage \
+	  codecov
 
+
+# FINISH UP
+################################################################################
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y vim
 # Install X11 dependencies for future graphics support (March 2nd, 2019)
@@ -311,6 +323,4 @@ RUN apt-get update && apt-get install -y libxtst-dev
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
-
-
 RUN echo '/root/startup.sh' >> /root/.bashrc
