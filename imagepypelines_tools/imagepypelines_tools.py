@@ -73,7 +73,7 @@ def main():
     image = DEFAULT_IMAGES[args.with_gpu][args.dev]
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
-        # TODO check if docker is installed
+        # check if docker is installed
         try:
             ret = subprocess.call('docker --version',
                                   stdin=DEVNULL,
@@ -84,6 +84,22 @@ def main():
             print("for installation help: https://docs.docker.com/install/")
             exit(1)
 
+
+        # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
+        # launching ip environments inside ip environments. this can be disabled
+        # by the user if they wish
+        if "IP_ABORT_NESTED_SHELLS" in os.environ:
+            should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in ["YES","1","TRUE","ON"])
+        else:
+            should_launch = True
+
+        if should_launch == False:
+            print("error: canceling shell launch to avoid nested environments")
+            print("to force nested environments, you can set the environmental" \
+                    + "variable IP_ABORT_NESTED_SHELLS=0")
+            exit(1)
+
+        # Docker commands
         # ---- prep the docker command ----
         CMD = ['docker',
                'run',
