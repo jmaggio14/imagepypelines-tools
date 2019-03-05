@@ -1,6 +1,10 @@
 echo -e "
 Welcome to the imagepypelines virtual container! This docker image contains all dependencies you need to run vanilla imagepypelines apps. The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools
 
+ENV VARIABLES:
+	IP_GPU_ENABLED: $IP_GPU_ENABLED
+	IP_ABORT_NESTED_SHELLS: $IP_ABORT_NESTED_SHELLS
+
 the following folders have been mounted to this container:
 $MOUNTED_VOLUMES
 you can mount additional folders with the following
@@ -19,4 +23,5 @@ some things to note:
 	> any changes made to folders not listed above will NOT be persistent
 	> you are root. so no need to use sudo :p
 	> you may exit this shell by typing 'exit'
+
 "
