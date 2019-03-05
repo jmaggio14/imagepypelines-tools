@@ -1,8 +1,14 @@
 # inherit from an NVIDIA ubuntu build
 # this will setup an image with CUDA and OPENGL preinstalled
 FROM nvidia/cudagl:10.0-devel
+
+# ENVIRONMENTAL VARIABLES
+################################################################################
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENCV_VERSION="4.0.1"
+ENV IP_GPU_ENABLED=1
+ENV IP_ABORT_NESTED_SHELLS=1
 
 # fix for gpg key server issue: https://github.com/inversepath/usbarmory-debian-base_image/issues/9
 # RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
@@ -257,8 +263,6 @@ RUN apt-get update && apt-get install -y \
 # numpy for opencv-python
 RUN pip install numpy
 
-# OPENCV RECOMPILE WITH GPU SUPPORT
-ENV IP_GPU_ENABLED=1
 WORKDIR /
 RUN wget -N https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
 && unzip -o ${OPENCV_VERSION}.zip \
@@ -295,9 +299,22 @@ RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && rm -rf /opencv-${OPENCV_VERSION} \
 && rm -rf /opencv_contrib-${OPENCV_VERSION}
 
-# BASE IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
-RUN pip install tensorflow-gpu==1.12 imagepypelines
+# IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
+################################################################################
+RUN pip install tensorflow==1.12 imagepypelines
+# dev dependencies
+RUN pip install Sphinx \
+	  sphinx_bootstrap_theme \
+	  m2r \
+	  pytest \
+	  pytest-cov \
+	  hypothesis \
+	  coverage \
+	  codecov
 
+
+# FINISH UP
+################################################################################
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y vim
 # Install X11 dependencies for future graphics support (March 2nd, 2019)
@@ -306,6 +323,4 @@ RUN apt-get update && apt-get install -y libxtst-dev
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
-
-
 RUN echo '/root/startup.sh' >> /root/.bashrc
