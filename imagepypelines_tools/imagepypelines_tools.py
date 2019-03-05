@@ -68,7 +68,7 @@ def main():
     if args.action == "shell":
         # check if docker is installed
         try:
-            ret = subprocess.call('docker --version',
+            ret = subprocess.call(['docker', '--version'],
                                   stdin=DEVNULL,
                                   stdout=DEVNULL,
                                   stderr=DEVNULL)
