@@ -1,8 +1,14 @@
 # inherit from an NVIDIA ubuntu build
 # this will setup an image with CUDA and OPENGL preinstalled
 FROM nvidia/cudagl:10.0-devel
+
+# ENVIRONMENTAL VARIABLES
+################################################################################
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENCV_VERSION="4.0.1"
+ENV IP_GPU_ENABLED=0
+ENV IP_ABORT_NESTED_SHELLS=1
 
 # fix for gpg key server issue: https://github.com/inversepath/usbarmory-debian-base_image/issues/9
 # RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
@@ -258,24 +264,23 @@ RUN apt-get update && apt-get install -y \
 RUN pip install numpy
 
 WORKDIR /
-ENV OPENCV_VERSION="4.0.1"
-RUN wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
-&& unzip ${OPENCV_VERSION}.zip \
+RUN wget -N https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
+&& unzip -o ${OPENCV_VERSION}.zip \
 && rm ${OPENCV_VERSION}.zip
-RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
-&& unzip ${OPENCV_VERSION}.zip \
+RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+&& unzip -o ${OPENCV_VERSION}.zip \
 && mkdir /opencv-${OPENCV_VERSION}/cmake_binary \
 && cd /opencv-${OPENCV_VERSION}/cmake_binary \
 && cmake -DBUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
   -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib-${OPENCV_VERSION}/modules \
-  -DWITH_CUDA=OFF \
+  -DWITH_CUDA=$IP_GPU_ENABLED \
   -DWITH_OPENGL=ON \
-	-D WITH_GSTREAMER=ON \
-	-D WITH_GSTREAMER_0_10=OFF \
+  -DWITH_GSTREAMER=ON \
+  -DWITH_GSTREAMER_0_10=OFF \
   -DENABLE_FAST_MATH=1 \
-  -DCUDA_FAST_MATH=0 \
-  -DWITH_CUBLAS=0 \
+  -DCUDA_FAST_MATH==$IP_GPU_ENABLED \
+  -DWITH_CUBLAS==$IP_GPU_ENABLED \
   -DWITH_OPENCL=OFF \
   -DWITH_IPP=ON \
   -DWITH_TBB=ON \

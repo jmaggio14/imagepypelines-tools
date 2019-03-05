@@ -1,26 +1,25 @@
 FROM jmaggio14/imagepypelines:base
 
 # OPENCV RECOMPILE WITH GPU SUPPORT
-
+ENV IP_GPU_ENABLED=1
 WORKDIR /
-ENV OPENCV_VERSION="4.0.1"
-RUN wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
-&& unzip ${OPENCV_VERSION}.zip \
+RUN wget -N https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
+&& unzip -o ${OPENCV_VERSION}.zip \
 && rm ${OPENCV_VERSION}.zip
-RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
-&& unzip ${OPENCV_VERSION}.zip \
+RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+&& unzip -o ${OPENCV_VERSION}.zip \
 && mkdir /opencv-${OPENCV_VERSION}/cmake_binary \
 && cd /opencv-${OPENCV_VERSION}/cmake_binary \
 && cmake -DBUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
   -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib-${OPENCV_VERSION}/modules \
-  -DWITH_CUDA=ON \
+  -DWITH_CUDA=$IP_GPU_ENABLED \
   -DWITH_OPENGL=ON \
-	-D WITH_GSTREAMER=ON \
-	-D WITH_GSTREAMER_0_10=OFF \
+  -DWITH_GSTREAMER=ON \
+  -DWITH_GSTREAMER_0_10=OFF \
   -DENABLE_FAST_MATH=1 \
-  -DCUDA_FAST_MATH=1 \
-  -DWITH_CUBLAS=1 \
+  -DCUDA_FAST_MATH==$IP_GPU_ENABLED \
+  -DWITH_CUBLAS==$IP_GPU_ENABLED \
   -DWITH_OPENCL=OFF \
   -DWITH_IPP=ON \
   -DWITH_TBB=ON \
@@ -36,10 +35,9 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
   .. \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
-&& rm -r /opencv-${OPENCV_VERSION} \
-&& rm -r /opencv_contrib-${OPENCV_VERSION}
+&& rm -rf /opencv-${OPENCV_VERSION} \
+&& rm -rf /opencv_contrib-${OPENCV_VERSION}
 
 # UNINSTALL TENSORFLOW AND REINSTALL WITH GPU SUPPORT
-
 RUN pip uninstall tensorflow==1.12.0
 RUN pip install tensorflow-gpu==1.12.0
