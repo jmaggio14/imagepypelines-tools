@@ -8,12 +8,6 @@
     GPU mode (*Linux only* requires CUDA and nvidia-docker):
         $ imagepypelines shell --with-gpu
 
-    CPU-only development:
-        $ imagepypelines shell --dev
-
-    GPU development:
-        $ imagepypelines shell --with-gpu --dev
-
 imagepypelines [-h] [--display DISPLAY] [-v VOLUME]
                                [--with-gpu] [--dev]
                                action
@@ -39,8 +33,7 @@ else:
     POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = [['imagepypelines/imagepypelines-tools:base', 'imagepypelines/imagepypelines-tools:dev'],
-                  ['imagepypelines/imagepypelines-tools:gpu', 'imagepypelines/imagepypelines-tools:dev-gpu']]
+DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base','imagepypelines/imagepypelines-tools:gpu']
 
 def main():
     # parsing command line arguments
@@ -63,14 +56,14 @@ def main():
     parser.add_argument('--with-gpu',
                         help='launch the container with dependencies that attempt to access the gpu',
                         action='store_true')
-    parser.add_argument('--dev',
-                        help='launch the container in development mode which contains development dependencies',
+    parser.add_argument('--nest',
+                        help='force launching nested containers within containers',
                         action='store_true')
 
 
     args = parser.parse_args()
 
-    image = DEFAULT_IMAGES[args.with_gpu][args.dev]
+    image = DEFAULT_IMAGES[args.with_gpu]
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
         # check if docker is installed
@@ -89,7 +82,11 @@ def main():
         # launching ip environments inside ip environments. this can be disabled
         # by the user if they wish
         if "IP_ABORT_NESTED_SHELLS" in os.environ:
-            should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in ["YES","1","TRUE","ON"])
+            if args.nested:
+                should_launch = True
+            else:
+                should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in ["YES","1","TRUE","ON"])
+
         else:
             should_launch = True
 
