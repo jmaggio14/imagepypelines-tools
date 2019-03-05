@@ -23,5 +23,4 @@ some things to note:
 	> any changes made to folders not listed above will NOT be persistent
 	> you are root. so no need to use sudo :p
 	> you may exit this shell by typing 'exit'
-
 "
