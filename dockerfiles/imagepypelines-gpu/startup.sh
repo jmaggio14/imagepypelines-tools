@@ -24,4 +24,3 @@ some things to note:
 	> you are root. so no need to use sudo :p
 	> you may exit this shell by typing 'exit'
 "
-PS1="(imagepypelines) $PS1"
