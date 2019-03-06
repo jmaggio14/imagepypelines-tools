@@ -9,6 +9,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENCV_VERSION="4.0.1"
 ENV IP_GPU_ENABLED=0
 ENV IP_ABORT_NESTED_SHELLS=1
+ENV PYTHON_VERSION 3.6.8
+ENV PYTHON_PIP_VERSION 19.0.3
+
+
 
 # fix for gpg key server issue: https://github.com/inversepath/usbarmory-debian-base_image/issues/9
 # RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
@@ -128,7 +132,6 @@ RUN apt-get update && apt-get install -y python3.6 \
 
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.8
 
 # ATTEMPTED AUTO-BUILD FIX --> removed pgp check
 # && export GNUPGHOME="$(mktemp -d)" \
@@ -178,7 +181,6 @@ RUN cd /usr/local/bin \
 
 # INSTALL PIP
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 19.0.3
 
 RUN set -ex; \
 	\
