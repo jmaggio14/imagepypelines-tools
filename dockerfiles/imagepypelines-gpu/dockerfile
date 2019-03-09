@@ -326,4 +326,5 @@ RUN apt-get update && apt-get install -y libxtst-dev
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
-RUN echo '/root/startup.sh\nexport PS1=(imagepypelines)$PS1' >> /root/.bashrc
+RUN echo '/root/startup.sh' >> /root/.bashrc
+RUN echo 'export PS1="\033[38;5;208m"\(imagepypelines-gpu\)"\e[39m\e[49m$PS1"' >> /root/.bashrc
