@@ -18,6 +18,11 @@ password: <your password>
 ### Make sure that you have properly incremented the version
 this can be done by modifying the __version__ variable in version_info.py
 
+### install wheel
+```
+pip install wheel
+```
+
 ### if you have previously pushed to pypi
 ```
 rm dist/*
