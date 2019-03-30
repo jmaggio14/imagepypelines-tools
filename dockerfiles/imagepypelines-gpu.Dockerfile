@@ -7,7 +7,7 @@ FROM nvidia/cudagl:10.0-devel
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENCV_VERSION="4.0.1"
-ENV IP_GPU_ENABLED=0
+ENV IP_GPU_ENABLED=1
 ENV IP_ABORT_NESTED_SHELLS=1
 ENV PYTHON_VERSION 3.6.8
 ENV PYTHON_PIP_VERSION 19.0.3
@@ -322,6 +322,10 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y vim
 # Install X11 dependencies for future graphics support (March 2nd, 2019)
 RUN apt-get update && apt-get install -y libxtst-dev
+
+# rename the host computer
+RUN if [ "$IP_GPU_ENABLED" -eq 1 ]; then echo "imagepypelines-gpu" > /etc/hostname; else echo "imagepypelines" > /etc/hostname; fi
+
 
 
 # Copy the startup script into the docker image

@@ -32,7 +32,9 @@ echo -e "
 ##############################Ndyo/:. -///+ossoshm##############################
 ################################################################################"
 echo -e "
-Welcome to the imagepypelines virtual container! This docker image contains all dependencies you need to run vanilla imagepypelines apps. The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools
+Welcome to the imagepypelines virtual container!
+This docker image contains all dependencies you need to run vanilla imagepypelines apps.
+The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools
 
 ENV VARIABLES:
 	IP_GPU_ENABLED: $IP_GPU_ENABLED
