@@ -1,21 +1,16 @@
 # inherit from an NVIDIA ubuntu build
 # this will setup an image with CUDA and OPENGL preinstalled
 FROM nvidia/cudagl:10.0-devel
+MAINTAINER Jeff Maggio, Ryan Hartzell, Nathan Dileas
 
 # ENVIRONMENTAL VARIABLES
 ################################################################################
 # disable interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENCV_VERSION="4.0.1"
-ENV IP_GPU_ENABLED=1
-ENV IP_ABORT_NESTED_SHELLS=1
-ENV PYTHON_VERSION 3.6.8
-ENV PYTHON_PIP_VERSION 19.0.3
+ENV IP_GPU_ENABLED=ON
+ENV IP_ABORT_NESTED_SHELLS=ON
 
-
-
-# fix for gpg key server issue: https://github.com/inversepath/usbarmory-debian-base_image/issues/9
-# RUN mkdir ~/.gnupg && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
 
 # BASE DEPENDENCIES
 # The following was originally modified from buildpack-deps
@@ -104,102 +99,15 @@ RUN set -ex; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-# PYTHON INSTALLATION
-################################################################################
-# ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:$PATH
-
-# http://bugs.python.org/issue19846
-# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG C.UTF-8
-
-# extra dependencies (over what buildpack-deps already includes)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		tk-dev \
-	&& rm -rf /var/lib/apt/lists/*
-
+# Python
 RUN apt-get update \
-	&& apt-get -y install software-properties-common \
-	&& add-apt-repository ppa:deadsnakes/ppa \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get install -y python3.6 \
-	&& rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y python3.6 \
-	python3.6-dev \
-	&& rm -rf /var/lib/apt/lists/*
-
-
-
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-
-# ATTEMPTED AUTO-BUILD FIX --> removed pgp check
-# && export GNUPGHOME="$(mktemp -d)" \
-# && gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
-# && gpg --batch --verify python.tar.xz.asc python.tar.xz \
-# && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
-# && rm -rf "$GNUPGHOME" python.tar.xz.asc \
-
-RUN set -ex \
-	\
-	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
-	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
-	&& mkdir -p /usr/src/python \
-	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
-	&& rm python.tar.xz \
-	&& rm -rf python.tar.xz.asc \
-	\
-	&& cd /usr/src/python \
-	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
-	&& ./configure \
-		--build="$gnuArch" \
-		--enable-loadable-sqlite-extensions \
-		--enable-shared \
-		--with-system-expat \
-		--with-system-ffi \
-		--without-ensurepip \
-	&& make -j "$(nproc)" \
-	&& make install \
-	&& ldconfig \
-	\
-	&& find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
-	&& rm -rf /usr/src/python \
-	\
-	&& python3 --version
-#
-# # make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
+ 	&& apt-get install python3.6 \
+	&& curl https://bootstrap.pypa.io/get-pip.py | python3.6 \
+	&& cd /usr/local/bin \
 	&& ln -s idle3 idle \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
-
-# INSTALL PIP
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-
-RUN set -ex; \
-	\
-	wget -O get-pip.py 'https://bootstrap.pypa.io/get-pip.py'; \
-	\
-	python get-pip.py \
-		--disable-pip-version-check \
-		--no-cache-dir \
-		"pip==$PYTHON_PIP_VERSION" \
-	; \
-	pip --version; \
-	\
-	find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' +; \
-	rm -f get-pip.py
 
 
 # OPENCV INSTALLATION
@@ -266,21 +174,23 @@ RUN apt-get update && apt-get install -y \
 RUN pip install numpy
 
 WORKDIR /
-RUN wget -N https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
-&& unzip -o ${OPENCV_VERSION}.zip \
+RUN wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
+&& unzip ${OPENCV_VERSION}.zip \
 && rm ${OPENCV_VERSION}.zip
-RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
-&& unzip -o ${OPENCV_VERSION}.zip \
+RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
+&& unzip ${OPENCV_VERSION}.zip \
 && mkdir /opencv-${OPENCV_VERSION}/cmake_binary \
 && cd /opencv-${OPENCV_VERSION}/cmake_binary \
-&& cmake -DBUILD_TIFF=ON \
+&& cmake \
+  -DBUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
   -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib-${OPENCV_VERSION}/modules \
+  -DOPENCV_ENABLE_NONFREE=ON \
   -DWITH_CUDA=$IP_GPU_ENABLED \
   -DWITH_OPENGL=ON \
   -DWITH_GSTREAMER=ON \
   -DWITH_GSTREAMER_0_10=OFF \
-  -DENABLE_FAST_MATH=1 \
+  -DENABLE_FAST_MATH=ON \
   -DCUDA_FAST_MATH=$IP_GPU_ENABLED \
   -DWITH_CUBLAS=$IP_GPU_ENABLED \
   -DWITH_OPENCL=OFF \
@@ -291,11 +201,12 @@ RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
   -DBUILD_TESTS=OFF \
   -DBUILD_PERF_TESTS=OFF \
   -DCMAKE_BUILD_TYPE=RELEASE \
-  -DCMAKE_INSTALL_PREFIX=$(python3 -c "import sys; print(sys.prefix)") \
-  -DPYTHON_EXECUTABLE=$(which python3) \
-  -DPYTHON_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-  -DPYTHON_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+  -DCMAKE_INSTALL_PREFIX=$(python -c "import sys; print(sys.prefix)") \
+  -DPYTHON_EXECUTABLE=$(which python) \
+  -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+  -DPYTHON_PACKAGES_PATH=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
   .. \
+&& make -j4 \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
 && rm -rf /opencv-${OPENCV_VERSION} \
@@ -303,7 +214,7 @@ RUN wget -N https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 
 # IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
 ################################################################################
-RUN if [ "$IP_GPU_ENABLED" -eq 1 ]; then pip install tensorflow-gpu==1.13.1; else pip install tensorflow==1.13.1; fi
+RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then pip install tensorflow-gpu==1.13.1; else pip install tensorflow==1.13.1; fi
 RUN pip install imagepypelines
 # dev dependencies
 RUN pip install Sphinx \
@@ -324,11 +235,11 @@ RUN apt-get update && apt-get install -y vim
 RUN apt-get update && apt-get install -y libxtst-dev
 
 # rename the host computer
-RUN if [ "$IP_GPU_ENABLED" -eq 1 ]; then echo "imagepypelines-gpu" > /etc/hostname; else echo "imagepypelines" > /etc/hostname; fi
+RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then echo "imagepypelines-gpu" > /etc/hostname; else echo "imagepypelines" > /etc/hostname; fi
 
 
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
 RUN echo '/root/startup.sh' >> /root/.bashrc
-RUN if [ "$IP_GPU_ENABLED" -eq 1 ]; then echo 'export PS1="\033[38;5;208m"\(imagepypelines-gpu\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; else echo 'export PS1="\033[38;5;208m"\(imagepypelines\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; fi
+RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then echo 'export PS1="\033[38;5;208m"\(imagepypelines-gpu\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; else echo 'export PS1="\033[38;5;208m"\(imagepypelines\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; fi

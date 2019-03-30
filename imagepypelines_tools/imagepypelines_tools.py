@@ -33,7 +33,9 @@ else:
     POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base','imagepypelines/imagepypelines-tools:gpu']
+DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base',
+                    'imagepypelines/imagepypelines-tools:gpu'
+                    ]
 
 def main():
     # parsing command line arguments
@@ -43,7 +45,7 @@ def main():
     # primary argument
     parser.add_argument('action', help="""
 	shell : to enter the imagepypelines docker container
-	check : to check if all imagepypelines dependencies are installed
+	check : to check if all imagepypelines dependencies are installed (disabled)
 	"""
                         )
     # action == 'shell' | subcommand options
@@ -54,7 +56,7 @@ def main():
                         action='append',
                         default=[])
     parser.add_argument('--with-gpu',
-                        help='launch the container with dependencies that attempt to access the gpu',
+                        help='launch a container that attempts to access the gpu',
                         action='store_true')
     parser.add_argument('--nest',
                         help='force launching nested containers within containers',
@@ -64,18 +66,37 @@ def main():
     args = parser.parse_args()
 
     image = DEFAULT_IMAGES[args.with_gpu]
+
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
-        # check if docker is installed
-        try:
-            ret = subprocess.call(['docker', '--version'],
-                                  stdin=DEVNULL,
-                                  stdout=DEVNULL,
-                                  stderr=DEVNULL)
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            print("error: docker must be installed prior to using the imagepypelines shell")
-            print("for installation help: https://docs.docker.com/install/")
-            exit(1)
+        if arg.with_gpu:
+            command = "nvidia-docker"
+
+            # check if nvidia-docker is installed if we are launching GPU image
+            try:
+                ret = subprocess.call([command, 'version'],
+                                      stdin=DEVNULL,
+                                      stdout=DEVNULL,
+                                      stderr=DEVNULL)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                print("error: nvidia-docker must be installed prior ",
+                        "to using the imagepypelines-gpu shell")
+                print("for installation help:",
+                        " https://github.com/NVIDIA/nvidia-docker")
+                exit(1)
+
+        else:
+            command = "docker"
+            # check if docker is installed if we are running a cpu image
+            try:
+                ret = subprocess.call([command, '--version'],
+                                      stdin=DEVNULL,
+                                      stdout=DEVNULL,
+                                      stderr=DEVNULL)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                print("error: docker must be installed prior to using the imagepypelines shell")
+                print("for installation help: https://docs.docker.com/install/")
+                exit(1)
 
 
         # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
@@ -92,13 +113,13 @@ def main():
 
         if should_launch == False:
             print("error: canceling shell launch to avoid nested environments")
-            print("to force nested environments, you can set the environmental" \
+            print("to force nested environments, you can set the environmental"\
                     + "variable IP_ABORT_NESTED_SHELLS=0")
             exit(1)
 
         # Docker commands
         # ---- prep the docker command ----
-        CMD = ['docker',
+        CMD = [command,
                'run',
                # make interactive
                '-it',\

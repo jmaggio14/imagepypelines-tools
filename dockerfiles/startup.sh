@@ -39,6 +39,7 @@ The source for this dockerfile can be found here: https://github.com/jmaggio14/i
 ENV VARIABLES:
 	IP_GPU_ENABLED: $IP_GPU_ENABLED
 	IP_ABORT_NESTED_SHELLS: $IP_ABORT_NESTED_SHELLS
+	OPENCV_VERSION: $OPENCV_VERSION
 
 the following folders have been mounted to this container:
 $MOUNTED_VOLUMES
