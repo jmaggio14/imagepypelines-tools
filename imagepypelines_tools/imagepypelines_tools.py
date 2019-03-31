@@ -36,6 +36,7 @@ DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
 DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base',
                     'imagepypelines/imagepypelines-tools:gpu'
                     ]
+HOSTNAMES = ['imagepypelines','imagepypelines-gpu']
 
 def main():
     # parsing command line arguments
@@ -69,7 +70,7 @@ def main():
 
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
-        if arg.with_gpu:
+        if args.with_gpu:
             command = "nvidia-docker"
 
             # check if nvidia-docker is installed if we are launching GPU image
@@ -133,6 +134,8 @@ def main():
                '--ulimit', 'nice=-20:-20',
                # automatically remove the container
                '--rm',
+               # set a recognizable hostname
+               '--hostname', HOSTNAMES[args.with_gpu],
                # X11
                '-e', 'DISPLAY={0}'.format(args.display),
                '-e', 'QT_X11_NO_MITSHM=1',

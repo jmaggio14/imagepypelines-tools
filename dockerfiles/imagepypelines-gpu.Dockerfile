@@ -201,20 +201,21 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
   -DBUILD_TESTS=OFF \
   -DBUILD_PERF_TESTS=OFF \
   -DCMAKE_BUILD_TYPE=RELEASE \
-  -DCMAKE_INSTALL_PREFIX=$(python -c "import sys; print(sys.prefix)") \
-  -DPYTHON_EXECUTABLE=$(which python) \
-  -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-  -DPYTHON_PACKAGES_PATH=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+  -DCMAKE_INSTALL_PREFIX=$(python3 -c "import sys; print(sys.prefix)") \
+  -DPYTHON_EXECUTABLE=$(which python3) \
+  -DPYTHON_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+  -DPYTHON_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
   .. \
 && make -j4 \
 && make install \
+&& ldconfig \
 && rm /${OPENCV_VERSION}.zip \
 && rm -rf /opencv-${OPENCV_VERSION} \
 && rm -rf /opencv_contrib-${OPENCV_VERSION}
 
 # IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
 ################################################################################
-RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then pip install tensorflow-gpu==1.13.1; else pip install tensorflow==1.13.1; fi
+RUN if [ "$IP_GPU_ENABLED" = "ON" ]; then pip install tensorflow-gpu==1.13.1; else pip install tensorflow==1.13.1; fi
 RUN pip install imagepypelines
 # dev dependencies
 RUN pip install Sphinx \
@@ -234,12 +235,8 @@ RUN apt-get update && apt-get install -y vim
 # Install X11 dependencies for future graphics support (March 2nd, 2019)
 RUN apt-get update && apt-get install -y libxtst-dev
 
-# rename the host computer
-RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then echo "imagepypelines-gpu" > /etc/hostname; else echo "imagepypelines" > /etc/hostname; fi
-
-
 
 # Copy the startup script into the docker image
 COPY ./startup.sh /root/startup.sh
 RUN echo '/root/startup.sh' >> /root/.bashrc
-RUN if [ "$IP_GPU_ENABLED" -eq "ON" ]; then echo 'export PS1="\033[38;5;208m"\(imagepypelines-gpu\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; else echo 'export PS1="\033[38;5;208m"\(imagepypelines\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; fi
+RUN if [ "$IP_GPU_ENABLED" = "ON" ]; then echo 'export PS1="\033[38;5;208m"\(imagepypelines-gpu\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; else echo 'export PS1="\033[38;5;208m"\(imagepypelines\)"\e[39m\e[49m$PS1"' >> /root/.bashrc; fi
