@@ -19,9 +19,7 @@ It includes:
 
 
 
-This repository is an accessory to the open source image and data Imagepypelines
-
-External hyperlinks, like ImagePypelines_.
+This repository is an accessory to the open source image and data ImagePypelines_
 
 
 *note that GPU usage requires separate installation of Nvidia-Docker*
@@ -40,12 +38,14 @@ imagepypelines shell
 --------------------
 
 Standard
+
 .. code-block:: console
 
     pip install imagepypelines
     imagepypelines shell
 
 GPU Accelerated (limited to Linux hosts with Nvidia-Docker)
+
 .. code-block:: console
 
     pip install imagepypelines
