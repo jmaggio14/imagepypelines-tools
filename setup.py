@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 current_dir = os.path.dirname(__file__)
 
 # load __version__, __author__, __email__, etc variables
-with open(os.path.join(current_dir,'version_info.py')) as f:
+with open(os.path.join(current_dir,'imagepypelines_tools/version_info.py')) as f:
     exec(f.read())
 
 long_description = ''
@@ -18,7 +18,7 @@ setup(name='imagepypelines-tools',
       version=__version__,
       description=__description__,
       long_description=long_description,
-      long_description_content_type='text/markdown',
+      long_description_content_type='text/x-rst',
       author=__author__,
       author_email=__email__,
       license=__license__,

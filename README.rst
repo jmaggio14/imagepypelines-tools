@@ -48,4 +48,4 @@ GPU Accelerated (limited to Linux hosts with Nvidia-Docker)
 .. code-block:: console
 
     pip install imagepypelines
-    imagepypelines shell --with-gpu
+    imagepypelines shell --gpu

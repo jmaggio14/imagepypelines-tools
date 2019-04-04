@@ -6,10 +6,10 @@
         $ imagepypelines shell
 
     GPU mode (*Linux only* requires CUDA and nvidia-docker):
-        $ imagepypelines shell --with-gpu
+        $ imagepypelines shell --gpu
 
 imagepypelines [-h] [--display DISPLAY] [-v VOLUME]
-                               [--with-gpu] [--dev]
+                               [--gpu] [--dev]
                                action
 
 """
@@ -22,10 +22,20 @@ import importlib
 import sys
 import pathlib
 import sys
+import pkg_resources
+
+current_dir = os.path.dirname(__file__)
 
 HOME = os.path.expanduser('~')
 CURRENT_DIR = os.path.abspath(os.getcwd())
 drive = pathlib.Path(CURRENT_DIR).drive
+
+# load __version__, __author__, __email__, etc variables
+version_file = pkg_resources.resource_filename(__name__,'version_info.py')
+version_info = {}
+with open(version_file) as f:
+    exec(f.read(), {}, version_info)
+
 
 if drive != '':
     POSIX_PATH = CURRENT_DIR.replace(drive, '/root').replace(os.sep, '/')
@@ -56,7 +66,7 @@ def main():
     parser.add_argument('-v', '--volume',
                         action='append',
                         default=[])
-    parser.add_argument('--with-gpu',
+    parser.add_argument('--gpu',
                         help='launch a container that attempts to access the gpu',
                         action='store_true')
     parser.add_argument('--nest',
@@ -66,11 +76,11 @@ def main():
 
     args = parser.parse_args()
 
-    image = DEFAULT_IMAGES[args.with_gpu]
+    image = DEFAULT_IMAGES[args.gpu]
 
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
-        if args.with_gpu:
+        if args.gpu:
             command = "nvidia-docker"
 
             # check if nvidia-docker is installed if we are launching GPU image
@@ -84,7 +94,7 @@ def main():
                         "to using the imagepypelines-gpu shell")
                 print("for installation help:",
                         " https://github.com/NVIDIA/nvidia-docker")
-                exit(1)
+                sys.exit(1)
 
         else:
             command = "docker"
@@ -97,7 +107,7 @@ def main():
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("error: docker must be installed prior to using the imagepypelines shell")
                 print("for installation help: https://docs.docker.com/install/")
-                exit(1)
+                sys.exit(1)
 
 
         # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
@@ -115,15 +125,15 @@ def main():
         if should_launch == False:
             print("error: canceling shell launch to avoid nested environments")
             print("to force nested environments, you can set the environmental"\
-                    + "variable IP_ABORT_NESTED_SHELLS=0")
-            exit(1)
+                    + "variable IP_ABORT_NESTED_SHELLS=OFF")
+            sys.exit(1)
 
         # Docker commands
         # ---- prep the docker command ----
         CMD = [command,
                'run',
                # make interactive
-               '-it',\
+               '-it',
                # set working directory
                '-w', '{0}'.format(POSIX_PATH),
                # set (and remove) limits on hardware resources
@@ -135,18 +145,20 @@ def main():
                # automatically remove the container
                '--rm',
                # set a recognizable hostname
-               '--hostname', HOSTNAMES[args.with_gpu],
+               '--hostname', HOSTNAMES[args.gpu],
                # X11
                '-e', 'DISPLAY={0}'.format(args.display),
                '-e', 'QT_X11_NO_MITSHM=1',
                # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
                '-e', 'HOST_HOME={0}'.format(HOME),
                '-e', 'force_color_prompt=1',
+               '-e', 'IP_TOOLS_VERSION={}'.format(version_info['__version__']),
                ]
         # add default and user-defined volumes to the path
         volumes = DEFAULT_VOLUMES + args.volume
         for path in volumes:
             CMD.extend(['-v', path])
+
         # add environmental variable containing all the mounted paths
         CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
 

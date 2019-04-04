@@ -36,10 +36,10 @@ Welcome to the imagepypelines virtual container!
 This docker image contains all dependencies you need to run vanilla imagepypelines apps.
 The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools
 
-ENV VARIABLES:
-	IP_GPU_ENABLED: $IP_GPU_ENABLED
-	IP_ABORT_NESTED_SHELLS: $IP_ABORT_NESTED_SHELLS
-	OPENCV_VERSION: $OPENCV_VERSION
+IP_GPU_ENABLED: $IP_GPU_ENABLED
+IP_ABORT_NESTED_SHELLS: $IP_ABORT_NESTED_SHELLS
+OPENCV_VERSION: $OPENCV_VERSION
+IP_TOOLS_VERSION: $IP_TOOLS_VERSION
 
 the following folders have been mounted to this container:
 $MOUNTED_VOLUMES
@@ -49,7 +49,7 @@ you can mount additional folders with the following
 GPU support (Nvidia Only):
     On Linux host systems:
         > install nvidia-docker: https://github.com/NVIDIA/nvidia-docker
-        > add the flag --with-gpu when you launch this shell
+        > add the flag --gpu when you launch this shell
 
     On Windows or MacOSX host systems:
         > GPU access from this container is not possible
