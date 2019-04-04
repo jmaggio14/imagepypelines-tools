@@ -2,6 +2,8 @@
 imagepypelines-tools
 ======================
 
+.. _ImagePypelines: `https://github.com/jmaggio14/imagepypelines`
+
 This repository contains two docker images which provide a full development
 environment for those doing image processing, computer vision, or machine
 learning development in python.
@@ -19,11 +21,10 @@ It includes:
 
 This repository is an accessory to the open source image and data Imagepypelines
 
-External hyperlinks, like Imagepypelines_.
-.. _Imagepypelines: github.com/jmaggio14/imagepypelines
+External hyperlinks, like ImagePypelines_.
 
 
-*note that GPU usage requires separate installation of Nvidia-Docker
+*note that GPU usage requires separate installation of Nvidia-Docker*
 
 These images are built to work in tandem with the pip package imagepypelines-tools.
 To enter this docker environment simply:
