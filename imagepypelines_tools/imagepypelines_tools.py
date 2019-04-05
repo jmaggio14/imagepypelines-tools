@@ -23,19 +23,13 @@ import sys
 import pathlib
 import sys
 import pkg_resources
+from . import __version__, DOCKERFILES
 
 current_dir = os.path.dirname(__file__)
 
 HOME = os.path.expanduser('~')
 CURRENT_DIR = os.path.abspath(os.getcwd())
 drive = pathlib.Path(CURRENT_DIR).drive
-
-# load __version__, __author__, __email__, etc variables
-version_file = pkg_resources.resource_filename(__name__,'version_info.py')
-with open(version_file) as f:
-    exec( f.read() )
-
-import pdb; pdb.set_trace()
 
 
 if drive != '':
@@ -44,23 +38,25 @@ else:
     POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base-%s' % __version__,
-                    'imagepypelines/imagepypelines-tools:gpu-%s' % __version__,
-                    ]
-HOSTNAMES = ['imagepypelines','imagepypelines-gpu']
-DOCKERFILES = [pkg_resources.resource_filename(__name__,'dockerfiles/%s.Dockerfile' % i) for i in HOSTNAMES]
+BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
+                'imagepypelines/imagepypelines-tools:gpu']
+TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
+HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
+
 
 def main():
     # parsing command line arguments
-    parser = argparse.ArgumentParser(prog='imagepypelines',
-                                    usage=sys.modules[__name__].__doc__ )
+    parser = argparse.ArgumentParser(prog='imagepypelines', usage=__doc__)
 
     # primary argument
     parser.add_argument('action', help="""
 	shell : to enter the imagepypelines docker container
 	check : to check if all imagepypelines dependencies are installed (disabled)
+    build : build the imagepypelines docker images locally
+    pull  : pull the docker images for this version of imagepypelines_tools
 	"""
                         )
+
     # action == 'shell' | subcommand options
     parser.add_argument('--display',
                         default=':0',
@@ -75,13 +71,17 @@ def main():
                         help='force launching nested containers within containers',
                         action='store_true')
 
+    # action == 'build' | subcommand options
+    parser.add_argument('--no-cache',
+                        help='rebuilds the docker images without a cache',
+                        action='store_true')
 
     args = parser.parse_args()
 
-    image = DEFAULT_IMAGES[args.gpu]
-
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
+        image = TAGS[args.gpu]
+
         if args.gpu:
             command = "nvidia-docker"
 
@@ -93,9 +93,9 @@ def main():
                                       stderr=DEVNULL)
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("error: nvidia-docker must be installed prior ",
-                        "to using the imagepypelines-gpu shell")
+                      "to using the imagepypelines-gpu shell")
                 print("for installation help:",
-                        " https://github.com/NVIDIA/nvidia-docker")
+                      " https://github.com/NVIDIA/nvidia-docker")
                 sys.exit(1)
 
         else:
@@ -111,7 +111,6 @@ def main():
                 print("for installation help: https://docs.docker.com/install/")
                 sys.exit(1)
 
-
         # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
         # launching ip environments inside ip environments. this can be disabled
         # by the user if they wish
@@ -119,20 +118,21 @@ def main():
             if args.nested:
                 should_launch = True
             else:
-                should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in ["YES","1","TRUE","ON"])
+                should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in [
+                                     "YES", "1", "TRUE", "ON"])
 
         else:
             should_launch = True
 
         if should_launch == False:
             print("error: canceling shell launch to avoid nested environments")
-            print("to force nested environments, you can set the environmental"\
-                    + "variable IP_ABORT_NESTED_SHELLS=OFF")
+            print("to force nested environments, you can set the environmental"
+                  + "variable IP_ABORT_NESTED_SHELLS=OFF")
             sys.exit(1)
 
         # Docker commands
         # ---- prep the docker command ----
-        CMD = [command,
+        cmd = [command,
                'run',
                # make interactive
                '-it',
@@ -159,18 +159,18 @@ def main():
         # add default and user-defined volumes to the path
         volumes = DEFAULT_VOLUMES + args.volume
         for path in volumes:
-            CMD.extend(['-v', path])
+            cmd.extend(['-v', path])
 
         # add environmental variable containing all the mounted paths
-        CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
+        cmd.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
 
         # append the image name to the command
-        CMD.append(image)
-        CMD.append("bash")
+        cmd.append(image)
+        cmd.append("bash")
 
         # launch the shell
         print("launching docker image: {}".format(image))
-        subprocess.call(CMD)
+        subprocess.call(cmd)
 
     elif args.action == "check":
         # check to see if all imagepypelines dependencies are installed
@@ -210,9 +210,28 @@ def main():
         # else:  # failure
         #     print("package dependencies not met")
         #     sys.exit(1)
-    elif args.action == "rebuild":
-        import pdb; pdb.set_trace()
+    elif args.action == "build":
+        for tag, base_tag, dockerfile in zip(TAGS, BASE_TAGS, DOCKERFILES):
+            cmd = ['docker',
+                    'build',
+                    '--pull',
+                    '--tag',tag,
+                    '--tag',base_tag,
+                    '-f',dockerfile,
+                    os.path.dirname(dockerfile),
+                    ]
+            if args.no_cache:
+                cmd.append('--no-cache')
+            subprocess.call(cmd)
 
+    elif args.action == "pull":
+        for tag in TAGS:
+            cmd = ['docker',
+                    'pull',
+                    tag
+                    ]
+
+            subprocess.call(cmd)
 
 
 if __name__ == "__main__":
