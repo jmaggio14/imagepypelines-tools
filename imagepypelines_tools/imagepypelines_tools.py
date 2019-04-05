@@ -32,9 +32,10 @@ drive = pathlib.Path(CURRENT_DIR).drive
 
 # load __version__, __author__, __email__, etc variables
 version_file = pkg_resources.resource_filename(__name__,'version_info.py')
-version_info = {}
 with open(version_file) as f:
-    exec(f.read(), {}, version_info)
+    exec( f.read() )
+
+import pdb; pdb.set_trace()
 
 
 if drive != '':
@@ -43,10 +44,11 @@ else:
     POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base',
-                    'imagepypelines/imagepypelines-tools:gpu'
+DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base-%s' % __version__,
+                    'imagepypelines/imagepypelines-tools:gpu-%s' % __version__,
                     ]
 HOSTNAMES = ['imagepypelines','imagepypelines-gpu']
+DOCKERFILES = [pkg_resources.resource_filename(__name__,'dockerfiles/%s.Dockerfile' % i) for i in HOSTNAMES]
 
 def main():
     # parsing command line arguments
@@ -152,7 +154,7 @@ def main():
                # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
                '-e', 'HOST_HOME={0}'.format(HOME),
                '-e', 'force_color_prompt=1',
-               '-e', 'IP_TOOLS_VERSION={}'.format(version_info['__version__']),
+               '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
                ]
         # add default and user-defined volumes to the path
         volumes = DEFAULT_VOLUMES + args.volume
@@ -208,6 +210,9 @@ def main():
         # else:  # failure
         #     print("package dependencies not met")
         #     sys.exit(1)
+    elif args.action == "rebuild":
+        import pdb; pdb.set_trace()
+
 
 
 if __name__ == "__main__":
