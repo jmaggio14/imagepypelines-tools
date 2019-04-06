@@ -2,15 +2,26 @@
 
 
 """
-    CPU-only:
+    Running the imagepypelines shell:
         $ imagepypelines shell
+        (GPU)
+        $ imagepypelines shell --gpu (nvidia-docker required)
+        (additonal volumes)
+        $ imagepypelines shell -v /host/path:/mount/path
+        (force nested containers)
+        $ imagepypelines shell --nest
 
-    GPU mode (*Linux only* requires CUDA and nvidia-docker):
-        $ imagepypelines shell --gpu
+    Rebuilding the imagepypelines docker images for this version
+        $ imagepypelines build
+        (no cache)
+        $ imagepypelines build --no-cache
 
-imagepypelines [-h] [--display DISPLAY] [-v VOLUME]
-                               [--gpu] [--dev]
-                               action
+    Pulling the imagepypelines docker images from dockerhub
+        $ imagepypelines pull
+
+usage: imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
+                      [--no-cache]
+                      action
 
 """
 
@@ -61,17 +72,14 @@ def check_docker(command,ver="--version"):
 
 def main():
     # parsing command line arguments
-    parser = argparse.ArgumentParser(prog='imagepypelines', usage=__doc__)
+    parser = argparse.ArgumentParser(prog='imagepypelines',
+                                        usage=__doc__)
 
     # primary argument
-    parser.add_argument('action', help="""
-	shell : to enter the imagepypelines docker container
-	check : to check if all imagepypelines dependencies are installed (disabled)
-    build : build the imagepypelines docker images locally
-    pull  : pull the docker images for this version of imagepypelines_tools
-	"""
-                        )
+    parser.add_argument('action',
+                    help="the primary action to perform")
 
+    # TO DO - add nested parsers using parser 'parent' argument
     # action == 'shell' | subcommand options
     parser.add_argument('--display',
                         default=':0',
