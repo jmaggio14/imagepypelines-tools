@@ -23,25 +23,40 @@ import sys
 import pathlib
 import sys
 import pkg_resources
-from . import __version__, DOCKERFILES
+from .version_info import __version__
+from . import BUILD_DIR, DOCKERFILES
 
-current_dir = os.path.dirname(__file__)
-
-HOME = os.path.expanduser('~')
-CURRENT_DIR = os.path.abspath(os.getcwd())
-drive = pathlib.Path(CURRENT_DIR).drive
+WORKING_DIR = os.path.abspath( os.getcwd() )
+drive = pathlib.Path(WORKING_DIR).drive
 
 
 if drive != '':
-    POSIX_PATH = CURRENT_DIR.replace(drive, '/root').replace(os.sep, '/')
+    POSIX_PATH = WORKING_DIR.replace(drive, '/root').replace(os.sep, '/')
 else:
-    POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
+    POSIX_PATH = os.path.join('/root', WORKING_DIR).replace(os.sep, '/')
 
-DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
+DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
 BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
                 'imagepypelines/imagepypelines-tools:gpu']
 TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
 HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
+
+
+def check_docker(command,ver="--version"):
+    """runs a system command to check if docker or nvidia docker is
+    installed
+    """
+    try:
+        ret = subprocess.call([command, ver],
+                              stdin=DEVNULL,
+                              stdout=DEVNULL,
+                              stderr=DEVNULL)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("error: %s must be installed prior " % command,
+              "to using the imagepypelines-gpu shell")
+        print("for installation help:",
+              " https://github.com/NVIDIA/nvidia-docker")
+        sys.exit(1)
 
 
 def main():
@@ -83,33 +98,13 @@ def main():
         image = TAGS[args.gpu]
 
         if args.gpu:
-            command = "nvidia-docker"
-
             # check if nvidia-docker is installed if we are launching GPU image
-            try:
-                ret = subprocess.call([command, 'version'],
-                                      stdin=DEVNULL,
-                                      stdout=DEVNULL,
-                                      stderr=DEVNULL)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                print("error: nvidia-docker must be installed prior ",
-                      "to using the imagepypelines-gpu shell")
-                print("for installation help:",
-                      " https://github.com/NVIDIA/nvidia-docker")
-                sys.exit(1)
-
+            command, ver = "nvidia-docker", "version"
+            check_docker(command,ver)
         else:
-            command = "docker"
             # check if docker is installed if we are running a cpu image
-            try:
-                ret = subprocess.call([command, '--version'],
-                                      stdin=DEVNULL,
-                                      stdout=DEVNULL,
-                                      stderr=DEVNULL)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                print("error: docker must be installed prior to using the imagepypelines shell")
-                print("for installation help: https://docs.docker.com/install/")
-                sys.exit(1)
+            command, ver = "docker","--version"
+            check_docker(command,ver)
 
         # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
         # launching ip environments inside ip environments. this can be disabled
@@ -152,7 +147,6 @@ def main():
                '-e', 'DISPLAY={0}'.format(args.display),
                '-e', 'QT_X11_NO_MITSHM=1',
                # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
-               '-e', 'HOST_HOME={0}'.format(HOME),
                '-e', 'force_color_prompt=1',
                '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
                ]
@@ -211,6 +205,12 @@ def main():
         #     print("package dependencies not met")
         #     sys.exit(1)
     elif args.action == "build":
+        # check if docker is installed
+        if args.gpu:
+            check_docker('nvidia-docker','version')
+        else:
+            check_docker('docker','--version')
+
         for tag, base_tag, dockerfile in zip(TAGS, BASE_TAGS, DOCKERFILES):
             cmd = ['docker',
                     'build',
@@ -218,13 +218,20 @@ def main():
                     '--tag',tag,
                     '--tag',base_tag,
                     '-f',dockerfile,
-                    os.path.dirname(dockerfile),
+                    BUILD_DIR,
                     ]
             if args.no_cache:
                 cmd.append('--no-cache')
             subprocess.call(cmd)
 
     elif args.action == "pull":
+        # check if docker is installed
+        if args.gpu:
+            check_docker('nvidia-docker','version')
+        else:
+            check_docker('docker','--version')
+
+
         for tag in TAGS:
             cmd = ['docker',
                     'pull',
