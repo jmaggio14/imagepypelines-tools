@@ -19,9 +19,10 @@
     Pulling the imagepypelines docker images from dockerhub
         $ imagepypelines pull
 
-usage: imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
+imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
                       [--no-cache]
-                      action
+                      {shell,push,pull,check}
+
 
 """
 
@@ -77,8 +78,14 @@ def main():
 
     # primary argument
     parser.add_argument('action',
-                        required=True,
-                        help="the primary action to perform")
+                        help="the primary action to perform",
+                        # define acceptable commands
+                        choices=["shell",
+                                    "push",
+                                    "pull",
+                                    "check",
+                                    ]
+                        )
 
     # TO DO - add nested parsers using parser 'parent' argument
     # action == 'shell' | subcommand options
