@@ -77,7 +77,8 @@ def main():
 
     # primary argument
     parser.add_argument('action',
-                    help="the primary action to perform")
+                        required=True,
+                        help="the primary action to perform")
 
     # TO DO - add nested parsers using parser 'parent' argument
     # action == 'shell' | subcommand options
@@ -214,17 +215,13 @@ def main():
         #     sys.exit(1)
     elif args.action == "build":
         # check if docker is installed
-        if args.gpu:
-            check_docker('nvidia-docker','version')
-        else:
-            check_docker('docker','--version')
+        check_docker('docker','--version')
 
-        for tag, base_tag, dockerfile in zip(TAGS, BASE_TAGS, DOCKERFILES):
+        for tag, dockerfile in zip(TAGS, DOCKERFILES):
             cmd = ['docker',
                     'build',
                     '--pull',
                     '--tag',tag,
-                    '--tag',base_tag,
                     '-f',dockerfile,
                     BUILD_DIR,
                     ]
@@ -234,12 +231,7 @@ def main():
 
     elif args.action == "pull":
         # check if docker is installed
-        if args.gpu:
-            check_docker('nvidia-docker','version')
-        else:
-            check_docker('docker','--version')
-
-
+        check_docker('docker','--version')
         for tag in TAGS:
             cmd = ['docker',
                     'pull',
@@ -248,6 +240,14 @@ def main():
 
             subprocess.call(cmd)
 
+
+    elif args.action == "push":
+        print("Warning: \"push\" is only for imagepypelines developers")
+        # check if docker is installed
+        check_docker('docker','--version')
+
+        cmd = ["docker","push"] + TAGS
+        subprocess.call(cmd)
 
 if __name__ == "__main__":
     main()
