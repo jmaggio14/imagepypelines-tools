@@ -51,6 +51,7 @@ DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
 BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
                 'imagepypelines/imagepypelines-tools:gpu']
 TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
+UPDATE_TAGS = ["latest","latest-gpu"]
 HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
 
 
@@ -224,11 +225,12 @@ def main():
         # check if docker is installed
         check_docker('docker','--version')
 
-        for tag, dockerfile in zip(TAGS, DOCKERFILES):
+        for tag, up_tag, dockerfile in zip(TAGS, UPDATE_TAGS, DOCKERFILES):
             cmd = ['docker',
                     'build',
                     '--pull',
                     '--tag',tag,
+                    '--tag',up_tag,
                     '-f',dockerfile,
                     BUILD_DIR,
                     ]
@@ -252,9 +254,9 @@ def main():
         print("Warning: \"push\" is only for imagepypelines developers")
         # check if docker is installed
         check_docker('docker','--version')
-
-        cmd = ["docker","push"] + TAGS
-        subprocess.call(cmd)
+        for tag in TAGS:
+            cmd = ["docker", "push", tag]
+            subprocess.call(cmd)
 
 if __name__ == "__main__":
     main()
