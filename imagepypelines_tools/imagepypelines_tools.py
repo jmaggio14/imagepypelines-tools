@@ -2,15 +2,27 @@
 
 
 """
-    CPU-only:
+    Running the imagepypelines shell:
         $ imagepypelines shell
+        (GPU)
+        $ imagepypelines shell --gpu (nvidia-docker required)
+        (additonal volumes)
+        $ imagepypelines shell -v /host/path:/mount/path
+        (force nested containers)
+        $ imagepypelines shell --nest
 
-    GPU mode (*Linux only* requires CUDA and nvidia-docker):
-        $ imagepypelines shell --gpu
+    Rebuilding the imagepypelines docker images for this version
+        $ imagepypelines build
+        (no cache)
+        $ imagepypelines build --no-cache
 
-imagepypelines [-h] [--display DISPLAY] [-v VOLUME]
-                               [--gpu] [--dev]
-                               action
+    Pulling the imagepypelines docker images from dockerhub
+        $ imagepypelines pull
+
+imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
+                      [--no-cache]
+                      {shell,push,pull,check}
+
 
 """
 
@@ -23,42 +35,64 @@ import sys
 import pathlib
 import sys
 import pkg_resources
+import urllib.request
 
-current_dir = os.path.dirname(__file__)
+from .version_info import __version__
+from . import BUILD_DIR, DOCKERFILES
 
-HOME = os.path.expanduser('~')
-CURRENT_DIR = os.path.abspath(os.getcwd())
-drive = pathlib.Path(CURRENT_DIR).drive
-
-# load __version__, __author__, __email__, etc variables
-version_file = pkg_resources.resource_filename(__name__,'version_info.py')
-version_info = {}
-with open(version_file) as f:
-    exec(f.read(), {}, version_info)
+WORKING_DIR = os.path.abspath( os.getcwd() )
+drive = pathlib.Path(WORKING_DIR).drive
 
 
 if drive != '':
-    POSIX_PATH = CURRENT_DIR.replace(drive, '/root').replace(os.sep, '/')
+    POSIX_PATH = WORKING_DIR.replace(drive, '/root').replace(os.sep, '/')
 else:
-    POSIX_PATH = os.path.join('/root', CURRENT_DIR).replace(os.sep, '/')
+    POSIX_PATH = os.path.join('/root', WORKING_DIR).replace(os.sep, '/')
 
-DEFAULT_VOLUMES = ['{0}:{1}'.format(CURRENT_DIR, POSIX_PATH)]
-DEFAULT_IMAGES = ['imagepypelines/imagepypelines-tools:base',
-                    'imagepypelines/imagepypelines-tools:gpu'
-                    ]
-HOSTNAMES = ['imagepypelines','imagepypelines-gpu']
+DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
+BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
+                'imagepypelines/imagepypelines-tools:gpu']
+TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
+UPDATE_TAGS = ["imagepypelines/imagepypelines-tools:latest",
+                "imagepypelines/imagepypelines-tools:latest-gpu"]
+HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
+REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/imagepypelines-tools/tags"
+
+def check_docker(command,ver="--version"):
+    """runs a system command to check if docker or nvidia docker is
+    installed
+    """
+    try:
+        ret = subprocess.call([command, ver],
+                              stdin=DEVNULL,
+                              stdout=DEVNULL,
+                              stderr=DEVNULL)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("error: %s must be installed prior " % command,
+              "to using the imagepypelines-gpu shell")
+        print("for installation help:",
+              " https://github.com/NVIDIA/nvidia-docker")
+        sys.exit(1)
+
 
 def main():
     # parsing command line arguments
     parser = argparse.ArgumentParser(prog='imagepypelines',
-                                    usage=sys.modules[__name__].__doc__ )
+                                        usage=__doc__)
 
     # primary argument
-    parser.add_argument('action', help="""
-	shell : to enter the imagepypelines docker container
-	check : to check if all imagepypelines dependencies are installed (disabled)
-	"""
+    parser.add_argument('action',
+                        help="the primary action to perform",
+                        # define acceptable commands
+                        choices=["shell",
+                                    "push",
+                                    "pull",
+                                    "build",
+                                    "check",
+                                    ]
                         )
+
+    # TO DO - add nested parsers using parser 'parent' argument
     # action == 'shell' | subcommand options
     parser.add_argument('--display',
                         default=':0',
@@ -73,42 +107,25 @@ def main():
                         help='force launching nested containers within containers',
                         action='store_true')
 
+    # action == 'build' | subcommand options
+    parser.add_argument('--no-cache',
+                        help='rebuilds the docker images without a cache',
+                        action='store_true')
 
     args = parser.parse_args()
 
-    image = DEFAULT_IMAGES[args.gpu]
-
     # SHELL action --> launch docker container for running imagepypelines apps
     if args.action == "shell":
+        image = TAGS[args.gpu]
+
         if args.gpu:
-            command = "nvidia-docker"
-
             # check if nvidia-docker is installed if we are launching GPU image
-            try:
-                ret = subprocess.call([command, 'version'],
-                                      stdin=DEVNULL,
-                                      stdout=DEVNULL,
-                                      stderr=DEVNULL)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                print("error: nvidia-docker must be installed prior ",
-                        "to using the imagepypelines-gpu shell")
-                print("for installation help:",
-                        " https://github.com/NVIDIA/nvidia-docker")
-                sys.exit(1)
-
+            command, ver = "nvidia-docker", "version"
+            check_docker(command,ver)
         else:
-            command = "docker"
             # check if docker is installed if we are running a cpu image
-            try:
-                ret = subprocess.call([command, '--version'],
-                                      stdin=DEVNULL,
-                                      stdout=DEVNULL,
-                                      stderr=DEVNULL)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                print("error: docker must be installed prior to using the imagepypelines shell")
-                print("for installation help: https://docs.docker.com/install/")
-                sys.exit(1)
-
+            command, ver = "docker","--version"
+            check_docker(command,ver)
 
         # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
         # launching ip environments inside ip environments. this can be disabled
@@ -117,20 +134,21 @@ def main():
             if args.nested:
                 should_launch = True
             else:
-                should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in ["YES","1","TRUE","ON"])
+                should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in [
+                                     "YES", "1", "TRUE", "ON"])
 
         else:
             should_launch = True
 
         if should_launch == False:
             print("error: canceling shell launch to avoid nested environments")
-            print("to force nested environments, you can set the environmental"\
-                    + "variable IP_ABORT_NESTED_SHELLS=OFF")
+            print("to force nested environments, you can set the environmental"
+                  + "variable IP_ABORT_NESTED_SHELLS=OFF")
             sys.exit(1)
 
         # Docker commands
         # ---- prep the docker command ----
-        CMD = [command,
+        cmd = [command,
                'run',
                # make interactive
                '-it',
@@ -150,25 +168,24 @@ def main():
                '-e', 'DISPLAY={0}'.format(args.display),
                '-e', 'QT_X11_NO_MITSHM=1',
                # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
-               '-e', 'HOST_HOME={0}'.format(HOME),
                '-e', 'force_color_prompt=1',
-               '-e', 'IP_TOOLS_VERSION={}'.format(version_info['__version__']),
+               '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
                ]
         # add default and user-defined volumes to the path
         volumes = DEFAULT_VOLUMES + args.volume
         for path in volumes:
-            CMD.extend(['-v', path])
+            cmd.extend(['-v', path])
 
         # add environmental variable containing all the mounted paths
-        CMD.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
+        cmd.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
 
         # append the image name to the command
-        CMD.append(image)
-        CMD.append("bash")
+        cmd.append(image)
+        cmd.append("bash")
 
         # launch the shell
         print("launching docker image: {}".format(image))
-        subprocess.call(CMD)
+        subprocess.call(cmd)
 
     elif args.action == "check":
         # check to see if all imagepypelines dependencies are installed
@@ -208,7 +225,57 @@ def main():
         # else:  # failure
         #     print("package dependencies not met")
         #     sys.exit(1)
+    elif args.action == "build":
+        # check if docker is installed
+        check_docker('docker','--version')
 
+        for tag, up_tag, dockerfile in zip(TAGS, UPDATE_TAGS, DOCKERFILES):
+            cmd = ['docker',
+                    'build',
+                    '--pull',
+                    '--tag',tag,
+                    '--tag',up_tag,
+                    '-f',dockerfile,
+                    BUILD_DIR,
+                    ]
+            if args.no_cache:
+                cmd.append('--no-cache')
+            subprocess.call(cmd)
+
+    elif args.action == "pull":
+        # check if docker is installed
+        check_docker('docker','--version')
+        for tag in TAGS:
+            cmd = ['docker',
+                    'pull',
+                    tag
+                    ]
+
+            subprocess.call(cmd)
+
+
+    elif args.action == "push":
+        print("Warning: \"push\" is only for imagepypelines developers")
+        print("Warning: You must be manually logged into docker for this to complete successfully")
+        # check if docker is installed
+        check_docker('docker','--version')
+
+        # check if the tags we are pushing already exist on the repo
+        # this is a little non-intuitive, but basically this fetches
+        # a json string that convienently can be evaled into a python list
+        # that contains all the tags we have on our repo
+        response = urllib.request.urlopen(REGISTRY_URL).read().decode('utf-8')
+        remote_tags = [tag['name'] for tag in eval(response,{},{})]
+        local_tags = [t.split(':')[1] for t in TAGS]
+
+        # loop through all tags
+        for full_tag, local in zip(TAGS, local_tags):
+            # if this tags exists remotely, then we abort the push
+            if local in remote_tags:
+                print("error: {} exists remotely, skipping push!".format(local))
+            else:
+                print("attempting to push image {}".format(full_tag))
+                subprocess.call(["docker", "push", full_tag])
 
 if __name__ == "__main__":
     main()

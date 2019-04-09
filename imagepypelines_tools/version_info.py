@@ -5,28 +5,28 @@
 #
 # Copyright (c) 2018 Jeff Maggio, Nathan Dileas, Ryan Hartzell
 __all__ = [
-        '__name__'
-        '__version__'
-        '__description__'
-        '__author__'
-        '__email__'
-        '__license__'
-        '__url__'
-        '__download_url__'
-        '__maintainer__'
-        '__maintainer_email__'
-        '__keywords__'
-        '__python_requires__'
-        '__platforms__'
-        '__classifiers__'
-        '__credits__'
-        '__status__'
-        '__copyright__'
+        '__name__',
+        '__version__',
+        '__description__',
+        '__author__',
+        '__email__',
+        '__license__',
+        '__url__',
+        '__download_url__',
+        '__maintainer__',
+        '__maintainer_email__',
+        '__keywords__',
+        '__python_requires__',
+        '__platforms__',
+        '__classifiers__',
+        '__credits__',
+        '__status__',
+        '__copyright__',
             ]
 
 
 __name__ = 'imagepypelines-tools'
-__version__ = '0.3.3-alpha'
+__version__ = '0.4.0-alpha'
 __description__ = 'accessory library to augment the image processing library imagepypelines'
 __author__ = 'Jeff Maggio, Nathan Dileas, Ryan Hartzell'
 __email__ = "jmaggio14@gmail.com"
