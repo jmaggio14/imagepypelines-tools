@@ -1,3 +1,16 @@
+"""
+This file is intended to be used an entry point to a simple imagepypelines
+monitoring program similar to tensorboard. Pipelines will send json-encoded
+updates to a Flask server spun up in this file
+
+This file simply updates a set of bootstrap progress bars representing
+each pipeline.
+
+It is untested
+- Jeff
+"""
+
+
 from flask import Flask
 import json
 app = Flask(__name__)
@@ -33,7 +46,7 @@ BAR_TEMPLATE = \
 """
 # keys: pipeline_name, progress, label
 
-@app.route('/',methods=["POST"])
+@app.route('/', methods=["POST"])
 def update_pipeline():
     """
     request.data -->
@@ -41,6 +54,7 @@ def update_pipeline():
 
         {
         "pipeline1":{
+                    'status': <'processing', 'training', or 'inactive'>
                     'current_block_name':<current_block_name>
                     'current_block_index':<current_block_index>
                     'num_blocks':<num_blocks>
@@ -52,6 +66,7 @@ def update_pipeline():
                     'training_time':<training_time>,
                     }
         "pipeline2":{
+                    'status': <'processing', 'training', or 'inactive'>
                     'current_block_name':<current_block_name>
                     'current_block_index':<current_block_index>
                     'num_blocks':<num_blocks>
