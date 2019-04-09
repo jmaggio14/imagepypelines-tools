@@ -53,7 +53,8 @@ DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
 BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
                 'imagepypelines/imagepypelines-tools:gpu']
 TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
-UPDATE_TAGS = ["latest","latest-gpu"]
+UPDATE_TAGS = ["imagepypelines/imagepypelines-tools:latest",
+                "imagepypelines/imagepypelines-tools:latest-gpu"]
 HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
 REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/imagepypelines-tools/tags"
 
