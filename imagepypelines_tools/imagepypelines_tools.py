@@ -256,6 +256,7 @@ def main():
 
     elif args.action == "push":
         print("Warning: \"push\" is only for imagepypelines developers")
+        print("Warning: You must be manually logged into docker for this to complete successfully")
         # check if docker is installed
         check_docker('docker','--version')
 
@@ -267,16 +268,13 @@ def main():
         remote_tags = [tag['name'] for tag in eval(response,{},{})]
         local_tags = [t.split(':')[1] for t in TAGS]
 
-        # if the tags exist, prompt docker login
-        print("if prompted, please input your dockerhub username and password")
-        subprocess.call("docker","login")
-
         # loop through all tags
         for full_tag, local in zip(TAGS, local_tags):
             # if this tags exists remotely, then we abort the push
             if local in remote_tags:
-                print("error: {} exists remotely, skipping push!")
+                print("error: {} exists remotely, skipping push!".format(local))
             else:
+                print("attempting to push image {}".format(full_tag))
                 subprocess.call(["docker", "push", full_tag])
 
 if __name__ == "__main__":
