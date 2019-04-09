@@ -245,7 +245,7 @@ def main():
     elif args.action == "pull":
         # check if docker is installed
         check_docker('docker','--version')
-        for tag in TAGS:
+        for tag in TAGS+UPDATE_TAGS:
             cmd = ['docker',
                     'pull',
                     tag
@@ -269,13 +269,14 @@ def main():
         local_tags = [t.split(':')[1] for t in TAGS]
 
         # loop through all tags
-        for full_tag, local in zip(TAGS, local_tags):
+        for full_tag, up_tag, local in zip(TAGS, UPDATE_TAGS, local_tags):
             # if this tags exists remotely, then we abort the push
             if local in remote_tags:
                 print("error: {} exists remotely, skipping push!".format(local))
             else:
-                print("attempting to push image {}".format(full_tag))
+                print("attempting to push images {} & {}".format(full_tag, up_tag))
                 subprocess.call(["docker", "push", full_tag])
+                subprocess.call(["docker", "push", up_tag])
 
 if __name__ == "__main__":
     main()
