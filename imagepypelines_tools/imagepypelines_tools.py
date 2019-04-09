@@ -35,6 +35,8 @@ import sys
 import pathlib
 import sys
 import pkg_resources
+import urllib.request
+
 from .version_info import __version__
 from . import BUILD_DIR, DOCKERFILES
 
@@ -53,7 +55,7 @@ BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
 TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
 UPDATE_TAGS = ["latest","latest-gpu"]
 HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
-
+REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/imagepypelines-tools/tags"
 
 def check_docker(command,ver="--version"):
     """runs a system command to check if docker or nvidia docker is
@@ -84,6 +86,7 @@ def main():
                         choices=["shell",
                                     "push",
                                     "pull",
+                                    "build",
                                     "check",
                                     ]
                         )
@@ -254,9 +257,26 @@ def main():
         print("Warning: \"push\" is only for imagepypelines developers")
         # check if docker is installed
         check_docker('docker','--version')
-        for tag in TAGS:
-            cmd = ["docker", "push", tag]
-            subprocess.call(cmd)
+
+        # check if the tags we are pushing already exist on the repo
+        # this is a little non-intuitive, but basically this fetches
+        # a json string that convienently can be evaled into a python list
+        # that contains all the tags we have on our repo
+        response = urllib.request.urlopen(REGISTRY_URL).read().decode('utf-8')
+        remote_tags = [tag['name'] for tag in eval(response,{},{})]
+        local_tags = [t.split(':')[1] for t in TAGS]
+
+        # if the tags exist, prompt docker login
+        print("if prompted, please input your dockerhub username and password")
+        subprocess.call("docker","login")
+
+        # loop through all tags
+        for full_tag, local in zip(TAGS, local_tags):
+            # if this tags exists remotely, then we abort the push
+            if local in remote_tags:
+                print("error: {} exists remotely, skipping push!")
+            else:
+                subprocess.call(["docker", "push", full_tag])
 
 if __name__ == "__main__":
     main()
