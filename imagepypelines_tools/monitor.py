@@ -11,7 +11,7 @@ It is untested
 """
 
 
-from flask import Flask
+from flask import Flask, request
 import json
 app = Flask(__name__)
 
@@ -28,7 +28,7 @@ MONITOR = \
     <title>ImagePypelines Monitor</title>
 
     <!-- THEMES -->
-    <link href="css/simplex.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
   {bars}
@@ -46,7 +46,7 @@ BAR_TEMPLATE = \
 """
 # keys: pipeline_name, progress, label
 
-@app.route('/', methods=["POST"])
+@app.route('/', methods=["POST", "GET"])
 def update_pipeline():
     """
     request.data -->
@@ -79,13 +79,15 @@ def update_pipeline():
                     }
         }
     """
-    updates = json.loads(request.data)
+    updates = request.get_json(force=True)
+    print(updates)
+
     bars_string = ""
     for pipeline in sorted( updates.keys() ):
         progress = updates[pipeline]['current_block_index'] / updates[pipeline]['num_blocks'] * 100
         bars_string += BAR_TEMPLATE.format(pipeline=pipeline,
                                             progress = progress,
-                                            val = str( round(progress,0) ) + r'%'
+                                            label = str( round(progress,0) ) + r'%'
                                             )
 
     return MONITOR.format(bars=bars_string)
@@ -94,4 +96,4 @@ def update_pipeline():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
