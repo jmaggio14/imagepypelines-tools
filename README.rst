@@ -41,12 +41,12 @@ Standard
 
 .. code-block:: console
 
-    pip install imagepypelines
+    pip install imagepypelines-tools
     imagepypelines shell
 
 GPU Accelerated (limited to Linux hosts with Nvidia-Docker)
 
 .. code-block:: console
 
-    pip install imagepypelines
+    pip install imagepypelines-tools
     imagepypelines shell --gpu
