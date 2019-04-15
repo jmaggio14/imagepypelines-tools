@@ -106,6 +106,9 @@ def main():
     parser.add_argument('--nest',
                         help='force launching nested containers within containers',
                         action='store_true')
+    parser.add_argument('--supress-welcome',
+                        help='supress the welcome message',
+                        action='store_true')
 
     # action == 'build' | subcommand options
     parser.add_argument('--no-cache',
@@ -170,6 +173,7 @@ def main():
                # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
                '-e', 'force_color_prompt=1',
                '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
+               '-e', 'IP_SUPRESS_WELCOME={}'.format('ON' if args.supress_welcome else 'OFF'),
                ]
         # add default and user-defined volumes to the path
         volumes = DEFAULT_VOLUMES + args.volume
