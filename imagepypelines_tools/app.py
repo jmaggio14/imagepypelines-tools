@@ -13,15 +13,26 @@ Things I'm going to do here:
 
 from flask import Flask, flash, redirect, render_template, request, session, abort
 
+from flask_socketio import SocketIO, emit
+
 import os
 
 app = Flask(__name__, template_folder='site', static_folder='site')
 app.debug = True
+
+socketio = SocketIO(app)
+
 # print(app.root_path)
 
 @app.route("/")
 def welcome():
-    return render_template("templates/index.html")
+    return render_template("templates/sampleapplet.html")
+
+@socketio.on('enter prog bar width')
+def progress(data):
+    print("Here's our width:   ", data['width'])
+    msg = {'width': data['width']}
+    emit('return prog bar width', msg)
 
 if __name__ == '__main__':
-    app.run(host='localhost',port=5000)
+    socketio.run(app, host='localhost',port=5000)
