@@ -50,7 +50,7 @@ else:
     POSIX_PATH = os.path.join('/root', WORKING_DIR).replace(os.sep, '/')
 
 
-APP = pkg_resources.resource_filename(__name__, "app.py")
+FLASK_APP = pkg_resources.resource_filename(__name__, "app.py")
 
 DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
 BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
@@ -286,13 +286,7 @@ def main():
                 subprocess.call(["docker", "push", full_tag])
 
     elif args.action == "monitor":
-        subprocess.call([sys.executable, os.path.join(APP)])
-
-
-    """
-    *within a shell*
-    imagepypelines <action>
-    """
+        subprocess.call([sys.executable, FLASK_APP])
 
 if __name__ == "__main__":
     main()
