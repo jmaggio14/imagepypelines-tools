@@ -26,7 +26,7 @@ __all__ = [
 
 
 __name__ = 'imagepypelines-tools'
-__version__ = '0.5.0-alpha'
+__version__ = '0.6.0-alpha'
 __description__ = 'accessory library to augment the image processing library imagepypelines'
 __author__ = 'Jeff Maggio, Nathan Dileas, Ryan Hartzell'
 __email__ = "jmaggio14@gmail.com"
@@ -36,7 +36,7 @@ __download_url__ = 'https://github.com/jmaggio14/imagepypelines-tools'
 __maintainer__ = "Jeff Maggio"
 __maintainer_email__ = "jmaggio14@gmail.com"
 __keywords__ = 'imaging-science machine-learning computer-vision data-pipelines docker'
-__python_requires__ = '>=3.4.*,!=3.7.*'
+__python_requires__ = '>=3.5.*'
 __platforms__ = ["Windows", "Linux", "Mac OS-X", "Unix"]
 __classifiers__ = [
     'Development Status :: 3 - Alpha',
