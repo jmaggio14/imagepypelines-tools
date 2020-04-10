@@ -22,6 +22,10 @@ app.debug = True
 
 socketio = SocketIO(app)
 
+#
+default_cache_dir = os.path.join(os.path.expanduser('~'),'.imagepypelines')
+cache_exists = os.path.exists(default_cache_dir)
+
 # print(app.root_path)
 
 @app.route("/")
