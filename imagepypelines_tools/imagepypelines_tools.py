@@ -88,7 +88,8 @@ def main():
                                     "push",
                                     "pull",
                                     "build",
-                                    "check",
+                                    "list-plugins",
+
                                     ]
                         )
 
@@ -187,44 +188,6 @@ def main():
         print("launching docker image: {}".format(image))
         subprocess.call(cmd)
 
-    elif args.action == "check":
-        # check to see if all imagepypelines dependencies are installed
-        print("this feature is temporarily disabled")
-        # requirements = {'setuptools': '39.0.0',
-        #                 'PIL': '4.0',
-        #                 'colorama': '0.4.0',
-        #                 'keras': '2.2.4',
-        #                 'numpy': '1.14',
-        #                 'sklearn': '0.20.0',
-        #                 'scipy': '1.1.0',
-        #                 'termcolor': '1.0',
-        #                 'tensorflow': '1.12.0',
-        #                 'cv2': '3.4.0',
-        #                 }
-        # bad_packages = set()
-        #
-        # for req, version in requirements.items():
-        #     # see if package is importable
-        #     try:
-        #         package = importlib.import_module(req)
-        #
-        #     except ImportError:
-        #         print("unable to import {}".format(req))
-        #         bad_packages.add(req)
-        #
-        #     # check version of package
-        #     if version > package.__version__:
-        #         print("({}) requires version {}, but you have {}".format(
-        #             req, version, package.__version__))
-        #         bad_packages.add(req)
-        #
-        #     # print success of failure
-        # if len(bad_packages) == 0:  # success
-        #     print("all package dependencies are met")
-        #     sys.exit(0)
-        # else:  # failure
-        #     print("package dependencies not met")
-        #     sys.exit(1)
     elif args.action == "build":
         # check if docker is installed
         check_docker('docker','--version')
@@ -241,7 +204,6 @@ def main():
             if args.no_cache:
                 cmd.append('--no-cache')
             subprocess.call(cmd)
-
     elif args.action == "pull":
         # check if docker is installed
         check_docker('docker','--version')
@@ -252,8 +214,6 @@ def main():
                     ]
 
             subprocess.call(cmd)
-
-
     elif args.action == "push":
         print("Warning: \"push\" is only for imagepypelines developers")
         print("Warning: You must be manually logged into docker for this to complete successfully")
@@ -277,6 +237,10 @@ def main():
                 print("attempting to push images {} & {}".format(full_tag, up_tag))
                 subprocess.call(["docker", "push", full_tag])
                 subprocess.call(["docker", "push", up_tag])
+    elif args.action == "list-plugins":
+        for entry_point in pkg_resources.iter_entry_points('imagepypelines.plugins'):
+            print(entry_point.dist)
+
 
 if __name__ == "__main__":
     main()
