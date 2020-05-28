@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Monitor</title>
+
+    <!-- THEMES -->
+    <!-- cdns -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trianglify/2.0.0/trianglify.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <!-- D3 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <!-- D3 DAG Graphing - erikbrinkman -->
+    <script src="https://unpkg.com/d3-dag@0.2.3"></script>
+</head>
+<body>
+
+  <!-- Add a svg area, empty -->
+  <svg id="graph" height=200 width=450></svg>
+
+</body>
+
+<script>
+
+    const width = 450;
+    const height = 200;
+    // Select the svg area
+    var svgSelection = d3.select("#graph")
+
+    // read in data
+    const data_json = d3.json(`https://raw.githubusercontent.com/erikbrinkman/d3-dag/master/examples/zherebko.json`, function(data) {
+    console.log(data);
+    });
+    // build the DiGraph
+    dag = d3.dagConnect().linkData(data_json);
+
+    // layering
+    var layering = d3.layeringCoffmanGraham();
+    // optimal crossing thing
+    var decrosser = d3.decrossOpt();
+    // coordinate calculate
+    var coords = d3.coordTopological();
+
+    // layout = d3.sugiyama(dag)
+    //     .size([width, height])
+    //     .layering(layering)
+    //     .decross(decrosser)
+    //     .coord(coords);
+
+    // layout(dag);
+
+    // This code only handles rendering
+    const nodeRadius = 20;
+    // const svgNode = svg`<svg width=${width} height=${height} viewbox="${-nodeRadius} ${-nodeRadius} ${width + 2 * nodeRadius} ${height + 2 * nodeRadius}"></svg>`
+
+    // const svgSelection = d3.select(svgNode);
+    const defs = svgSelection.append('defs'); // For gradients
+
+    const steps = dag.size();
+    const interp = d3.interpolateRainbow;
+    const colorMap = {};
+    dag.each((node, i) => {
+      colorMap[node.id] = interp(i / steps);
+    });
+
+    // How to draw edges
+    const line = d3.line()
+      .curve(d3.curveCatmullRom)
+      .x(d => d.x)
+      .y(d => d.y);
+
+    // Plot edges
+    svgSelection.append('g')
+      .selectAll('path')
+      .data(dag.links())
+      .enter()
+      .append('path')
+      .attr('d', ({ data }) => line(data.points))
+      .attr('fill', 'none')
+      .attr('stroke-width', 3)
+      .attr('stroke', ({source, target}) => {
+        const gradId = `${source.id}-${target.id}`;
+        const grad = defs.append('linearGradient')
+          .attr('id', gradId)
+          .attr('gradientUnits', 'userSpaceOnUse')
+          .attr('x1', source.x)
+          .attr('x2', target.x)
+          .attr('y1', source.y)
+          .attr('y2', target.y);
+        grad.append('stop').attr('offset', '0%').attr('stop-color', colorMap[source.id]);
+        grad.append('stop').attr('offset', '100%').attr('stop-color', colorMap[target.id]);
+        return `url(#${gradId})`;
+      });
+
+    // Select nodes
+    const nodes = svgSelection.append('g')
+      .selectAll('g')
+      .data(dag.descendants())
+      .enter()
+      .append('g')
+      .attr('transform', ({x, y}) => `translate(${x}, ${y})`);
+
+    // Plot node circles
+    nodes.append('circle')
+      .attr('r', 20)
+      .attr('fill', n => colorMap[n.id]);
+
+    // Add text to nodes
+    nodes.append('text')
+      .text(d => d.id)
+      .attr('font-weight', 'bold')
+      .attr('font-family', 'sans-serif')
+      .attr('text-anchor', 'middle')
+      .attr('alignment-baseline', 'middle')
+      .attr('fill', 'white');
+
+
+
+</script>
+<!-- <script src='graph.js'></script> -->
+
+</html>
