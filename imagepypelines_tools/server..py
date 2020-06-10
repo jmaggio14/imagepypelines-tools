@@ -35,7 +35,6 @@ def progress(data):
     emit('return prog bar width', msg)
 
 
-def make_graph_js
 
 if __name__ == '__main__':
     socketio.run(app, host='localhost',port=5000)
