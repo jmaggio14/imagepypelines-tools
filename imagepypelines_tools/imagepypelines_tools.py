@@ -92,7 +92,7 @@ def main():
                                     "pull",
                                     "build",
                                     "check",
-                                    "monitor",
+                                    "dashboard",
                                     ]
                         )
 
@@ -285,7 +285,7 @@ def main():
                 print("attempting to push image {}".format(full_tag))
                 subprocess.call(["docker", "push", full_tag])
 
-    elif args.action == "monitor":
+    elif args.action == "dashboard":
         subprocess.call([sys.executable, FLASK_APP])
 
 if __name__ == "__main__":

@@ -12,21 +12,17 @@ Things I'm going to do here:
 """
 
 from flask import Flask, flash, redirect, render_template, request, session, abort
-
 from flask_socketio import SocketIO, emit
-
 import os
+import networkx as nx
 
 app = Flask(__name__, template_folder='site', static_folder='site')
 app.debug = True
-
 socketio = SocketIO(app)
 
-#
-default_cache_dir = os.path.join(os.path.expanduser('~'),'.imagepypelines')
-cache_exists = os.path.exists(default_cache_dir)
+# cache_exists = os.path.exists(default_cache_dir)
+# default_cache_dir = os.path.join(os.path.expanduser('~'),'.imagepypelines')
 
-# print(app.root_path)
 
 @app.route("/")
 def welcome():
@@ -37,6 +33,9 @@ def progress(data):
     print("Here's our width:   ", data['width'])
     msg = {'width': data['width']}
     emit('return prog bar width', msg)
+
+
+def make_graph_js
 
 if __name__ == '__main__':
     socketio.run(app, host='localhost',port=5000)
