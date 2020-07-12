@@ -38,11 +38,27 @@ def welcome():
 ################################################################################
 # Client generated event processors
 ################################################################################
-@socketio.on('enter prog bar width')
-def progress(data):
-    print("Here's our width:   ", data['width'])
-    msg = {'width': data['width']}
-    emit('return prog bar width', msg)
+def run_pipeline(data):
+
+    return 0
+
+def send_to_chatroom(data):
+
+    # Not going to use websockets here most likely... Do I need TCP???
+    pass
+
+@socketio.on('run-start')
+def run(data):
+    print(f"Running pipeline ID {data['PID']} of session ID {data['SID']}...")
+    msg = {'status': run_pipeline(data)}
+    emit('run-finish', msg)
+
+# For now, if anything changes at all for the task graph or blocks, send a full
+#    update to the pipeline so everything is guaranteed to be in sync
+@socketio.on('graph-change')
+def edit(data):
+    print(f"Editing graph for pipeline ID {data['PID']} of session ID {data['SID']}")
+    send_to_chatroom(data)
 
 ################################################################################
 # Chatroom / Session / Pipeline generated event processors
