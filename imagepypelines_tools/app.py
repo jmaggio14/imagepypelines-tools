@@ -15,18 +15,18 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_socketio import SocketIO, emit
 import os
 
+from Chatroom import Chatroom
+
 # CHATROOM_ACTIVE = False
 
 app = Flask(__name__)
 app.debug = True
 socketio = SocketIO(app)
 
-# c = Chatroom(socketio) # this func needs to kick off Chatroom instance in it's own thread
-
-# start_chatroom(socketio)
-
-# cache_exists = os.path.exists(default_cache_dir)
-# default_cache_dir = os.path.join(os.path.expanduser('~'),'.imagepypelines')
+host = 'localhost'
+port = 5050 # THIS WILL BE CMD LINE ARGUMENT
+c = DashboardChatroom(host, port, socketio) # this func needs to kick off Chatroom instance in it's own thread
+c.start()
 
 ################################################################################
 # Basic Flask application funcs (html handling, rerouting, other basic web shit)
@@ -44,7 +44,7 @@ def run_pipeline(data):
 
 def send_to_chatroom(data):
 
-    # Not going to use websockets here most likely... Do I need TCP???
+    # Not going to use websockets here most likely... Do I need TCP??? Or will a queue do? I have the chatroom reference here soooooooo
     pass
 
 @socketio.on('run-start')
@@ -60,11 +60,7 @@ def edit(data):
     print(f"Editing graph for pipeline ID {data['PID']} of session ID {data['SID']}")
     send_to_chatroom(data)
 
-################################################################################
-# Chatroom / Session / Pipeline generated event processors
-################################################################################
-def send_to_client(msg):
-    socketio.emit('pipeline-update', msg, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app, host='localhost',port=5000)
+    c.stop_thread()
