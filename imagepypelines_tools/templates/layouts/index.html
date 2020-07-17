@@ -6,10 +6,8 @@
 
 <body>
 
-    {% for id in ids %}
-        <h3>{{id}}</h3>
-        <div id="{{id}}"></div>
-    {% endfor %}
+    <h3>{{pipeline_id}}</h3>
+    <div id="{{pipeline_id}}"></div>
 
 </body>
 
@@ -20,18 +18,16 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <!-- Plotly.js -->
-    <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 
     <script type="text/javascript">
 
         var graphs = {{graphJSON | safe}};
         var ids = {{ids | safe}};
 
-        for(var i in graphs) {
-            Plotly.plot(ids[i], // the ID of the div, created above
-                        graphs[i].data,
-                        graphs[i].layout || {});
-        }
+        Plotly.plot(ids[i], // the ID of the div, created above
+                    graphs[i].data,
+                    graphs[i].layout || {});
 
     </script>
 </footer>
