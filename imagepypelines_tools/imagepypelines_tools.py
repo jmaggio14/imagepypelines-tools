@@ -88,26 +88,26 @@ def make_ping_pipeline():
     # make a few blocks
     @ip.blockify()
     def block1(I):
-        time.sleep(50e-3)
         """adds 1 to I"""
+        time.sleep(50e-3)
         return I + 1
 
     @ip.blockify()
     def block2(I, II):
-        time.sleep(50e-3)
         """adds 1 to I, adds 3 to II"""
+        time.sleep(50e-3)
         return I + 1, II + 3
 
     @ip.blockify()
     def block3(I, II):
-        time.sleep(50e-3)
         """adds 10 to I, adds 5 to II"""
+        time.sleep(50e-3)
         return I + 10, II + 5
 
     @ip.blockify()
     def block4(I, II, III):
-        time.sleep(50e-3)
         """adds I, II, III together"""
+        time.sleep(50e-3)
         return (I + II + III)
 
 
