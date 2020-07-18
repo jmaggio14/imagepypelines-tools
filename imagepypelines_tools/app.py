@@ -14,27 +14,53 @@ Things I'm going to do here:
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_socketio import SocketIO, emit
 import os
-import networkx as nx
 
-app = Flask(__name__, template_folder='site', static_folder='site')
+from Chatroom import Chatroom
+
+# CHATROOM_ACTIVE = False
+
+app = Flask(__name__)
 app.debug = True
 socketio = SocketIO(app)
 
-# cache_exists = os.path.exists(default_cache_dir)
-# default_cache_dir = os.path.join(os.path.expanduser('~'),'.imagepypelines')
+host = 'localhost'
+port = 5050 # THIS WILL BE CMD LINE ARGUMENT
+c = DashboardChatroom(host, port, socketio) # this func needs to kick off Chatroom instance in it's own thread
+c.start()
 
-
+################################################################################
+# Basic Flask application funcs (html handling, rerouting, other basic web shit)
+################################################################################
 @app.route("/")
 def welcome():
-    return render_template("templates/sampleapplet.html")
+    return render_template("sampleapplet.html")
 
-@socketio.on('enter prog bar width')
-def progress(data):
-    print("Here's our width:   ", data['width'])
-    msg = {'width': data['width']}
-    emit('return prog bar width', msg)
+################################################################################
+# Client generated event processors
+################################################################################
+def run_pipeline(data):
 
+    return 0
+
+def send_to_chatroom(data):
+
+    # Not going to use websockets here most likely... Do I need TCP??? Or will a queue do? I have the chatroom reference here soooooooo
+    pass
+
+@socketio.on('run-start')
+def run(data):
+    print(f"Running pipeline ID {data['PID']} of session ID {data['SID']}...")
+    msg = {'status': run_pipeline(data)}
+    emit('run-finish', msg)
+
+# For now, if anything changes at all for the task graph or blocks, send a full
+#    update to the pipeline so everything is guaranteed to be in sync
+@socketio.on('graph-change')
+def edit(data):
+    print(f"Editing graph for pipeline ID {data['PID']} of session ID {data['SID']}")
+    send_to_chatroom(data)
 
 
 if __name__ == '__main__':
     socketio.run(app, host='localhost',port=5000)
+    c.stop_thread()
