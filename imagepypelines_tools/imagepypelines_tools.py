@@ -2,28 +2,30 @@
 
 
 """
-    Running the imagepypelines shell:
-        $ imagepypelines shell
-        (GPU)
-        $ imagepypelines shell --gpu (nvidia-docker required)
-        (additonal volumes)
-        $ imagepypelines shell -v /host/path:/mount/path
-        (force nested containers)
-        $ imagepypelines shell --nest
+    1) Launch the Dashboard server
+        $ imagepypelines dashboard
 
-    Rebuilding the imagepypelines docker images for this version
+    2) Test ping a Dashboard server
+        $ imagepypelines ping <ip address> <port> [-i, --interval] [--no-repeat]
+
+    3) Running the imagepypelines shell:
+        $ imagepypelines shell
+        $ imagepypelines shell --gpu                     # (GPU - nvidia-docker required)
+        $ imagepypelines shell -v /host/path:/mount/path # (additonal volumes)
+        $ imagepypelines shell --nest                    # (force nested containers)
+
+    4) Rebuilding the imagepypelines docker images for this version
         $ imagepypelines build
         (no cache)
         $ imagepypelines build --no-cache
 
-    Pulling the imagepypelines docker images from dockerhub
+    5) Pulling the imagepypelines docker images from dockerhub
         $ imagepypelines pull
+
 
 imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
                       [--no-cache]
-                      {shell,push,pull,dashboard}
-
-
+                      {shell, push, pull, dashboard, ping}
 """
 
 import argparse
@@ -36,6 +38,8 @@ import pathlib
 import sys
 import pkg_resources
 import urllib.request
+import warnings
+import time
 
 from .version_info import __version__
 from . import BUILD_DIR, DOCKERFILES
@@ -80,32 +84,31 @@ def check_docker(command,ver="--version"):
         sys.exit(1)
 
 ################################################################################
-def make_ping_pipeline(host, port):
-    # import imagepypelines in a try-catch for verbose
-    try:
-        import imagepypelines as ip
-    except ImportError:
-        print("unable to import ImagePypelines - it must be installed separately. Try \"pip install imagepypelines\"")
-        raise
+def make_ping_pipeline():
+    import imagepypelines as ip
 
     # make a few blocks
     @ip.blockify()
     def block1(I):
+        time.sleep(50e-3)
         """adds 1 to I"""
         return I + 1
 
     @ip.blockify()
     def block2(I, II):
+        time.sleep(50e-3)
         """adds 1 to I, adds 3 to II"""
         return I + 1, II + 3
 
     @ip.blockify()
     def block3(I, II):
+        time.sleep(50e-3)
         """adds 10 to I, adds 5 to II"""
         return I + 10, II + 5
 
     @ip.blockify()
     def block4(I, II, III):
+        time.sleep(50e-3)
         """adds I, II, III together"""
         return (I + II + III)
 
@@ -121,8 +124,6 @@ def make_ping_pipeline(host, port):
             }
 
     pipeline = ip.Pipeline(tasks, name='TestPipeline')
-
-    ip.connect_to_dash('dash1', host, port)
 
     return pipeline
 
@@ -303,19 +304,54 @@ def ping(parser, args):
     parser.add_argument("port",
                         help="port number of the dashboard",
                         type=int)
-    parser.add_argument("--repeat",
+    parser.add_argument("-i", "--interval",
+                        help="interval in milliseconds to ping the dashboard",
+                        default=1000,
+                        type=int)
+    parser.add_argument("--no-repeat",
                         help="flag whether or not to repeat this ping",
                         action="store_true")
     args = parser.parse_args()
 
-    # build the pipeline
-    pipeline = make_ping_pipeline(args.host, args.port)
 
-    if args.repeat:
-        while True:
+    # import imagepypelines in a try-catch for verbose
+    try:
+        import imagepypelines as ip
+        ip.set_log_level(100)
+    except ImportError:
+        print("unable to import ImagePypelines - it must be installed separately. Try \"pip install imagepypelines\"")
+        raise
+
+    # build the pipeline
+    pipeline = make_ping_pipeline()
+
+    # build internal helper function to connect to the dash and run the pipeline
+    def connect_and_run():
+        if ip.n_dashboards() == 0:
+            ip.connect_to_dash('test_dash', args.host, args.port)
+            # print message if we connect or fail to connect
+            if ip.n_dashboards() == 0:
+                if args.no_repeat:
+                    msg = f"unable to connect."
+                else:
+                    msg = f"unable to connect... retrying in {args.interval}ms"
+                print(msg)
+            else:
+                print("connection success!")
+
+
+        if ip.n_dashboards():
+            print("pinging...")
             pipeline.process(list(range(10)), list(range(10)) )
+            time.sleep(args.interval / 1000)
+
+
+    # connect
+    if args.no_repeat:
+        connect_and_run()
     else:
-        pipeline.process(list(range(10)), list(range(10)) )
+        while True:
+            connect_and_run()
 
 ################################################################################
 # ENTRY POINT
@@ -337,7 +373,6 @@ def main():
                                     ]
                         )
 
-    # args = parser.parse_args()
     args = parser.parse_known_args()[0]
 
     ############################################################################
