@@ -291,6 +291,16 @@ def push(parser, args):
 ################################################################################
 def dashboard(parser, args):
     """launches the dashboard"""
+    # ideas for additonal flags (I just chose explicit names for now -JM)
+    #
+    # --timeout  --> timeout if no pipelines or clients connect to its
+    # --from_file --> pulls config from a file
+    # --restricted_access --> something for restricted access
+    # --host?
+    # --port?
+
+    # this will be switched to execution using Gevent or WSGI (link from Jai)
+    # https://flask.palletsprojects.com/en/1.1.x/deploying/wsgi-standalone/
     subprocess.call([sys.executable, FLASK_APP])
 
 ################################################################################
@@ -312,7 +322,7 @@ def ping(parser, args):
     args = parser.parse_args()
 
 
-    # import imagepypelines in a try-catch for verbose
+    # import imagepypelines in a try-catch for verbose error handling
     try:
         import imagepypelines as ip
         ip.set_log_level(100)
