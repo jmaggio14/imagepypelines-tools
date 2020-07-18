@@ -23,9 +23,7 @@
         $ imagepypelines pull
 
 
-imagepypelines [-h] [--display DISPLAY] [-v VOLUME] [--gpu] [--nest]
-                      [--no-cache]
-                      {shell, push, pull, dashboard, ping}
+imagepypelines {shell, push, pull, dashboard, ping}
 """
 
 import argparse
