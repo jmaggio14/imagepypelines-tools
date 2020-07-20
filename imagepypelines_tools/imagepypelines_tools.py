@@ -291,6 +291,16 @@ def push(parser, args):
 ################################################################################
 def dashboard(parser, args):
     """launches the dashboard"""
+    # ideas for additonal flags (I just chose explicit names for now -JM)
+    #
+    # --timeout  --> timeout if no pipelines or clients connect to its
+    # --from_file --> pulls config from a file
+    # --restricted_access --> something for restricted access
+    # --host?
+    # --port?
+
+    # this will be switched to execution using Gevent or WSGI (link from Jai)
+    # https://flask.palletsprojects.com/en/1.1.x/deploying/wsgi-standalone/
     subprocess.call([sys.executable, FLASK_APP])
 
 ################################################################################
@@ -312,30 +322,31 @@ def ping(parser, args):
     args = parser.parse_args()
 
 
-    # import imagepypelines in a try-catch for verbose
+    # import imagepypelines in a try-catch for verbose error handling
     try:
-        import imagepypelines as ip
-        ip.set_log_level(100)
-    except ImportError:
-        print("unable to import ImagePypelines - it must be installed separately. Try \"pip install imagepypelines\"")
-        raise
+        try:
+            import imagepypelines as ip
+            ip.set_log_level(100)
+        except ImportError:
+            print("unable to import ImagePypelines - it must be installed separately. Try \"pip install imagepypelines\"")
+            raise
 
-    # build the pipeline
-    pipeline = make_ping_pipeline()
+        # build the pipeline
+        pipeline = make_ping_pipeline()
 
-    # build internal helper function to connect to the dash and run the pipeline
-    def connect_and_run():
-        if ip.n_dashboards() == 0:
-            ip.connect_to_dash('test_dash', args.host, args.port)
-            # print message if we connect or fail to connect
+        # build internal helper function to connect to the dash and run the pipeline
+        def connect_and_run():
             if ip.n_dashboards() == 0:
-                if args.no_repeat:
-                    msg = f"unable to connect."
+                ip.connect_to_dash('test_dash', args.host, args.port)
+                # print message if we connect or fail to connect
+                if ip.n_dashboards() == 0:
+                    if args.no_repeat:
+                        msg = f"unable to connect."
+                    else:
+                        msg = f"unable to connect... retrying in {args.interval}ms"
+                    print(msg)
                 else:
-                    msg = f"unable to connect... retrying in {args.interval}ms"
-                print(msg)
-            else:
-                print("connection success!")
+                    print("connection success!")
 
 
         if ip.n_dashboards():
@@ -345,12 +356,15 @@ def ping(parser, args):
         time.sleep(args.interval / 1000)
 
 
-    # connect
-    if args.no_repeat:
-        connect_and_run()
-    else:
-        while True:
+        # connect
+        if args.no_repeat:
             connect_and_run()
+        else:
+            while True:
+                connect_and_run()
+
+    except KeyboardInterrupt:
+        exit(0)
 
 ################################################################################
 # ENTRY POINT

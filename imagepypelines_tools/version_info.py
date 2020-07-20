@@ -36,7 +36,7 @@ __download_url__ = 'https://github.com/jmaggio14/imagepypelines-tools'
 __maintainer__ = "Jeff Maggio"
 __maintainer_email__ = "jmaggio14@gmail.com"
 __keywords__ = 'imaging-science machine-learning computer-vision data-pipelines docker'
-__python_requires__ = '>=3.5.*'
+__python_requires__ = '>=3.6.*'
 __platforms__ = ["Windows", "Linux", "Mac OS-X", "Unix"]
 __classifiers__ = [
     'Development Status :: 3 - Alpha',
@@ -49,9 +49,9 @@ __classifiers__ = [
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     # 'Programming Language :: Python :: 3.7', # JM: 3.7 must wait for tensorflow
     'Programming Language :: Python :: Implementation :: CPython',
     'Operating System :: MacOS :: MacOS X',
