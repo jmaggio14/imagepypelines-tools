@@ -348,13 +348,11 @@ def ping(parser, args):
                 else:
                     print("connection success!")
 
+            if ip.n_dashboards():
+                print("pinging...")
+                pipeline.process(list(range(10)), list(range(10)) )
 
-        if ip.n_dashboards():
-            print("pinging...")
-            pipeline.process(list(range(10)), list(range(10)) )
-
-        time.sleep(args.interval / 1000)
-
+            time.sleep(args.interval / 1000)
 
         # connect
         if args.no_repeat:
