@@ -23,8 +23,11 @@
   <script type="text/javascript" charset="utf-8">
     console.log("Yo yo yo we in it fam")
     var socket = io();
-    socket.on('connect', function() {
-        socket.emit('connected', {data: 'I\'m connected!'});
+    // socket.on('connect', function() {
+    //     socket.emit('connected', {data: 'I\'m connected!'});
+    // });
+    socket.on('pipeline-update', function(msg) {
+        console.log(msg)
     });
   </script>
 </body>

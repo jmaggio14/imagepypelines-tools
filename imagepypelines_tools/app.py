@@ -11,6 +11,39 @@ Things I'm going to do here:
 3) Display an image or array or graph using matplotlib and numpy
 """
 
+# Set this variable to "threading", "eventlet" or "gevent" to test the
+# different async modes, or leave it set to None for the application to choose
+# the best option based on available packages.
+async_mode = None
+
+if async_mode is None:
+    try:
+        import eventlet
+        async_mode = 'eventlet'
+    except ImportError:
+        pass
+
+    if async_mode is None:
+        try:
+            from gevent import monkey
+            async_mode = 'gevent'
+        except ImportError:
+            pass
+
+    if async_mode is None:
+        async_mode = 'threading'
+
+    print('async_mode is ' + async_mode)
+
+# monkey patching is necessary because this application uses a background
+# thread
+if async_mode == 'eventlet':
+    import eventlet
+    eventlet.monkey_patch()
+elif async_mode == 'gevent':
+    from gevent import monkey
+    monkey.patch_all()
+
 from flask import Flask, flash, redirect, render_template, request, session, abort, g
 from flask_socketio import SocketIO, emit
 import os
@@ -21,7 +54,7 @@ from Chatroom import Chatroom
 
 app = Flask(__name__)
 app.debug = False
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode=async_mode)
 
 host = 'localhost'
 port = 9000 # THIS WILL BE CMD LINE ARGUMENT
@@ -49,6 +82,10 @@ def send_to_chatroom(data):
 
     # Not going to use websockets here most likely... Do I need TCP??? Or will a queue do? I have the chatroom reference here soooooooo
     pass
+
+@socketio.on('connected')
+def on_connect(msg):
+    print(msg)
 
 @socketio.on('run-start')
 def run(data):
