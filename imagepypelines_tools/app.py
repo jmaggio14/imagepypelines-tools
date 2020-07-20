@@ -11,7 +11,7 @@ Things I'm going to do here:
 3) Display an image or array or graph using matplotlib and numpy
 """
 
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, g
 from flask_socketio import SocketIO, emit
 import os
 
@@ -20,13 +20,16 @@ from Chatroom import Chatroom
 # CHATROOM_ACTIVE = False
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 socketio = SocketIO(app)
 
 host = 'localhost'
-port = 5050 # THIS WILL BE CMD LINE ARGUMENT
-c = DashboardChatroom(host, port, socketio) # this func needs to kick off Chatroom instance in it's own thread
+port = 9000 # THIS WILL BE CMD LINE ARGUMENT
+c = Chatroom(host, port, socketio)
 c.start()
+
+# import atexit
+# atexit.register(c.stop_thread)
 
 ################################################################################
 # Basic Flask application funcs (html handling, rerouting, other basic web shit)

@@ -19,8 +19,13 @@
      get a hover action working on each block to get realtime info</p>
   </div>
 
-  <script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf-8">
     console.log("Yo yo yo we in it fam")
+    var socket = io();
+    socket.on('connect', function() {
+        socket.emit('connected', {data: 'I\'m connected!'});
+    });
   </script>
 </body>
 </html>

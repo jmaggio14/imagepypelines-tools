@@ -341,7 +341,8 @@ def ping(parser, args):
         if ip.n_dashboards():
             print("pinging...")
             pipeline.process(list(range(10)), list(range(10)) )
-            time.sleep(args.interval / 1000)
+
+        time.sleep(args.interval / 1000)
 
 
     # connect
