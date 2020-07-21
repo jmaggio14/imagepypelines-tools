@@ -45,7 +45,8 @@ class Chatroom(BaseCommThread):
 
     def read(self, c):
         line = c.recv(8) # 8 bytes for 64bit integer
-        print(line)
+        if line == b'': # Case for a disconnecting Client socket
+            return None
         length = unpack('>Q', line)[0]
         return self.recvall(c, length).decode().rstrip()
 
@@ -68,8 +69,6 @@ class Chatroom(BaseCommThread):
         while getattr(t, 'running', True):  # Run until signaled to DIE
             ready2read, _, _ = select.select(sessions, [], [], 0.1) #
             for c in ready2read:
-                print("This is 's':", s)
-                print("This is 'c':", c)
                 if c is sock:  # If there is a Pipeline requesting a connection
                     self.connect(c, sessions)
                     print("Here are our current sessions:  ", sessions)
@@ -78,10 +77,9 @@ class Chatroom(BaseCommThread):
                 msg = self.read(c)
                 if msg: # If they sent anything (even a blank return)
                     # Do something to the data (RH: WE WILL REFORMAT TO RETE.JS NODE-LINK HERE)
-                    print(self.dashboard)
                     self.dashboard.emit('pipeline-update', msg, broadcast=True)
                 else: # If they sent nothing (which for TCP, happens when a client disconnects)
-                    self.disconnect_client(c, sessions)
+                    self.disconnect_client(sessions, c)
             # Now check if any scheduled task is ready to be run
             # events.run_scheduled_tasks() # Runs any scheduled task
 
