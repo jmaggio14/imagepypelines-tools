@@ -1,4 +1,26 @@
-flask
-flask_socketio
-gevent
-gevent-websocket
+cffi==1.14.0
+click==7.1.2
+colorama==0.4.3
+cryptography==2.9.2
+decorator==4.4.2
+dill==0.3.2
+dnspython==1.16.0
+eventlet==0.25.2
+Flask==1.1.2
+Flask-SocketIO==4.3.1
+greenlet==0.4.16
+-e git+https://github.com/jmaggio14/imagepypelines.git@88b219f8ad2ceedd62b70deedad2aba04af3f600#egg=imagepypelines
+-e git+https://github.com/jmaggio14/imagepypelines-tools.git@388f4f302ac0fc378cc2f19b56424712bc56de21#egg=imagepypelines_tools
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+monotonic==1.5
+networkx==2.4
+numpy==1.19.0
+opencv-python==4.3.0.36
+pycparser==2.20
+python-engineio==3.13.1
+python-socketio==4.6.0
+six==1.15.0
+termcolor==1.1.0
+Werkzeug==1.0.1
