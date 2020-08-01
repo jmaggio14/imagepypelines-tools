@@ -1,4 +1,5 @@
-echo -e "
+if [ "$IP_SUPRESS_WELCOME" != "ON"]; then
+	echo -e "
 ################################################################################
 ##############################Ndyo/:.        .-/+shN############################
 ##########################my/.                       :sd########################
@@ -31,7 +32,7 @@ echo -e "
 ##########################my/.          \033[38;5;208m:oooooooo/\e[39m\e[49m   :od########################
 ##############################Ndyo/:. -///+ossoshm##############################
 ################################################################################"
-echo -e "
+	echo -e "
 Welcome to the imagepypelines virtual container!
 This docker image contains all dependencies you need to run vanilla imagepypelines apps.
 The source for this dockerfile can be found here: https://github.com/jmaggio14/imagepypelines-tools
@@ -60,3 +61,4 @@ some things to note:
 	> you are root. so no need to use sudo :p
 	> you may exit this shell by typing 'exit'
 "
+fi

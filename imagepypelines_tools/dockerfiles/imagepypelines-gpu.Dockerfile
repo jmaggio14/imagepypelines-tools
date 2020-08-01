@@ -1,6 +1,6 @@
 # inherit from an NVIDIA ubuntu build
-# this will setup an image with CUDA and OPENGL preinstalled
-FROM nvidia/cudagl:10.0-devel
+# this will setup an image with CUDA and CUDNN preinstalled
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 MAINTAINER Jeff Maggio, Ryan Hartzell, Nathan Dileas
 
 # ENVIRONMENTAL VARIABLES
@@ -286,7 +286,7 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 
 ENV PYTHONPATH="/usr/lib/python3.6/site-packages/:$PYTHONPATH"
 
-# IMAGEPYPEPLINES DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
+# imagepypelines DEPENDENCIES --- CPU BOUND ON WINDOWS!!! THIS IS DEFAULT!
 ################################################################################
 RUN if [ "$IP_GPU_ENABLED" = "ON" ]; then pip install tensorflow-gpu==1.13.1; else pip install tensorflow==1.13.1; fi
 RUN pip install imagepypelines
