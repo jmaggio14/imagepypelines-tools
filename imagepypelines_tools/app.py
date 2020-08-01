@@ -54,6 +54,7 @@ from Chatroom import Chatroom
 
 app = Flask(__name__)
 app.debug = False
+app.secret_key = 'this_should_be_replaced_in_production!!!'
 socketio = SocketIO(app, async_mode=async_mode)
 
 host = 'localhost'
@@ -69,7 +70,12 @@ c.start()
 ################################################################################
 @app.route("/")
 def welcome():
-    return render_template("sampleapplet.html")
+    return render_template("dashboard.html")
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
 
 ################################################################################
 # Client generated event processors
