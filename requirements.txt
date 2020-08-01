@@ -17,10 +17,12 @@ MarkupSafe==1.1.1
 monotonic==1.5
 networkx==2.4
 numpy==1.19.0
-opencv-python==4.3.0.36
 pycparser==2.20
 python-engineio==3.13.1
 python-socketio==4.6.0
 six==1.15.0
 termcolor==1.1.0
 Werkzeug==1.0.1
+flask==1.1.2
+flask-socketio==4.3.1
+opencv-python==4.3.0.36
