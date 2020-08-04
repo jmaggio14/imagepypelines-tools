@@ -1,0 +1,8 @@
+.documentation-wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+.documentation-body {
+    white-space: pre-line;
+}

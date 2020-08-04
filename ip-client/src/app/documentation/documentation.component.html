@@ -1,0 +1,13 @@
+<mat-card class=documentation-wrapper>
+    <code class=documentation-body>
+        ## {{ documentation.class_name }}
+        
+        Description
+        {{ documentation.DOCS.class || '' }}
+
+        {{ documentation.DOCS.__init__ || '' }}
+
+        ## process
+        {{ documentation.DOCS.process || '' }}
+    </code>
+</mat-card>
