@@ -76,7 +76,13 @@ def welcome():
 def login():
     return render_template("login.html")
 
-
+@app.route("/test")
+def test():
+    ids = [v.id for v in c.sessions.values() if v is not None]  # JUST TO TEST
+    print(ids)
+    for id in ids:
+        c.push('{"uuid":"'+str(id)+'"}')
+    return 'good'
 ################################################################################
 # Client generated event processors
 ################################################################################
