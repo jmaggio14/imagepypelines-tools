@@ -9,8 +9,6 @@ eventlet==0.25.2
 Flask==1.1.2
 Flask-SocketIO==4.3.1
 greenlet==0.4.16
--e git+https://github.com/jmaggio14/imagepypelines.git@88b219f8ad2ceedd62b70deedad2aba04af3f600#egg=imagepypelines
--e git+https://github.com/jmaggio14/imagepypelines-tools.git@388f4f302ac0fc378cc2f19b56424712bc56de21#egg=imagepypelines_tools
 itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
