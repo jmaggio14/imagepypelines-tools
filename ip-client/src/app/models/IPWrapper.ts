@@ -1,5 +1,6 @@
 import { IPGraph } from "./IPGraph";
 import { IPError } from "./IPErrors";
+import { IPStatus } from "./IPStatus";
 
 export class IPWrapper {
     type: 'graph' | 'error' | 'reset' | 'status';

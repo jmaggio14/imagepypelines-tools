@@ -1,3 +1,29 @@
-<mat-tab-group>
-    <mat-tab label="First"> Content 1 </mat-tab>
-</mat-tab-group>
+<div class=ip-header>
+    <img class=left src="assets/ip_logo.png" height="120px" width="100px">
+    <h3 class=center>Image Pypelines Demo</h3>
+</div>
+<mat-drawer-container class="fill ip-container">
+    <mat-drawer #drawer [mode]="'side'">
+        Sidebar
+        <app-documentation [documentation]=mockDoc></app-documentation>
+    </mat-drawer>
+    <mat-drawer-content class="fill ip-content">
+        <!-- Primary Dashboard Content -->
+        <div class=fill *ngIf="sessions && sessions.length; else noData">
+            <mat-tab-group class=fill>
+                <mat-tab [label]=session class="fill margin" *ngFor="let session of sessions">
+                    <app-dashboard #dashboard class=fill [session]=session></app-dashboard>
+                </mat-tab>
+            </mat-tab-group>
+            <button mat-raised-button (click)="drawer.toggle()">Toggle Documentation</button>
+        </div>
+        <!-- No Content -->
+        <ng-template #noData>
+            <div class=center>
+                Whoops! It looks like there are no image-pypelines running. Try starting a session!
+            </div>
+        </ng-template>
+    </mat-drawer-content>
+  </mat-drawer-container>
+<!-- Current Termnial Output-->
+<ng-terminal class=terminal #term></ng-terminal>

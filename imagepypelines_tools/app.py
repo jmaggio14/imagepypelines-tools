@@ -44,7 +44,7 @@ elif async_mode == 'gevent':
     from gevent import monkey
     monkey.patch_all()
 
-from flask import Flask, flash, redirect, render_template, request, session, abort, g
+from flask import Flask, flash, redirect, render_template, request, session, abort, g, jsonify
 from flask_socketio import SocketIO, emit
 import os
 
@@ -54,10 +54,11 @@ from Chatroom import Chatroom
 
 app = Flask(__name__)
 app.debug = False
+# note: use an environment variable - jb
 app.secret_key = 'this_should_be_replaced_in_production!!!'
 socketio = SocketIO(app, async_mode=async_mode)
 
-host = 'localhost'
+host = '0.0.0.0'
 port = 9000 # THIS WILL BE CMD LINE ARGUMENT
 c = Chatroom(host, port, socketio)
 c.start()
@@ -76,13 +77,19 @@ def welcome():
 def login():
     return render_template("login.html")
 
-@app.route("/test")
-def test():
-    ids = [v.id for v in c.sessions.values() if v is not None]  # JUST TO TEST
-    print(ids)
+@app.route("/api/sessions")
+def get_sessions():
+    ids = [v.id for v in c.sessions.values() if v is not None]
     for id in ids:
-        c.push('{"uuid":"'+str(id)+'"}')
-    return 'good'
+        c.push(str(id))
+    return jsonify(ids)
+
+@app.route("/api/session/<uuid>/graph")
+def get_graph(uuid: None):
+    if (uuid is None or (not uuid not in c.sessions.values())):
+        abort(404)
+    
+        
 ################################################################################
 # Client generated event processors
 ################################################################################
