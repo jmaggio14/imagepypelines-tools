@@ -56,7 +56,7 @@ app = Flask(__name__)
 app.debug = False
 # note: use an environment variable - jb
 app.secret_key = 'this_should_be_replaced_in_production!!!'
-socketio = SocketIO(app, async_mode=async_mode)
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
 host = '0.0.0.0'
 port = 9000 # THIS WILL BE CMD LINE ARGUMENT
@@ -79,16 +79,24 @@ def login():
 
 @app.route("/api/sessions")
 def get_sessions():
-    ids = [v.id for v in c.sessions.values() if v is not None]
+    ids = [v['id'] for v in c.sessions.values() if v is not None]
     for id in ids:
         c.push(str(id))
+    print (ids)
     return jsonify(ids)
 
 @app.route("/api/session/<uuid>/graph")
 def get_graph(uuid: None):
-    if (uuid is None or (not uuid not in c.sessions.values())):
+    ids = [v['id'] for v in c.sessions.values() if v is not None]
+    if (uuid is None or uuid not in ids):
         abort(404)
-    
+    return jsonify(c.sessions.values())
+@app.route("/api/session/<uuid>/status")
+def get_status(uuid: None):
+    ids = [v['id'] for v in c.sessions.values() if v is not None]
+    if (uuid is None or uuid not in ids):
+        abort(404)
+    return jsonify(c.sessions.values()[uuid]['status'])
         
 ################################################################################
 # Client generated event processors

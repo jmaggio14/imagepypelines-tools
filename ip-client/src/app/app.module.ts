@@ -31,9 +31,9 @@ const thisUrl = window.location.href.split('/');
     ReactiveFormsModule,
     MaterialModule,
     NgTerminalModule,
-    // SocketIoModule.forRoot({
-    //   url: thisUrl[0] + '//' + thisUrl[2] + ':' + 5000
-    // })
+    SocketIoModule.forRoot({
+      url: 'localhost:5000'
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],

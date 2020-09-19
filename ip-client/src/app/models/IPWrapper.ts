@@ -3,7 +3,7 @@ import { IPError } from "./IPErrors";
 import { IPStatus } from "./IPStatus";
 
 export class IPWrapper {
-    type: 'graph' | 'error' | 'reset' | 'status';
+    type: 'pipeline' | 'error' | 'reset' | 'status';
     name: string;
     id: string;
     uuid: string;

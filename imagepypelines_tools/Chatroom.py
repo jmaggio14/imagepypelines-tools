@@ -7,11 +7,6 @@ from typing import Tuple
 import select
 import threading
 
-@dataclass
-class Connection:
-        addr: Tuple[str, int]
-        id: str = "Unidentified"
-
 # __ Chatroom Object _________________________________________________________
 class Chatroom(BaseCommThread):
 
@@ -26,7 +21,7 @@ class Chatroom(BaseCommThread):
 
     def disconnect_client(self, c):
         print(f"Yeeting Pipe {self.sessions[c]}")
-        del self.msg_buff[self.sessions[c].id]
+        del self.msg_buff[self.sessions[c]['id']]
         c.close()
         del self.sessions[c]
 
@@ -62,7 +57,7 @@ class Chatroom(BaseCommThread):
     def connect(self, c):
         c, a = c.accept()
         print(f"Connecting Pipe {a}")
-        self.sessions[c] = Connection(a)
+        self.sessions[c] = {'addr': str(a[0]) + ':' + str(a[1]) , 'id': 'undefined', 'graph': 'undefined', 'status': []}
 
     def push(self, msg):
         ''' Function to be used outside of the Chatroom class '''
@@ -71,23 +66,25 @@ class Chatroom(BaseCommThread):
     def parse_session_msg(self, c, msg):
         _msg = loads(msg)
         print('\n***************************************\n')
-        try:
-            if _msg['type'] == 'graph':
-                id = _msg['uuid']
-                self.sessions[c].id = id
-                self.msg_buff[id] = []
-            elif _msg['type'] == 'status':
-                pass
-            elif _msg['type'] == 'reset':
-                pass
-            elif _msg['type'] == 'block_error':
-                pass
-            elif _msg['type'] == 'delete':
-                pass
+        if _msg['type'] == 'graph':
+            id = _msg['uuid']
+            self.sessions[c]['id'] = id
+            self.sessions[c]['graph'] = _msg
+            self.msg_buff[id] = []
+        elif _msg['type'] == 'status':
+            if self.sessions[c] is not None and 'status' in self.sessions[c]:
+                self.sessions[c]['status'].append(_msg)
             else:
-                pass
-        except:
-            print(f"Malformed message: {_msg}")
+                self.sessions[c]['status'] = [_msg]
+            pass
+        elif _msg['type'] == 'reset':
+            pass
+        elif _msg['type'] == 'block_error':
+            pass
+        elif _msg['type'] == 'delete':
+            pass
+        else:
+            pass
 
         return msg
 
@@ -129,13 +126,16 @@ class Chatroom(BaseCommThread):
 
             # Now check if any scheduled task is ready to be run
             msgs = self.events.run_scheduled_tasks()  # Runs any scheduled task
-            self.parse_dashboard_msgs(msgs)
-
+            try:
+                self.parse_dashboard_msgs(msgs)
+            except:
+                print('Unable to parse ', msgs)
+                # do nothing
             # Finally check if there is anything waiting to be sent to anyone
             for c in ready2write:
                 # Check if there are messages to be sent to connected clients
                 if (c is not sock):
-                    id = self.sessions[c].id
+                    id = self.sessions[c]['id']
                     if (id in self.msg_buff) and self.msg_buff[id]:
                         while self.msg_buff[id]:
                             msg = self.msg_buff[id].pop(0)

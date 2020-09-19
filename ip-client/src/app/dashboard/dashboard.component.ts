@@ -2,6 +2,8 @@ import { Component, Input, AfterViewInit, ViewChild, ElementRef } from "@angular
 import { DashboardService } from "./dashboard-service";
 import { Network } from "vis-network/peer/esm/vis-network";
 import { DataSet } from "vis-data/peer/esm/vis-data"
+import { IPGraph } from '../models/IPGraph';
+import { IPWrapper} from '../models/IPWrapper';
 
 @Component({
     selector: 'app-dashboard',
@@ -9,7 +11,7 @@ import { DataSet } from "vis-data/peer/esm/vis-data"
     styleUrls: ['./dashboard.component.css'],
     providers: [DashboardService]
   })
-export class DashboardComponent implements AfterViewInit {
+export class DashboardComponent {
 
   /**
    * UUID of this rete dashboard's session
@@ -30,44 +32,30 @@ export class DashboardComponent implements AfterViewInit {
    * @param dashboardService 
    */
   public constructor(private dashboardService: DashboardService) {
+    dashboardService.subscribeToWebsocket('pipeline', (graph: IPWrapper) => {
+      if (!this.networkNode) {
+        return;
+      }
 
+      this.render(<IPGraph>(<unknown>graph));
+    });
   }
 
-  public render(): void {
-    const nodes = new DataSet<any>([
-        {id: 1, label: 'Node 1'},
-        {id: 2, label: 'Node 2'},
-        {id: 3, label: 'Node 3'},
-        {id: 4, label: 'Node 4'},
-        {id: 5, label: 'Node 5'}
-    ]);
-
-    const edges = new DataSet<any>([
-        {from: 1, to: 3},
-        {from: 1, to: 2},
-        {from: 2, to: 4},
-        {from: 2, to: 5}
-    ]);
+  public render(graph: IPGraph): void {
+    const nodes = this.dashboardService.getGraphNodes(graph);
+    const edges = this.dashboardService.getGraphEdges(graph);
     const data = { nodes, edges };
 
     const options = {
       layout: {
         hierarchical: {
-          sortMethod: 'layout-method-directed'
+          sortMethod: 'directed'
         },
       },
     };
 
-    console.log(this.networkNode);
     // initialize your network!
     this.network = new Network(this.networkNode.nativeElement, data, options);
-  }
-
-
-  /**
-   * Sets up graph
-   */
-  public ngAfterViewInit(): void {
-    this.render();
+    this.network.redraw();
   }
 }

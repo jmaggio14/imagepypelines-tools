@@ -6,6 +6,7 @@ import { IPError } from './models/IPErrors';
 import { Socket } from 'ngx-socket-io';
 import { MatDrawer } from '@angular/material/sidenav';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { IPStatus } from './models/IPStatus';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,7 @@ export class AppComponent {
   private ipDashboard: DashboardComponent;
 
   // UUIDs of pypelines
-  public sessions: string[] = ['blah'];
+  public sessions: string[] = [];
 
   mockDoc = {
       "name": "InputNone",
@@ -46,15 +47,18 @@ export class AppComponent {
       }
   };
 
-  public constructor(private dashboardService: DashboardService/*, private socket: Socket*/) {
-    // this.dashboardService.getAllSessions()
-    //   .subscribe((sessions: string[]) => this. sessions = sessions);
+  public constructor(private dashboardService: DashboardService, private socket: Socket) {
+    this.dashboardService.getAllSessions()
+      .subscribe((sessions: string[]) => this. sessions = sessions);
   }
 
   public ngAfterViewInit(): void {
     //this.terminal.setStyle()
     this.terminal.write('Establishing connection to the pypeline service....');
     this.dashboardService.subscribeToWebsocket('error', (wrapper) => this.writeErrorMessageToTermianl(wrapper));
+    this.dashboardService.subscribeToWebsocket('status', (wrapper: IPStatus) => {
+      
+    });
     this.dashboardService.subscribeToWebsocket('graph', (wrapper) => {
       console.log('oof');
     })
@@ -65,9 +69,6 @@ export class AppComponent {
    */
   public documentationDrawerToggle(): void {
     this.drawer.toggle();
-    if (this.ipDashboard) {
-      this.ipDashboard.render();
-    }
   }
 
   /**
