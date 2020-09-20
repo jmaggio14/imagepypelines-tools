@@ -20,8 +20,8 @@ class Chatroom(BaseCommThread):
         self.msg_buff = {}
 
     def disconnect_client(self, c):
-        print(f"Yeeting Pipe {self.sessions[c]}")
-        del self.msg_buff[self.sessions[c]['id']]
+        print(f"Yeeting Pipe {self.sessions[c]['uuid']}")
+        del self.msg_buff[self.sessions[c]['uuid']]
         c.close()
         del self.sessions[c]
 
@@ -57,7 +57,7 @@ class Chatroom(BaseCommThread):
     def connect(self, c):
         c, a = c.accept()
         print(f"Connecting Pipe {a}")
-        self.sessions[c] = {'addr': str(a[0]) + ':' + str(a[1]) , 'id': 'undefined', 'graph': 'undefined', 'status': []}
+        self.sessions[c] = {'addr': str(a[0]) + ':' + str(a[1]) , 'uuid': 'undefined', 'graph': 'undefined', 'status': []}
 
     def push(self, msg):
         ''' Function to be used outside of the Chatroom class '''
@@ -67,10 +67,10 @@ class Chatroom(BaseCommThread):
         _msg = loads(msg)
         print('\n***************************************\n')
         if _msg['type'] == 'graph':
-            id = _msg['uuid']
-            self.sessions[c]['id'] = id
+            uuid = _msg['uuid']
+            self.sessions[c]['uuid'] = uuid
             self.sessions[c]['graph'] = _msg
-            self.msg_buff[id] = []
+            self.msg_buff[uuid] = []
         elif _msg['type'] == 'status':
             if self.sessions[c] is not None and 'status' in self.sessions[c]:
                 self.sessions[c]['status'].append(_msg)
@@ -90,11 +90,19 @@ class Chatroom(BaseCommThread):
 
     def parse_dashboard_msgs(self, msg_list):
         for msg in msg_list:
-            print(msg)
-            _msg = loads(msg)
-            id = _msg['uuid']
+            print("_msg content is.....   ", msg)
+
             try:
-                self.msg_buff[id].append(msg)
+                _msg = loads(msg)
+            except:
+                print("OOOOOOOF @ JSON BOIIIIII")
+                
+            print("Type of _msg is.....   ", type(_msg))
+            uuid = _msg['uuid']
+            print("Retrieved uuid is...   ", uuid)
+            try:
+                print("msg_buff is.......   ", self.msg_buff)
+                self.msg_buff[uuid].append(msg)
             except KeyError:
                 # TODO: Emit error message to client sender; Invalid Pipe ID
                 pass
@@ -135,10 +143,10 @@ class Chatroom(BaseCommThread):
             for c in ready2write:
                 # Check if there are messages to be sent to connected clients
                 if (c is not sock):
-                    id = self.sessions[c]['id']
-                    if (id in self.msg_buff) and self.msg_buff[id]:
-                        while self.msg_buff[id]:
-                            msg = self.msg_buff[id].pop(0)
+                    uuid = self.sessions[c]['uuid']
+                    if (uuid in self.msg_buff) and self.msg_buff[uuid]:
+                        while self.msg_buff[uuid]:
+                            msg = self.msg_buff[uuid].pop(0)
                             self.write(c, msg)
 
         # __ Dashboard Event Loop Cleanup ____________________________________

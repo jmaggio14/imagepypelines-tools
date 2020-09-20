@@ -47,6 +47,7 @@ elif async_mode == 'gevent':
 from flask import Flask, flash, redirect, render_template, request, session, abort, g, jsonify
 from flask_socketio import SocketIO, emit
 import os
+import json
 
 from Chatroom import Chatroom
 
@@ -77,27 +78,60 @@ def welcome():
 def login():
     return render_template("login.html")
 
+@app.route("/login/auth")
+def auth(request):
+    # follow tutorial for authentication of use Flask-Login plugin
+    return render_template("layouts/index.html")   # this may need to change (should show base dashboard or first pipeline listed)
+
 @app.route("/api/sessions")
 def get_sessions():
-    ids = [v['id'] for v in c.sessions.values() if v is not None]
-    for id in ids:
-        c.push(str(id))
-    print (ids)
-    return jsonify(ids)
+    uuids = [v['uuid'] for v in c.sessions.values() if v is not None]
+    for uuid in uuids:
+        c.push(json.dumps({'uuid':uuid}))
+    print(uuids)
+    return jsonify(uuids)
 
-@app.route("/api/session/<uuid>/graph")
-def get_graph(uuid: None):
-    ids = [v['id'] for v in c.sessions.values() if v is not None]
+# Helper for grabbing value out of chatroom's socket map using pipeline's uuid (could be expanded to other keys!!!)
+# SHOULD BE MOVED TO CHATROOM OBJECT AS INSTANCE METHOD
+def check_metadata(uuid):
+    for v in c.sessions.values():
+        if v is None:
+            continue
+        if v['uuid'] == uuid:
+            return v
+    return None
+
+# Both of the following funcs need to be rewritten with respect to how sessions are mapped.
+# We're trying to grab all 'cached' messages for a given pipeline by uuid and message type
+# @app.route("/api/session/<uuid>/graph")
+# def get_graph(uuid=None):
+#     ids = [v['uuid'] for v in c.sessions.values() if v is not None]
+#     if (uuid is None or uuid not in ids):
+#         abort(404)
+#
+#     metadata = get_metadata(uuid)
+#
+#     if metadata is not None:
+#         return jsonify(metadata[uuid]['graph'])
+#     else:
+#         abort(404)
+
+# This new route should handle all requests for cached messages for any connected pipeline and any supported msg_type
+@app.route("/api/session/<uuid>/<msg_type>")
+def get_status(uuid=None, msg_type=None):
+    ids = [v['uuid'] for v in c.sessions.values() if v is not None]
     if (uuid is None or uuid not in ids):
         abort(404)
-    return jsonify(c.sessions.values())
-@app.route("/api/session/<uuid>/status")
-def get_status(uuid: None):
-    ids = [v['id'] for v in c.sessions.values() if v is not None]
-    if (uuid is None or uuid not in ids):
+
+    if (msg_type is None or msg_type not in ["graph", "status"]): # add other types here or use ip.MSG_TYPES (which we should add so people can hack on this!!!)
         abort(404)
-    return jsonify(c.sessions.values()[uuid]['status'])
-        
+
+    metadata = check_metadata(uuid)
+
+    if metadata is not None:
+        return jsonify(metadata[msg_type])
+    else:
+        abort(404)
 ################################################################################
 # Client generated event processors
 ################################################################################
@@ -122,11 +156,10 @@ def run(data):
 
 # For now, if anything changes at all for the task graph or blocks, send a full
 #    update to the pipeline so everything is guaranteed to be in sync
-@socketio.on('graph-change')
+@socketio.on('edit')
 def edit(data):
     print(f"Editing graph for pipeline ID {data['PID']} of session ID {data['SID']}")
     send_to_chatroom(data)
-
 
 if __name__ == '__main__':
     socketio.run(app, host='localhost',port=5000)
