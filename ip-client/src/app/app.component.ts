@@ -56,12 +56,6 @@ export class AppComponent {
     //this.terminal.setStyle()
     this.terminal.write('Establishing connection to the pypeline service....');
     this.dashboardService.subscribeToWebsocket('error', (wrapper) => this.writeErrorMessageToTermianl(wrapper));
-    this.dashboardService.subscribeToWebsocket('status', (wrapper: IPStatus) => {
-      
-    });
-    this.dashboardService.subscribeToWebsocket('graph', (wrapper) => {
-      console.log('oof');
-    })
   }
 
   /**

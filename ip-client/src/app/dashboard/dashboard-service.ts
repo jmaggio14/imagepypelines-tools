@@ -5,6 +5,8 @@ import { IPWrapper } from '../models/IPWrapper';
 import { Socket } from 'ngx-socket-io';
 import { HttpClient } from '@angular/common/http';
 import { DataSet } from "vis-data/peer/esm/vis-data"
+import { IPEdge } from '../models/IPEdge';
+import { IPNode } from '../models/IPNode';
 
 /**
  * The Imagepypeline service establishes a websocket with
@@ -22,10 +24,8 @@ export class DashboardService {
      * @param socket from dependency injection
      */
     public constructor(private socket: Socket, private http: HttpClient) {
-        console.log('test');
         this.socket.on('pipeline-update', (ipMessage: any) => {
-            console.log(ipMessage);
-            this.ipEventEmitter.emit(ipMessage);
+            this.ipEventEmitter.emit(JSON.parse(ipMessage));
         });
     }
 
@@ -33,7 +33,7 @@ export class DashboardService {
      * Subscribes to a websocket supplied by the commandline
      */
     public subscribeToWebsocket(
-        type: 'all' | 'error' | 'pipeline' | 'status' | 'reset', 
+        type: 'all' | 'error' | 'graph' | 'status' | 'reset', 
         callback: (wrapper: IPWrapper) => void) {
             this.ipEventEmitter.subscribe((ipMessage: IPWrapper) => {
                 if (ipMessage.type === type || type === 'all') {
@@ -49,8 +49,13 @@ export class DashboardService {
         return this.http.get<string[]>('http://localhost:5000/api/sessions');
     }
 
-    public runPypeline(id: string): void {
-        //TBD
+    /**
+     * Grabs a specific pypeline datatype from the api
+     * @param uuid session uuid to grab data for
+     * @param type type of data to grab (graph, status, etc...)
+     */
+    public getPipelineData(uuid: string, type: string): Observable<any> {
+        return this.http.get(`http://localhost:5000/api/session/${uuid}/${type}`);
     }
     
     /**
@@ -58,9 +63,10 @@ export class DashboardService {
      * @param ipGraph an image pypeline's graph nodes
      */
     public getGraphNodes(ipGraph: IPGraph): DataSet<any> {
+        ipGraph.nodes = IPNode.fromJS(ipGraph.nodes);
         return <any> Object.keys(ipGraph.nodes).map((nodeId: string) => {
             let node = ipGraph.nodes[nodeId] as any;
-            node.id = nodeId;
+            node.id = node.uuid;
             node.label = node.name;
             return node;
         });
@@ -71,10 +77,11 @@ export class DashboardService {
      * @param ipGraph an image pypeline's graph nodes
      */
     public getGraphEdges(ipGraph: IPGraph): DataSet<any> {
+        ipGraph.edges = IPEdge.fromJS(ipGraph.edges);
         return <any> Object.keys(ipGraph.edges).map((id) => {
             let edge = ipGraph.edges[id] as any;
-            edge.from = edge.in_index;
-            edge.to = edge.out_index;
+            edge.from = edge.in_uuid;
+            edge.to = edge.out_uuid;
             return edge;
         });
     }
