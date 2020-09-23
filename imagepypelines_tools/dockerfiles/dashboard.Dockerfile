@@ -60,10 +60,10 @@ ENV PATH="/dash/.local/bin:${PATH}"
 COPY launch_dash.sh /usr/local/bin/
 
 # DEBUG - to setup an interactive shell - delete me!
-USER root
-RUN apk add --update bash vim
-user dashuser
-ENTRYPOINT ["bash"]
+# USER root
+# RUN apk add --update bash vim
+# user dashuser
+# ENTRYPOINT ["bash"]
 # END DEBUG - delete me
 
-# ENTRYPOINT ["launch_dash.sh"]
+ENTRYPOINT ["launch_dash.sh"]
