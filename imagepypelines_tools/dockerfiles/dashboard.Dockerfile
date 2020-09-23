@@ -1,6 +1,7 @@
 FROM python:3.8.5-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
 # Expose a port to communicate with the host. 5000 is for users, 9000 is for pipelines
+EXPOSE 4200
 EXPOSE 5000
 EXPOSE 9000
 
