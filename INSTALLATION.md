@@ -98,5 +98,5 @@ docker build --tag dashboard -f .\dashboard.Dockerfile .
 
 ### Run the image
 ```bash
-docker run --rm -it -p 5000:5000 -p 9000:9000 dashboard:latest
+docker run --rm -it -p 5000:5000 -p 9000:9000 -p 4200:4200 dashboard:latest
 ```
