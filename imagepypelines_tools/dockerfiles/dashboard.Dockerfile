@@ -1,6 +1,6 @@
 FROM python:3.8.5-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
-# Expose a port to communicate with the host. 5000 for dash, 9000 for chatroom
+# Expose a port to communicate with the host. 5000 is for users, 9000 is for pipelines
 EXPOSE 5000
 EXPOSE 9000
 
@@ -27,10 +27,20 @@ ARG IP_TOOLS_BRANCH="angular-ui-install-refactor"
 
 # fetch and install imagepypelines and imagepypelines-tools
 RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
+    git clone --single-branch -b $IP_TOOLS_BRANCH https://github.com/jmaggio14/imagepypelines-tools.git
+
+# install dependencies
+RUN cd imagepypelines-tools && \
+    pip install -r requirements.txt && \
+    cd .. && \
     cd imagepypelines && \
+    pip install -r requirements.txt && \
+    cd ..
+
+# install projects
+RUN cd imagepypelines && \
     pip install . && \
     cd .. && \
-    git clone --single-branch -b $IP_TOOLS_BRANCH https://github.com/jmaggio14/imagepypelines-tools.git && \
     cd imagepypelines-tools && \
     pip install . && \
     cd ..
