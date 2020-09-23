@@ -224,7 +224,7 @@ def shell(parser, args):
 
 ################################################################################
 def build(parser, args):
-    """builds the docker images"""
+    """builds the dashboard image"""
     # add more options and reparse the args
     parser.add_argument('--no-cache',
                         help='rebuilds the docker images without a cache',
