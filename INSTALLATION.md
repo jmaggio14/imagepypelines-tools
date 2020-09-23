@@ -85,7 +85,8 @@ The dashboard should be seeing activity being sent to it by the test pipeline!
 
 
 ## Using Docker
-This is still a work in progress. Please try this on your own machines to verify
+This is still a work in progress. This will attempt to launch the dashboard
+on localhost port 5000. You will have to manually ping it
 
 *assuming you are on branch angular-ui-install-refactor*
 
