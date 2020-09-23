@@ -1,9 +1,10 @@
 FROM python:3.8.5-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
-# Expose a port to communicate with the host. 5000 is default for our app
+# Expose a port to communicate with the host. 5000 for dash, 9000 for chatroom
 EXPOSE 5000
+EXPOSE 9000
 
-# install minimum dependencies for pip numpy, cryptography, and gevent installs
+# install minimum dependencies for numpy, cryptography, and gevent installs
 RUN apk add --update gcc gfortran musl-dev freetype-dev libressl-dev libffi-dev make
 
 # setup user "dash" for our dashboard
@@ -47,5 +48,11 @@ RUN cd /dash/imagepypelines-tools/ip-client && \
 ENV PATH="/dash/.local/bin:${PATH}"
 # start the dashboard at runtime
 COPY launch_dash.sh /usr/local/bin/
-EXPOSE 9000
-ENTRYPOINT ["launch_dash.sh"]
+
+# DEBUG - to setup an interactive shell - delete me!
+USER root
+RUN apk add --update bash vim
+ENTRYPOINT ["bash"]
+# END DEBUG - delete me
+
+# ENTRYPOINT ["launch_dash.sh"]
