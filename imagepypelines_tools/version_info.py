@@ -28,7 +28,7 @@ __all__ = [
 __name__ = 'imagepypelines-tools'
 __version__ = '0.6.0-alpha'
 __description__ = 'accessory library to augment the image processing library imagepypelines'
-__author__ = 'Jeff Maggio, Nathan Dileas, Ryan Hartzell, Jai Mehra'
+__author__ = 'Jeff Maggio, Nathan Dileas, Ryan Hartzell, Jai Mehra, Joe Bartelmo'
 __email__ = "jmaggio14@gmail.com"
 __license__ = "MIT"
 __url__ = "https://www.imagepypelines.org"
@@ -60,6 +60,6 @@ __classifiers__ = [
     'Natural Language :: English',
     ]
 
-__credits__ = ["Jeff Maggio", "Nathan Dileas", "Ryan Hartzell", "Jai Mehra"]
+__credits__ = ["Jeff Maggio", "Nathan Dileas", "Ryan Hartzell", "Jai Mehra", "Joe Bartelmo"]
 __status__ = "Experimental"
-__copyright__ = "Copyright 2018 (c) " + __author__
+__copyright__ = "Copyright 2018-2020 (c) " + __author__

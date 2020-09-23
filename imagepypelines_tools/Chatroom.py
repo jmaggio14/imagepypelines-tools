@@ -2,7 +2,6 @@ from imagepypelines.core.util import BaseCommThread, TCPServer, EventQueue
 from functools import partial
 from json import loads, dumps
 from struct import pack, unpack
-from dataclasses import dataclass
 from typing import Tuple
 import select
 import threading
@@ -96,7 +95,7 @@ class Chatroom(BaseCommThread):
                 _msg = loads(msg)
             except:
                 print("OOOOOOOF @ JSON BOIIIIII")
-                
+
             print("Type of _msg is.....   ", type(_msg))
             uuid = _msg['uuid']
             print("Retrieved uuid is...   ", uuid)

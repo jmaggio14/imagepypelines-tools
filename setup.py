@@ -14,6 +14,11 @@ if os.path.exists(os.path.join(current_dir,'README.rst')):
     with open(os.path.join(current_dir,'README.rst'), 'r') as f:
         long_description = f.read()
 
+# load in list of requirements
+requirements_path = os.path.join(current_dir,'requirements.txt')
+with open(requirements_path,'r') as f:
+    requirements = f.read().splitlines()
+
 setup(name='imagepypelines-tools',
       version=__version__,
       description=__description__,
@@ -32,5 +37,6 @@ setup(name='imagepypelines-tools',
       classifiers=__classifiers__,
       packages=find_packages(),
       include_package_data=True,
+      install_requires=requirements,
       entry_points={'console_scripts': ['imagepypelines = imagepypelines_tools:main'],}
       )
