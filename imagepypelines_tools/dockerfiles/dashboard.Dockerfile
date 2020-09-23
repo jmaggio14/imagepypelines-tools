@@ -7,7 +7,7 @@ EXPOSE 9000
 # install minimum dependencies for numpy, cryptography, and gevent installs
 RUN apk add --update gcc gfortran musl-dev freetype-dev libressl-dev libffi-dev make
 
-# setup user "dash" for our dashboard
+# setup user "dashuser" for our dashboard
 WORKDIR /dash
 RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
@@ -62,6 +62,7 @@ COPY launch_dash.sh /usr/local/bin/
 # DEBUG - to setup an interactive shell - delete me!
 USER root
 RUN apk add --update bash vim
+user dashuser
 ENTRYPOINT ["bash"]
 # END DEBUG - delete me
 
