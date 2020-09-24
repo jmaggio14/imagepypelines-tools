@@ -57,13 +57,20 @@ RUN cd /dash/imagepypelines-tools/ip-client && \
 
 # add the flask and imagepypelines scripts to the path
 ENV PATH="/dash/.local/bin:${PATH}"
+# add the launch_dash script to the path
+ENV PATH="/usr/local/bin:${PATH}"
 # start the dashboard at runtime
 COPY launch_dash.sh /usr/local/bin/
+
+# Change launch_dash into an executable
+USER root
+RUN chmod 777 /usr/local/bin/launch_dash.sh
+USER dashuser
 
 # DEBUG - to setup an interactive shell - delete me!
 # USER root
 # RUN apk add --update bash vim
-# user dashuser
+# USER dashuser
 # ENTRYPOINT ["bash"]
 # END DEBUG - delete me
 

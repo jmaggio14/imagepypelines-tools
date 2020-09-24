@@ -323,7 +323,10 @@ def dashboard(parser, args):
 
     # this will be switched to execution using Gevent or WSGI (link from Jai)
     # https://flask.palletsprojects.com/en/1.1.x/deploying/wsgi-standalone/
-    subprocess.call([sys.executable, FLASK_APP])
+    # subprocess.call([sys.executable, FLASK_APP])
+
+    # RYAN: THIS IS ALL THIS COMMAND SHOULD DO
+    subprocess.run(["python",FLASK_APP])
 
 ################################################################################
 def ping(parser, args):
