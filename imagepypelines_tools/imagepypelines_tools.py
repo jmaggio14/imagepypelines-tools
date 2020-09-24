@@ -54,14 +54,14 @@ else:
 
 FLASK_APP = pkg_resources.resource_filename(__name__, "app.py")
 
-DEFAULT_VOLUMES = ['{0}:{1}'.format(WORKING_DIR, POSIX_PATH)]
-BASE_TAGS = ['imagepypelines/imagepypelines-tools:base',
-                'imagepypelines/imagepypelines-tools:gpu']
+BASE_TAGS = ['imagepypelines/imagepypelines-tools:dashboard']
 TAGS = [tag + '-%s' % __version__ for tag in BASE_TAGS]
-UPDATE_TAGS = ["imagepypelines/imagepypelines-tools:latest",
-                "imagepypelines/imagepypelines-tools:latest-gpu"]
-HOSTNAMES = ['imagepypelines', 'imagepypelines-gpu']
+UPDATE_TAGS = ["imagepypelines/imagepypelines-tools:latest"]
+HOSTNAMES = ['dashboard']
 REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/imagepypelines-tools/tags"
+
+CHATROOM_PORT = 9000
+DASHBOARD_PORT = 5000
 ################################################################################
 #                                   UTIL
 ################################################################################
@@ -128,111 +128,109 @@ def make_ping_pipeline():
 ################################################################################
 #                                 Commands
 ################################################################################
-def shell(parser, args):
-    """launches the ImagePypelines Shell container"""
-    # TO DO - add nested parsers using parser 'parent' argument
-    # action == 'shell' | subcommand options
-    parser.add_argument('--display',
-                        default=':0',
-                        help="overload the display variable for X11 access")
-    parser.add_argument('-v', '--volume',
-                        action='append',
-                        default=[])
-    parser.add_argument('--gpu',
-                        help='launch a container that attempts to access the gpu',
-                        action='store_true')
-    parser.add_argument('--nest',
-                        help='force launching nested containers within containers',
-                        action='store_true')
-    parser.add_argument('--supress-welcome',
-                        help='supress the welcome message',
-                        action='store_true')
-
-    args = parser.parse_args()
-
-    image = TAGS[args.gpu]
-
-    if args.gpu:
-        # check if nvidia-docker is installed if we are launching GPU image
-        command, ver = "nvidia-docker", "version"
-        check_docker(command,ver)
-    else:
-        # check if docker is installed if we are running a cpu image
-        command, ver = "docker","--version"
-        check_docker(command,ver)
-
-    # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
-    # launching ip environments inside ip environments. this can be disabled
-    # by the user if they wish
-    if "IP_ABORT_NESTED_SHELLS" in os.environ:
-        if args.nested:
-            should_launch = True
-        else:
-            should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in [
-                                 "YES", "1", "TRUE", "ON"])
-
-    else:
-        should_launch = True
-
-    if should_launch == False:
-        print("error: canceling shell launch to avoid nested environments")
-        print("to force nested environments, you can set the environmental"
-              + "variable IP_ABORT_NESTED_SHELLS=OFF")
-        sys.exit(1)
-
-    # Docker commands
-    # ---- prep the docker command ----
-    cmd = [command,
-           'run',
-           # make interactive
-           '-it',
-           # set working directory
-           '-w', '{0}'.format(POSIX_PATH),
-           # set (and remove) limits on hardware resources
-           '--security-opt=seccomp:unconfined',
-           '--privileged',
-           '--net=host',
-           '--ulimit', 'rtprio=99:99',
-           '--ulimit', 'nice=-20:-20',
-           # automatically remove the container
-           '--rm',
-           # set a recognizable hostname
-           '--hostname', HOSTNAMES[args.gpu],
-           # X11
-           '-e', 'DISPLAY={0}'.format(args.display),
-           '-e', 'QT_X11_NO_MITSHM=1',
-           # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
-           '-e', 'force_color_prompt=1',
-           '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
-           '-e', 'IP_SUPRESS_WELCOME={}'.format('ON' if args.supress_welcome else 'OFF'),
-           ]
-    # add default and user-defined volumes to the path
-    volumes = DEFAULT_VOLUMES + args.volume
-    for path in volumes:
-        cmd.extend(['-v', path])
-
-    # add environmental variable containing all the mounted paths
-    cmd.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
-
-    # append the image name to the command
-    cmd.append(image)
-    cmd.append("bash")
-
-    # launch the shell
-    print("launching docker image: {}".format(image))
-    subprocess.call(cmd)
+# def shell(parser, args):
+#     """launches the ImagePypelines Shell container"""
+#     # TO DO - add nested parsers using parser 'parent' argument
+#     # action == 'shell' | subcommand options
+#     parser.add_argument('--display',
+#                         default=':0',
+#                         help="overload the display variable for X11 access")
+#     parser.add_argument('-v', '--volume',
+#                         action='append',
+#                         default=[])
+#     parser.add_argument('--gpu',
+#                         help='launch a container that attempts to access the gpu',
+#                         action='store_true')
+#     parser.add_argument('--nest',
+#                         help='force launching nested containers within containers',
+#                         action='store_true')
+#     parser.add_argument('--supress-welcome',
+#                         help='supress the welcome message',
+#                         action='store_true')
+#
+#     args = parser.parse_args()
+#
+#     image = TAGS[args.gpu]
+#
+#     if args.gpu:
+#         # check if nvidia-docker is installed if we are launching GPU image
+#         command, ver = "nvidia-docker", "version"
+#         check_docker(command,ver)
+#     else:
+#         # check if docker is installed if we are running a cpu image
+#         command, ver = "docker","--version"
+#         check_docker(command,ver)
+#
+#     # check if the variable "IP_ABORT_NESTED_SHELLS" is True to prevent
+#     # launching ip environments inside ip environments. this can be disabled
+#     # by the user if they wish
+#     if "IP_ABORT_NESTED_SHELLS" in os.environ:
+#         if args.nested:
+#             should_launch = True
+#         else:
+#             should_launch = not (os.environ["IP_ABORT_NESTED_SHELLS"].upper() in [
+#                                  "YES", "1", "TRUE", "ON"])
+#
+#     else:
+#         should_launch = True
+#
+#     if should_launch == False:
+#         print("error: canceling shell launch to avoid nested environments")
+#         print("to force nested environments, you can set the environmental"
+#               + "variable IP_ABORT_NESTED_SHELLS=OFF")
+#         sys.exit(1)
+#
+#     # Docker commands
+#     # ---- prep the docker command ----
+#     cmd = [command,
+#            'run',
+#            # make interactive
+#            '-it',
+#            # set working directory
+#            '-w', '{0}'.format(POSIX_PATH),
+#            # set (and remove) limits on hardware resources
+#            '--security-opt=seccomp:unconfined',
+#            '--privileged',
+#            '--net=host',
+#            '--ulimit', 'rtprio=99:99',
+#            '--ulimit', 'nice=-20:-20',
+#            # automatically remove the container
+#            '--rm',
+#            # set a recognizable hostname
+#            '--hostname', HOSTNAMES[args.gpu],
+#            # X11
+#            '-e', 'DISPLAY={0}'.format(args.display),
+#            '-e', 'QT_X11_NO_MITSHM=1',
+#            # '-e', 'XAUTHORITY=/tmp/.docker.xauth',
+#            '-e', 'force_color_prompt=1',
+#            '-e', 'IP_TOOLS_VERSION={}'.format(__version__),
+#            '-e', 'IP_SUPRESS_WELCOME={}'.format('ON' if args.supress_welcome else 'OFF'),
+#            ]
+#     # add default and user-defined volumes to the path
+#     volumes = DEFAULT_VOLUMES + args.volume
+#     for path in volumes:
+#         cmd.extend(['-v', path])
+#
+#     # add environmental variable containing all the mounted paths
+#     cmd.extend(['-e', 'MOUNTED_VOLUMES={}'.format(''.join(["  {}\n".format(v) for v in volumes]))])
+#
+#     # append the image name to the command
+#     cmd.append(image)
+#     cmd.append("bash")
+#
+#     # launch the shell
+#     print("launching docker image: {}".format(image))
+#     subprocess.call(cmd)
 
 ################################################################################
 def build(parser, args):
-    """builds the docker images"""
+    """builds the dashboard image"""
     # add more options and reparse the args
     parser.add_argument('--no-cache',
                         help='rebuilds the docker images without a cache',
                         action='store_true')
 
     args = parser.parse_args()
-
-
 
     # check if docker is installed
     check_docker('docker','--version')
@@ -289,6 +287,30 @@ def push(parser, args):
             subprocess.call(["docker", "push", full_tag])
 
 ################################################################################
+# def docker_dashboard(parser, args):
+#     """launches the dashboard in a docker container"""
+#     check_docker('docker','--version')
+#
+#     parser.add_argument('chatroom-port',
+#                         help='rebuilds the docker images without a cache',
+#                         type=int,
+#                         required=True)
+#
+#     parser.add_argument('dashboard-port',
+#                         help='rebuilds the docker images without a cache',
+#                         type=int,
+#                         required=True)
+#
+#
+#
+#
+#     cmd = ['docker',
+#             'run',
+#             '-p', "",
+#             BUILD_DIR,
+#             ]
+
+################################################################################
 def dashboard(parser, args):
     """launches the dashboard"""
     # ideas for additonal flags (I just chose explicit names for now -JM)
@@ -301,7 +323,11 @@ def dashboard(parser, args):
 
     # this will be switched to execution using Gevent or WSGI (link from Jai)
     # https://flask.palletsprojects.com/en/1.1.x/deploying/wsgi-standalone/
-    subprocess.call([sys.executable, FLASK_APP])
+    # subprocess.call([sys.executable, FLASK_APP])
+
+    # RYAN: THIS IS ALL THIS COMMAND SHOULD DO
+    # Jeff we need sys.executable here. "python" could refer to python2 on the host
+    subprocess.run([sys.executable, FLASK_APP])
 
 ################################################################################
 def ping(parser, args):
