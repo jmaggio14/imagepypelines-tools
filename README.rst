@@ -47,6 +47,8 @@ Tags
 
 Latest
 -------
+    pip install imagepypelines-tools
+    imagepypelines shell
 
 Base (no GPU)
 ^^^^^^^^^^^^^
@@ -79,3 +81,5 @@ Older Releases
 .. 0.3.3
 .. _base-0.3.3-alpha: `https://github.com/jmaggio14/imagepypelines-tools/blob/90b028647411e443d7c1b31b8a829e648826dec4/dockerfiles/imagepypelines-base.Dockerfile`
 .. _gpu-0.3.3-alpha: ``https://github.com/jmaggio14/imagepypelines-tools/blob/90b028647411e443d7c1b31b8a829e648826dec4/dockerfiles/imagepypelines-gpu.Dockerfile``
+    pip install imagepypelines-tools
+    imagepypelines shell --gpu

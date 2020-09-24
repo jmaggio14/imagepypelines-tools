@@ -1,0 +1,15 @@
+{
+    "type": "block_error",
+    "name": "Pipeline",
+    "id": "Pipeline#204bb7",
+    "uuid": "0fcac76fc9d24de79272fc7f73204bb7",
+    "source_type": "pipeline",
+    "payload": {
+        "node_id": "error_blocka670ce5972e149d185046d23923ec755-node",
+        "block_name": "error_block",
+        "block_id": "error_block#041f8b",
+        "block_uuid": "f586212c1b604bb19c2f527ee5041f8b",
+        "error_type": "<class 'TypeError'>",
+        "error_msg": "this is the error message"
+    }
+}

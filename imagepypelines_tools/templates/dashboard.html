@@ -1,0 +1,34 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>ImagePypelines Dashboard</title>
+  <meta name="description" content="IP.Dashboard">
+  <meta name="author" content="ImagePypelines Team">
+
+</head>
+
+<body>
+
+  <div>
+    <p>Cool header's with tabs for Session and Pipeline selection on the top, with a logo and a collapsible info/summary pane for whatever is selected.
+    On the left will be a block selector (WHICH THERE IS LITERALY AN EXAMPLE FOR ON RETE.JS HOMEPAGE!!! :D) and on the right will be a summary pane for blocks I think.
+    Other option would be to have a side pane which shows Pipeline-level info along with configuration details and dashboard settings, which might be useful if we can
+     get a hover action working on each block to get realtime info</p>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf-8">
+    console.log("Yo yo yo we in it fam")
+    var socket = io();
+    // socket.on('connect', function() {
+    //     socket.emit('connected', {data: 'I\'m connected!'});
+    // });
+    socket.on('pipeline-update', function(msg) {
+        console.log(msg)
+    });
+  </script>
+</body>
+</html>

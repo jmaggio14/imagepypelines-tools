@@ -1,0 +1,855 @@
+{
+    "type": "graph",
+    "name": "Pipeline",
+    "id": "Pipeline#ad5ac1",
+    "uuid": "85af2e5a2b564f3a8f9971c21cad5ac1",
+    "source_type": "pipeline",
+    "payload": {
+        "args": [
+            "a",
+            "b",
+            "c"
+        ],
+        "block_docs": {
+            "InputNone#6fb745": {
+                "name": "InputNone",
+                "id": "InputNone#6fb745",
+                "uuid": "75b1683e54924019b03d148e096fb745",
+                "args": [],
+                "types": {},
+                "shapes": {},
+                "skip_enforcement": false,
+                "batch_type": "all",
+                "tags": [],
+                "class_name": "Input",
+                "DOCS": {
+                    "class": "An object to inject data into the graph\n\nAttributes:\n    data(any type):\n    loaded(bool): where",
+                    "__init__": "instantiates the Input\n\nArgs:\n    index(int,None): index of the input into the Pipeline",
+                    "process": "returns the loaded data"
+                }
+            },
+            "block1#517e39": {
+                "name": "block1",
+                "id": "block1#517e39",
+                "uuid": "d5b9e4e61bae414c958c507a27517e39",
+                "args": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "types": {
+                    "a": "<class 'numpy.ndarray'>",
+                    "b": "None",
+                    "c": "None"
+                },
+                "shapes": {
+                    "a": [
+                        [
+                            200,
+                            null
+                        ]
+                    ],
+                    "b": null,
+                    "c": null
+                },
+                "skip_enforcement": false,
+                "batch_type": "each",
+                "tags": [],
+                "class_name": "FuncBlock",
+                "DOCS": {
+                    "class": "Block that will run any function you give it, either unfettered through\nthe __call__ function, or with optional hardcoded parameters for use in a\npipeline. Typically the FuncBlock is only used in the :obj:`blockify`\ndecorator method.\n\nAttributes:\n    func(function): the function to call internally\n    preset_kwargs(dict): preset keyword arguments, typically used for\n        arguments that are not data to process",
+                    "__init__": "instantiates the function block\n\nArgs:\n    func (function): the function you desire to turn into a block\n    preset_kwargs (dict): preset keyword arguments, typically used for\n        arguments that are not data to process\n    **block_kwargs: keyword arguments for :obj:`Block` instantiation",
+                    "process": null
+                }
+            },
+            "InputNone#6da8e0": {
+                "name": "InputNone",
+                "id": "InputNone#6da8e0",
+                "uuid": "cc9cd4659d4c451da90cba93b06da8e0",
+                "args": [],
+                "types": {},
+                "shapes": {},
+                "skip_enforcement": false,
+                "batch_type": "all",
+                "tags": [],
+                "class_name": "Input",
+                "DOCS": {
+                    "class": "An object to inject data into the graph\n\nAttributes:\n    data(any type):\n    loaded(bool): where",
+                    "__init__": "instantiates the Input\n\nArgs:\n    index(int,None): index of the input into the Pipeline",
+                    "process": "returns the loaded data"
+                }
+            },
+            "InputNone#12d786": {
+                "name": "InputNone",
+                "id": "InputNone#12d786",
+                "uuid": "7a1d36318b4647e0b999d8167512d786",
+                "args": [],
+                "types": {},
+                "shapes": {},
+                "skip_enforcement": false,
+                "batch_type": "all",
+                "tags": [],
+                "class_name": "Input",
+                "DOCS": {
+                    "class": "An object to inject data into the graph\n\nAttributes:\n    data(any type):\n    loaded(bool): where",
+                    "__init__": "instantiates the Input\n\nArgs:\n    index(int,None): index of the input into the Pipeline",
+                    "process": "returns the loaded data"
+                }
+            },
+            "block1#62b8bc": {
+                "name": "block1",
+                "id": "block1#62b8bc",
+                "uuid": "bac81a1e51f149fa8c85c071cc62b8bc",
+                "args": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "types": {
+                    "a": "<class 'numpy.ndarray'>",
+                    "b": "None",
+                    "c": "None"
+                },
+                "shapes": {
+                    "a": [
+                        [
+                            null,
+                            200
+                        ]
+                    ],
+                    "b": null,
+                    "c": null
+                },
+                "skip_enforcement": false,
+                "batch_type": "each",
+                "tags": [],
+                "class_name": "FuncBlock",
+                "DOCS": {
+                    "class": "Block that will run any function you give it, either unfettered through\nthe __call__ function, or with optional hardcoded parameters for use in a\npipeline. Typically the FuncBlock is only used in the :obj:`blockify`\ndecorator method.\n\nAttributes:\n    func(function): the function to call internally\n    preset_kwargs(dict): preset keyword arguments, typically used for\n        arguments that are not data to process",
+                    "__init__": "instantiates the function block\n\nArgs:\n    func (function): the function you desire to turn into a block\n    preset_kwargs (dict): preset keyword arguments, typically used for\n        arguments that are not data to process\n    **block_kwargs: keyword arguments for :obj:`Block` instantiation",
+                    "process": null
+                }
+            }
+        },
+        "nodes": {
+            "InputNonebf37de45b9804da4b89433c637768fb7-node": {
+                "args": [],
+                "outputs": [
+                    "a"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "InputNone",
+                "color": "blue",
+                "shape": "pentagon",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                "batch_type": "all"
+            },
+            "InputNonea04d37435b14491aa136e984ae868f28-node": {
+                "args": [],
+                "outputs": [
+                    "b"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "InputNone",
+                "color": "blue",
+                "shape": "pentagon",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                "batch_type": "all"
+            },
+            "InputNone14dee82c524846b284ae231acbc18ecb-node": {
+                "args": [],
+                "outputs": [
+                    "c"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "InputNone",
+                "color": "blue",
+                "shape": "pentagon",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                "batch_type": "all"
+            },
+            "block1e9fbab0a03be44c5be5da61c84687dce-node": {
+                "args": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "outputs": [
+                    "d1",
+                    "e1",
+                    "f1"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "block1",
+                "color": "orange",
+                "shape": "square",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.FuncBlock'>",
+                "batch_type": "each"
+            },
+            "block1ac69e83f71d64d0b8d0abaa842277ae8-node": {
+                "args": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "outputs": [
+                    "d2",
+                    "e2",
+                    "f2"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "block1",
+                "color": "orange",
+                "shape": "square",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.FuncBlock'>",
+                "batch_type": "each"
+            },
+            "d13f6fb92bd84842959740bae3ab4f372e-node": {
+                "args": [
+                    "d1"
+                ],
+                "outputs": [
+                    "d1"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "d1",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            },
+            "e1a7d73ceb170b48849dcc7683269bd537-node": {
+                "args": [
+                    "e1"
+                ],
+                "outputs": [
+                    "e1"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "e1",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            },
+            "f15eebf7e16e29485e8c7341282b349cb3-node": {
+                "args": [
+                    "f1"
+                ],
+                "outputs": [
+                    "f1"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "f1",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            },
+            "d2137b509d48754134b0f73f943e7df7a9-node": {
+                "args": [
+                    "d2"
+                ],
+                "outputs": [
+                    "d2"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "d2",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            },
+            "e2bc3dbfa6aa01475f8209462f051a706a-node": {
+                "args": [
+                    "e2"
+                ],
+                "outputs": [
+                    "e2"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "e2",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            },
+            "f23f3a9cb786524d19a6f5e5fd9b374393-node": {
+                "args": [
+                    "f2"
+                ],
+                "outputs": [
+                    "f2"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "not started",
+                "name": "f2",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            }
+        },
+        "edges": {
+            "InputNonebf37de45b9804da4b89433c637768fb7-node|block1e9fbab0a03be44c5be5da61c84687dce-node|a:0-->0": {
+                "var_name": "a",
+                "out_index": 0,
+                "in_index": 0,
+                "name": "a",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "InputNonebf37de45b9804da4b89433c637768fb7-node|block1ac69e83f71d64d0b8d0abaa842277ae8-node|a:0-->0": {
+                "var_name": "a",
+                "out_index": 0,
+                "in_index": 0,
+                "name": "a",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "InputNonea04d37435b14491aa136e984ae868f28-node|block1e9fbab0a03be44c5be5da61c84687dce-node|b:0-->1": {
+                "var_name": "b",
+                "out_index": 0,
+                "in_index": 1,
+                "name": "b",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "InputNonea04d37435b14491aa136e984ae868f28-node|block1ac69e83f71d64d0b8d0abaa842277ae8-node|b:0-->1": {
+                "var_name": "b",
+                "out_index": 0,
+                "in_index": 1,
+                "name": "b",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "InputNone14dee82c524846b284ae231acbc18ecb-node|block1e9fbab0a03be44c5be5da61c84687dce-node|c:0-->2": {
+                "var_name": "c",
+                "out_index": 0,
+                "in_index": 2,
+                "name": "c",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "InputNone14dee82c524846b284ae231acbc18ecb-node|block1ac69e83f71d64d0b8d0abaa842277ae8-node|c:0-->2": {
+                "var_name": "c",
+                "out_index": 0,
+                "in_index": 2,
+                "name": "c",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1e9fbab0a03be44c5be5da61c84687dce-node|d13f6fb92bd84842959740bae3ab4f372e-node|d1:0-->0": {
+                "var_name": "d1",
+                "out_index": 0,
+                "in_index": 0,
+                "name": "d1",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1e9fbab0a03be44c5be5da61c84687dce-node|e1a7d73ceb170b48849dcc7683269bd537-node|e1:1-->0": {
+                "var_name": "e1",
+                "out_index": 1,
+                "in_index": 0,
+                "name": "e1",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1e9fbab0a03be44c5be5da61c84687dce-node|f15eebf7e16e29485e8c7341282b349cb3-node|f1:2-->0": {
+                "var_name": "f1",
+                "out_index": 2,
+                "in_index": 0,
+                "name": "f1",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1ac69e83f71d64d0b8d0abaa842277ae8-node|d2137b509d48754134b0f73f943e7df7a9-node|d2:0-->0": {
+                "var_name": "d2",
+                "out_index": 0,
+                "in_index": 0,
+                "name": "d2",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1ac69e83f71d64d0b8d0abaa842277ae8-node|e2bc3dbfa6aa01475f8209462f051a706a-node|e2:1-->0": {
+                "var_name": "e2",
+                "out_index": 1,
+                "in_index": 0,
+                "name": "e2",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            },
+            "block1ac69e83f71d64d0b8d0abaa842277ae8-node|f23f3a9cb786524d19a6f5e5fd9b374393-node|f2:2-->0": {
+                "var_name": "f2",
+                "out_index": 2,
+                "in_index": 0,
+                "name": "f2",
+                "is_homogenus": "unknown",
+                "n_items": 0,
+                "datatype": "None"
+            }
+        },
+        "node-link": {
+            "directed": true,
+            "multigraph": true,
+            "graph": {},
+            "nodes": [
+                {
+                    "args": [],
+                    "outputs": [
+                        "a"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "InputNone",
+                    "color": "blue",
+                    "shape": "pentagon",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                    "batch_type": "all",
+                    "id": "InputNonebf37de45b9804da4b89433c637768fb7-node"
+                },
+                {
+                    "args": [],
+                    "outputs": [
+                        "b"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "InputNone",
+                    "color": "blue",
+                    "shape": "pentagon",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                    "batch_type": "all",
+                    "id": "InputNonea04d37435b14491aa136e984ae868f28-node"
+                },
+                {
+                    "args": [],
+                    "outputs": [
+                        "c"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "InputNone",
+                    "color": "blue",
+                    "shape": "pentagon",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Input'>",
+                    "batch_type": "all",
+                    "id": "InputNone14dee82c524846b284ae231acbc18ecb-node"
+                },
+                {
+                    "args": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "outputs": [
+                        "d1",
+                        "e1",
+                        "f1"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "block1",
+                    "color": "orange",
+                    "shape": "square",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.FuncBlock'>",
+                    "batch_type": "each",
+                    "id": "block1e9fbab0a03be44c5be5da61c84687dce-node"
+                },
+                {
+                    "args": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "outputs": [
+                        "d2",
+                        "e2",
+                        "f2"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "block1",
+                    "color": "orange",
+                    "shape": "square",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.FuncBlock'>",
+                    "batch_type": "each",
+                    "id": "block1ac69e83f71d64d0b8d0abaa842277ae8-node"
+                },
+                {
+                    "args": [
+                        "d1"
+                    ],
+                    "outputs": [
+                        "d1"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "d1",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "d13f6fb92bd84842959740bae3ab4f372e-node"
+                },
+                {
+                    "args": [
+                        "e1"
+                    ],
+                    "outputs": [
+                        "e1"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "e1",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "e1a7d73ceb170b48849dcc7683269bd537-node"
+                },
+                {
+                    "args": [
+                        "f1"
+                    ],
+                    "outputs": [
+                        "f1"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "f1",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "f15eebf7e16e29485e8c7341282b349cb3-node"
+                },
+                {
+                    "args": [
+                        "d2"
+                    ],
+                    "outputs": [
+                        "d2"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "d2",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "d2137b509d48754134b0f73f943e7df7a9-node"
+                },
+                {
+                    "args": [
+                        "e2"
+                    ],
+                    "outputs": [
+                        "e2"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "e2",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "e2bc3dbfa6aa01475f8209462f051a706a-node"
+                },
+                {
+                    "args": [
+                        "f2"
+                    ],
+                    "outputs": [
+                        "f2"
+                    ],
+                    "validation_time": null,
+                    "processing_time": null,
+                    "avg_time_per_datum": null,
+                    "num_in": null,
+                    "n_batches": null,
+                    "pid": null,
+                    "status": "not started",
+                    "name": "f2",
+                    "color": "green",
+                    "shape": "ellipsis",
+                    "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                    "batch_type": "all",
+                    "id": "f23f3a9cb786524d19a6f5e5fd9b374393-node"
+                }
+            ],
+            "links": [
+                {
+                    "var_name": "a",
+                    "out_index": 0,
+                    "in_index": 0,
+                    "name": "a",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNonebf37de45b9804da4b89433c637768fb7-node",
+                    "target": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "key": "a:0-->0"
+                },
+                {
+                    "var_name": "a",
+                    "out_index": 0,
+                    "in_index": 0,
+                    "name": "a",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNonebf37de45b9804da4b89433c637768fb7-node",
+                    "target": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "key": "a:0-->0"
+                },
+                {
+                    "var_name": "b",
+                    "out_index": 0,
+                    "in_index": 1,
+                    "name": "b",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNonea04d37435b14491aa136e984ae868f28-node",
+                    "target": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "key": "b:0-->1"
+                },
+                {
+                    "var_name": "b",
+                    "out_index": 0,
+                    "in_index": 1,
+                    "name": "b",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNonea04d37435b14491aa136e984ae868f28-node",
+                    "target": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "key": "b:0-->1"
+                },
+                {
+                    "var_name": "c",
+                    "out_index": 0,
+                    "in_index": 2,
+                    "name": "c",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNone14dee82c524846b284ae231acbc18ecb-node",
+                    "target": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "key": "c:0-->2"
+                },
+                {
+                    "var_name": "c",
+                    "out_index": 0,
+                    "in_index": 2,
+                    "name": "c",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "InputNone14dee82c524846b284ae231acbc18ecb-node",
+                    "target": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "key": "c:0-->2"
+                },
+                {
+                    "var_name": "d1",
+                    "out_index": 0,
+                    "in_index": 0,
+                    "name": "d1",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "target": "d13f6fb92bd84842959740bae3ab4f372e-node",
+                    "key": "d1:0-->0"
+                },
+                {
+                    "var_name": "e1",
+                    "out_index": 1,
+                    "in_index": 0,
+                    "name": "e1",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "target": "e1a7d73ceb170b48849dcc7683269bd537-node",
+                    "key": "e1:1-->0"
+                },
+                {
+                    "var_name": "f1",
+                    "out_index": 2,
+                    "in_index": 0,
+                    "name": "f1",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1e9fbab0a03be44c5be5da61c84687dce-node",
+                    "target": "f15eebf7e16e29485e8c7341282b349cb3-node",
+                    "key": "f1:2-->0"
+                },
+                {
+                    "var_name": "d2",
+                    "out_index": 0,
+                    "in_index": 0,
+                    "name": "d2",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "target": "d2137b509d48754134b0f73f943e7df7a9-node",
+                    "key": "d2:0-->0"
+                },
+                {
+                    "var_name": "e2",
+                    "out_index": 1,
+                    "in_index": 0,
+                    "name": "e2",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "target": "e2bc3dbfa6aa01475f8209462f051a706a-node",
+                    "key": "e2:1-->0"
+                },
+                {
+                    "var_name": "f2",
+                    "out_index": 2,
+                    "in_index": 0,
+                    "name": "f2",
+                    "is_homogenus": "unknown",
+                    "n_items": 0,
+                    "datatype": "None",
+                    "source": "block1ac69e83f71d64d0b8d0abaa842277ae8-node",
+                    "target": "f23f3a9cb786524d19a6f5e5fd9b374393-node",
+                    "key": "f2:2-->0"
+                }
+            ]
+        }
+    }
+}

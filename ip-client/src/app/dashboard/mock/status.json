@@ -1,0 +1,42 @@
+{
+    "type": "status",
+    "name": "Status",
+    "id": "Pipeline#204bb7",
+    "uuid": "ffcac76fc9d24de79272fc7f73204bb7",
+    "source_type": "pipeline",
+    "payload": {
+        "nodes": {
+            "d13f6fb92bd84842959740bae3ab4f372e-node": {
+                "args": [
+                    "d1"
+                ],
+                "outputs": [
+                    "d1"
+                ],
+                "validation_time": null,
+                "processing_time": null,
+                "avg_time_per_datum": null,
+                "num_in": null,
+                "n_batches": null,
+                "pid": null,
+                "status": "done",
+                "name": "d1",
+                "color": "green",
+                "shape": "ellipsis",
+                "class_name": "<class 'imagepypelines.core.block_subclasses.Leaf'>",
+                "batch_type": "all"
+            }
+        },
+        "edges": {
+            "block1e9fbab0a03be44c5be5da61c84687dce-node|d13f6fb92bd84842959740bae3ab4f372e-node|d1:0-->0": {
+                "var_name": "d1",
+                "out_index": 0,
+                "in_index": 0,
+                "name": "d1",
+                "is_homogenus": null,
+                "n_items": 1,
+                "datatype": "<class 'str'>"
+            }
+        }
+    }
+}
