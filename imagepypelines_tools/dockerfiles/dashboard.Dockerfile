@@ -26,7 +26,7 @@ USER dashuser
 # What branch do we want to clone - eventually this will be phased out when we
 # have this setup via pypi
 ARG IP_BRANCH="develop"
-ARG IP_TOOLS_BRANCH="angular-ui-install-refactor"
+ARG IP_TOOLS_BRANCH="master"
 
 # fetch and install imagepypelines and imagepypelines-tools
 RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
