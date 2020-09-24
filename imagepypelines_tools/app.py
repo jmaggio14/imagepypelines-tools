@@ -51,10 +51,10 @@ import json
 
 from Chatroom import Chatroom
 
-from . import TEMPLATES_DIR, LAYOUTS_DIR
-dashboard_html_path = os.path.join(TEMPLATES_DIR,'dashboard.html')
-login_html_path = os.path.join(TEMPLATES_DIR,'login.html')
-index_html_path = os.path.join(LAYOUTS_DIR,'index.html')
+import pkg_resources
+dashboard_html_path = pkg_resources.resource_filename(__name__, 'templates/dashboard.html')
+login_html_path = pkg_resources.resource_filename(__name__, 'templates/login.html')
+index_html_path = pkg_resources.resource_filename(__name__, 'templates/layouts/index.html')
 
 # CHATROOM_ACTIVE = False
 
