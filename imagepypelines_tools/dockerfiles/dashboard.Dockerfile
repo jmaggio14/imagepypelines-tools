@@ -14,6 +14,8 @@ RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
 USER dashuser
 
+# add the flask and imagepypelines scripts to the path
+ENV PATH="/dash/.local/bin:${PATH}"
 
 ################################################################################
 # BEGIN TEMPORARY LAYERS
@@ -55,8 +57,6 @@ RUN cd /dash/imagepypelines-tools/ip-client && \
 # END TEMPORARY LAYERS
 ################################################################################
 
-# add the flask and imagepypelines scripts to the path
-ENV PATH="/dash/.local/bin:${PATH}"
 # add the launch_dash script to the path
 # ENV PATH="/usr/local/bin:${PATH}"
 # start the dashboard at runtime

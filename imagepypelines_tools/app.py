@@ -52,13 +52,14 @@ import json
 from Chatroom import Chatroom
 
 import pkg_resources
-dashboard_html_path = pkg_resources.resource_filename(__name__, 'templates/dashboard.html')
-login_html_path = pkg_resources.resource_filename(__name__, 'templates/login.html')
-index_html_path = pkg_resources.resource_filename(__name__, 'templates/layouts/index.html')
+templates_dir = pkg_resources.resource_filename(__name__, 'templates/')
+# dashboard_html_path = pkg_resources.resource_filename(__name__, 'templates/dashboard.html')
+# login_html_path = pkg_resources.resource_filename(__name__, 'templates/login.html')
+# index_html_path = pkg_resources.resource_filename(__name__, 'templates/layouts/index.html')
 
 # CHATROOM_ACTIVE = False
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=templates_dir)
 app.debug = False
 # note: use an environment variable - jb
 app.secret_key = 'this_should_be_replaced_in_production!!!'
@@ -77,16 +78,16 @@ c.start()
 ################################################################################
 @app.route("/")
 def welcome():
-    return render_template(dashboard_html_path)
+    return render_template('dashboard.html')
 
 @app.route("/login")
 def login():
-    return render_template(login_html_path)
+    return render_template('login.html')
 
 @app.route("/login/auth")
 def auth(request):
     # follow tutorial for authentication of use Flask-Login plugin
-    return render_template(index_html_path)   # this may need to change (should show base dashboard or first pipeline listed)
+    return render_template('layouts/index.html')   # this may need to change (should show base dashboard or first pipeline listed)
 
 @app.route("/api/sessions")
 def get_sessions():
