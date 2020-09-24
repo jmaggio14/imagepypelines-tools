@@ -47,7 +47,7 @@ RUN cd imagepypelines && \
     cd ..
 
 # Install node and build the ip-client
-# (this layer will be removed once iptools move the distribution into pip)
+# (this layer will be removed once iptools moves the distribution into pip)
 RUN cd /dash/imagepypelines-tools/ip-client && \
     npm i && \
     npm run build
@@ -58,13 +58,14 @@ RUN cd /dash/imagepypelines-tools/ip-client && \
 # add the flask and imagepypelines scripts to the path
 ENV PATH="/dash/.local/bin:${PATH}"
 # add the launch_dash script to the path
-ENV PATH="/usr/local/bin:${PATH}"
+# ENV PATH="/usr/local/bin:${PATH}"
 # start the dashboard at runtime
 COPY launch_dash.sh /usr/local/bin/
 
-# Change launch_dash into an executable
+# Change launch_dash into an executable owned by dashuser
 USER root
-RUN chmod 777 /usr/local/bin/launch_dash.sh
+RUN chown dashuser: /usr/local/bin/launch_dash.sh && \
+    chmod u+x /usr/local/bin/launch_dash.sh
 USER dashuser
 
 # DEBUG - to setup an interactive shell - delete me!

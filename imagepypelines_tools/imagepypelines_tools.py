@@ -326,7 +326,8 @@ def dashboard(parser, args):
     # subprocess.call([sys.executable, FLASK_APP])
 
     # RYAN: THIS IS ALL THIS COMMAND SHOULD DO
-    subprocess.run(["python",FLASK_APP])
+    # Jeff we need sys.executable here. "python" could refer to python2 on the host
+    subprocess.run([sys.executable, FLASK_APP])
 
 ################################################################################
 def ping(parser, args):
