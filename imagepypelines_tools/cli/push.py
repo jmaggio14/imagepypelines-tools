@@ -10,9 +10,5 @@ def push(parser, args):
 
     # loop through all tags
     for tag in [GENERAL_DASHBOARD_TAG, VERSION_DASHBOARD_TAG]:
-        # if this tags exists remotely, then we abort the push
-        if tag in remote_tags:
-            print(f"error: {tag} exists remotely, skipping push!")
-        else:
-            print(f"attempting to push image {tag}")
-            subprocess.run(["docker", "push", tag])
+        print(f"attempting to push image {tag}")
+        subprocess.run(["docker", "push", tag])
