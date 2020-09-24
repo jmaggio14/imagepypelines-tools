@@ -30,18 +30,8 @@ ARG IP_TOOLS_BRANCH="angular-ui-install-refactor"
 
 # fetch and install imagepypelines and imagepypelines-tools
 RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
-    git clone --single-branch -b $IP_TOOLS_BRANCH https://github.com/jmaggio14/imagepypelines-tools.git
-
-# install dependencies
-RUN cd imagepypelines-tools && \
-    pip install -r requirements.txt && \
-    cd .. && \
+    git clone --single-branch -b $IP_TOOLS_BRANCH https://github.com/jmaggio14/imagepypelines-tools.git && \
     cd imagepypelines && \
-    pip install -r requirements.txt && \
-    cd ..
-
-# install projects
-RUN cd imagepypelines && \
     pip install . && \
     cd .. && \
     cd imagepypelines-tools && \
@@ -58,8 +48,6 @@ RUN cd /dash/imagepypelines-tools/ip-client && \
 ################################################################################
 
 # add the launch_dash script to the path
-# ENV PATH="/usr/local/bin:${PATH}"
-# start the dashboard at runtime
 COPY launch_dash.sh /usr/local/bin/
 
 # Change launch_dash into an executable owned by dashuser
