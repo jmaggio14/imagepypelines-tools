@@ -51,6 +51,11 @@ import json
 
 from Chatroom import Chatroom
 
+from . import TEMPLATES_DIR, LAYOUTS_DIR
+dashboard_html_path = os.path.join(TEMPLATES_DIR,'dashboard.html')
+login_html_path = os.path.join(TEMPLATES_DIR,'login.html')
+index_html_path = os.path.join(LAYOUTS_DIR,'index.html')
+
 # CHATROOM_ACTIVE = False
 
 app = Flask(__name__)
@@ -72,16 +77,16 @@ c.start()
 ################################################################################
 @app.route("/")
 def welcome():
-    return render_template("dashboard.html")
+    return render_template(dashboard_html_path)
 
 @app.route("/login")
 def login():
-    return render_template("login.html")
+    return render_template(login_html_path)
 
 @app.route("/login/auth")
 def auth(request):
     # follow tutorial for authentication of use Flask-Login plugin
-    return render_template("layouts/index.html")   # this may need to change (should show base dashboard or first pipeline listed)
+    return render_template(index_html_path)   # this may need to change (should show base dashboard or first pipeline listed)
 
 @app.route("/api/sessions")
 def get_sessions():

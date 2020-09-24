@@ -287,28 +287,28 @@ def push(parser, args):
             subprocess.call(["docker", "push", full_tag])
 
 ################################################################################
-def docker_dashboard(parser, args):
-    """launches the dashboard in a docker container"""
-    check_docker('docker','--version')
-
-    parser.add_argument('chatroom-port',
-                        help='rebuilds the docker images without a cache',
-                        type=int,
-                        required=True)
-
-    parser.add_argument('dashboard-port',
-                        help='rebuilds the docker images without a cache',
-                        type=int,
-                        required=True)
-
-
-
-
-    cmd = ['docker',
-            'run',
-            '-p', "",
-            BUILD_DIR,
-            ]
+# def docker_dashboard(parser, args):
+#     """launches the dashboard in a docker container"""
+#     check_docker('docker','--version')
+#
+#     parser.add_argument('chatroom-port',
+#                         help='rebuilds the docker images without a cache',
+#                         type=int,
+#                         required=True)
+#
+#     parser.add_argument('dashboard-port',
+#                         help='rebuilds the docker images without a cache',
+#                         type=int,
+#                         required=True)
+#
+#
+#
+#
+#     cmd = ['docker',
+#             'run',
+#             '-p', "",
+#             BUILD_DIR,
+#             ]
 
 ################################################################################
 def dashboard(parser, args):

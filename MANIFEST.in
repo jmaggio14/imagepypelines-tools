@@ -1,1 +1,2 @@
 recursive-include imagepypelines_tools/dockerfiles *
+recursive-include imagepypelines_tools/templates *
