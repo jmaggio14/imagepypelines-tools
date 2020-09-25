@@ -1,6 +1,7 @@
 # custom
 venv_ip/
 venv*/
+Pipfile
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

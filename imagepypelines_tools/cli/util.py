@@ -68,11 +68,6 @@ def make_ping_pipeline():
 ################################################################################
 def check_if_tag_exists_on_dockerhub(tag):
     """checks if the given tag exists on our dockerhub"""
-    print("Warning: \"push\" is only for imagepypelines developers")
-    print("Warning: You must be manually logged into docker for this to complete successfully")
-    # check if docker is installed
-    check_docker('docker','--version')
-
     # check if the tags we are pushing already exist on the repo
     # this is a little non-intuitive, but basically this fetches
     # a json string that convienently can be evaled into a python list

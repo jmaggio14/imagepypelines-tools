@@ -1,10 +1,10 @@
 import subprocess
 from .util import check_docker
 
-from .. import DOCKERFILE
-from .. import BUILD_DIR
-from .. import GENERAL_DASHBOARD_TAG
-from .. import VERSION_DASHBOARD_TAG
+from . import DOCKERFILE
+from . import BUILD_DIR
+from . import GENERAL_DASHBOARD_TAG
+from . import VERSION_DASHBOARD_TAG
 
 
 
@@ -24,7 +24,7 @@ def build(parser, args):
             'build',
             '--pull',
             '--tag',GENERAL_DASHBOARD_TAG,
-            '--tag',VERSION_DASHBOARD_TAG,
+            # '--tag',VERSION_DASHBOARD_TAG,
             '-f',DOCKERFILE,
             BUILD_DIR,
             ]

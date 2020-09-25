@@ -4,7 +4,7 @@ import sys
 from ..app import socketio, app
 from ..Chatroom import Chatroom
 from .util import check_docker
-from .. import GENERAL_DASHBOARD_TAG, VERSION_DASHBOARD_TAG
+from . import GENERAL_DASHBOARD_TAG, VERSION_DASHBOARD_TAG
 
 
 DEFAULT_DASHBAORD_IP = "0.0.0.0"
@@ -41,6 +41,7 @@ def dashboard(parser, args):
 
     args = parser.parse_args()
 
+    print(f"launching dashboard at {args.host}:{args.port}...")
     if args.containerized:
         _docker_dashboard(parser,args)
 
@@ -53,7 +54,7 @@ def dashboard(parser, args):
         chatroom.start()
 
         # launch the socketio app
-        socketio.run(app, host=args.host,port=args.port)
+        socketio.run(app, host=args.host, port=args.port)
 
         # stop the chatroom thread
         chatroom.stop_thread()
@@ -68,10 +69,13 @@ def _docker_dashboard(parser, args):
     # --restricted_access --> something for restricted access
     check_docker()
 
-    if args.latest:
-        tag = GENERAL_DASHBOARD_TAG
-    else:
-        tag = VERSION_DASHBOARD_TAG
+
+    tag = GENERAL_DASHBOARD_TAG
+    # TODO: uncomment once version dashboard tags are supported
+    # if args.latest:
+    #     tag = GENERAL_DASHBOARD_TAG
+    # else:
+    #     tag = VERSION_DASHBOARD_TAG
 
     cmd = ['docker',
             'run',
