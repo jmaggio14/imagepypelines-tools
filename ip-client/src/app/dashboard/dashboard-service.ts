@@ -46,7 +46,7 @@ export class DashboardService {
      * @todo Change host and port
      */
     public getAllSessions(): Observable<string[]> {
-        return this.http.get<string[]>('http://localhost:5000/api/sessions');
+        return this.http.get<string[]>('/api/sessions');
     }
 
     /**
@@ -55,7 +55,7 @@ export class DashboardService {
      * @param type type of data to grab (graph, status, etc...)
      */
     public getPipelineData(uuid: string, type: string): Observable<any> {
-        return this.http.get(`http://localhost:5000/api/session/${uuid}/${type}`);
+        return this.http.get(`/api/session/${uuid}/${type}`);
     }
     
     /**
