@@ -83,3 +83,12 @@ Older Releases
 .. _gpu-0.3.3-alpha: ``https://github.com/jmaggio14/imagepypelines-tools/blob/90b028647411e443d7c1b31b8a829e648826dec4/dockerfiles/imagepypelines-gpu.Dockerfile``
     pip install imagepypelines-tools
     imagepypelines shell --gpu
+
+
+Building the UI
+=============
+
+To build the ui:
+
+1. Install NodeJS 12.X.X
+2. `cd ip-client && npm i && ng build:prod`

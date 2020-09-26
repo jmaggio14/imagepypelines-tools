@@ -1,16 +1,3 @@
-"""
-testing script for now, but this should probably end up as the driver for our app
-~~~~~~~~~~~~
-
-Things I'm going to do here:
-
-1) Get a basic index.html displayed with correct bootstrap css theme
-
-2) Figure out how to do form or radio button input client side and print it server side (or use it to update something css-y from server to client)
-
-3) Display an image or array or graph using matplotlib and numpy
-"""
-
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on available packages.
@@ -44,7 +31,7 @@ elif async_mode == 'gevent':
     from gevent import monkey
     monkey.patch_all()
 
-from flask import Flask, flash, redirect, render_template, request, session, abort, g, jsonify
+from flask import Flask, flash, redirect, render_template, request, session, abort, g, jsonify, send_file
 from flask_socketio import SocketIO, emit
 import os
 import json
@@ -53,13 +40,10 @@ from Chatroom import Chatroom
 
 import pkg_resources
 templates_dir = pkg_resources.resource_filename(__name__, 'templates/')
-# dashboard_html_path = pkg_resources.resource_filename(__name__, 'templates/dashboard.html')
-# login_html_path = pkg_resources.resource_filename(__name__, 'templates/login.html')
-# index_html_path = pkg_resources.resource_filename(__name__, 'templates/layouts/index.html')
 
 # CHATROOM_ACTIVE = False
 
-app = Flask(__name__, template_folder=templates_dir)
+app = Flask(__name__)
 app.debug = False
 # note: use an environment variable - jb
 app.secret_key = 'this_should_be_replaced_in_production!!!'
@@ -78,16 +62,15 @@ c.start()
 ################################################################################
 @app.route("/")
 def welcome():
-    return render_template('dashboard.html')
+    return render_template('index.html')
 
-@app.route("/login")
-def login():
-    return render_template('login.html')
+@app.route('/<path>')
+def serve_directory(path):
+    return send_file('templates/' + path)
 
-@app.route("/login/auth")
-def auth(request):
-    # follow tutorial for authentication of use Flask-Login plugin
-    return render_template('layouts/index.html')   # this may need to change (should show base dashboard or first pipeline listed)
+@app.route('/assets/<path>')
+def serve_asset_directory(path):
+    return send_file('templates/assets/' + path)
 
 @app.route("/api/sessions")
 def get_sessions():
@@ -107,29 +90,11 @@ def check_metadata(uuid):
             return v
     return None
 
-# Both of the following funcs need to be rewritten with respect to how sessions are mapped.
-# We're trying to grab all 'cached' messages for a given pipeline by uuid and message type
-# @app.route("/api/session/<uuid>/graph")
-# def get_graph(uuid=None):
-#     ids = [v['uuid'] for v in c.sessions.values() if v is not None]
-#     if (uuid is None or uuid not in ids):
-#         abort(404)
-#
-#     metadata = get_metadata(uuid)
-#
-#     if metadata is not None:
-#         return jsonify(metadata[uuid]['graph'])
-#     else:
-#         abort(404)
-
 # This new route should handle all requests for cached messages for any connected pipeline and any supported msg_type
 @app.route("/api/session/<uuid>/<msg_type>")
 def get_status(uuid=None, msg_type=None):
     ids = [v['uuid'] for v in c.sessions.values() if v is not None]
     if (uuid is None or uuid not in ids):
-        abort(404)
-
-    if (msg_type is None or msg_type not in ["graph", "status"]): # add other types here or use ip.MSG_TYPES (which we should add so people can hack on this!!!)
         abort(404)
 
     metadata = check_metadata(uuid)
