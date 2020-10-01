@@ -1,11 +1,23 @@
 FROM python:3.8.5-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
-# Expose a port to communicate with the host. 5000 is for users, 9000 is for pipelines
-EXPOSE 5000
-EXPOSE 9000
+# Expose ports to communicate with the host. 5000 is for users, 9000 is for pipelines
+EXPOSE 5000/tcp
+EXPOSE 9000/tcp
 
-# install minimum dependencies for numpy, cryptography, and gevent installs
-RUN apk add --update gcc gfortran musl-dev freetype-dev libressl-dev libffi-dev make
+# add the flask and imagepypelines scripts to the path
+ENV PATH="/dash/.local/bin:${PATH}"
+
+# install minimum dependencies for numpy, cryptography, gevent, and node
+RUN apk add --update gcc \
+                    gfortran \
+                    musl-dev \
+                    freetype-dev \
+                    libressl-dev \
+                    libffi-dev \
+                    make \
+                    nodejs \
+                    npm \
+                    ncurses
 
 # setup user "dashuser" for our dashboard
 WORKDIR /dash
@@ -13,47 +25,31 @@ RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
 USER dashuser
 
-# add the flask and imagepypelines scripts to the path
-ENV PATH="/dash/.local/bin:${PATH}"
+# copy the project into this image
+COPY ./ /dash/imagepypelines-tools
 
-################################################################################
 # BEGIN TEMPORARY LAYERS
-USER root
-RUN apk add --update git nodejs npm
-USER dashuser
-
-# What branch do we want to clone - eventually this will be phased out when we
-# have this setup via pypi
+################################################################################
+# TEMPORARY: which imagepypelines branch to clone and install here
 ARG IP_BRANCH="develop"
-ARG IP_TOOLS_BRANCH="cleanup-ng"
 
-# fetch and install imagepypelines and imagepypelines-tools
+USER root
+RUN apk add --update git
+USER dashuser
+# TEMPORARY: fetch and install imagepypelines
 RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
-    git clone --single-branch -b $IP_TOOLS_BRANCH https://github.com/jmaggio14/imagepypelines-tools.git && \
     cd imagepypelines && \
     pip install . && \
-    cd .. && \
-    cd imagepypelines-tools && \
-    pip install . && \
     cd ..
+################################################################################
+# END TEMPORARY LAYERS
 
-# Install node and build the ip-client
-# (this layer will be removed once iptools moves the distribution into pip)
+# build the dashboard
+# the files generated may already be in the image, but we'll run this command to be sure
 RUN cd /dash/imagepypelines-tools/ip-client && \
     npm i && \
-    npm run build:prod
+    ng build:prod
 
-# END TEMPORARY LAYERS
-################################################################################
-
-# add the launch_dash script to the path
-COPY launch_dash.sh /usr/local/bin/
-
-# Change launch_dash into an executable owned by dashuser
-USER root
-RUN chown dashuser: /usr/local/bin/launch_dash.sh && \
-    chmod u+x /usr/local/bin/launch_dash.sh
-USER dashuser
 
 # DEBUG - to setup an interactive shell - delete me!
 # USER root
@@ -62,4 +58,4 @@ USER dashuser
 # ENTRYPOINT ["bash"]
 # END DEBUG - delete me
 
-ENTRYPOINT ["launch_dash.sh"]
+ENTRYPOINT ["imagepypelines", "dashboard"]
