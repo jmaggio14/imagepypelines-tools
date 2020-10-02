@@ -1,0 +1,19 @@
+version: '3'
+services:
+  # This service is responsible for maintaining the chatroom, it is the imagepypelines service
+  # any user may connect to the chatroom to receive updates
+  imagepypelines:
+    build:
+      dockerfile: imagepypelines_tools/dockerfiles/dashboard.Dockerfile
+      context: .
+    command: dashboard
+    ports:
+      - 9000:9000
+  # This service is responsible for 
+  dashboard:
+    build:
+      dockerfile: imagepypelines_tools/dockerfiles/dashboard.Dockerfile
+      context: .
+    entrypoint: ["python", "/dash/imagepypelines-tools/imagepypelines_tools/app.py", "localhost", "9000"]
+    ports:
+      - 5000:5000
