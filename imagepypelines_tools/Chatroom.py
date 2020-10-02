@@ -1,4 +1,4 @@
-from imagepypelines.core.util import BaseCommThread, TCPServer, EventQueue
+from .util import BaseCommThread, TCPServer, EventQueue
 from functools import partial
 from json import loads, dumps
 from struct import pack, unpack
