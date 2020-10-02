@@ -49,8 +49,6 @@ from flask_socketio import SocketIO, emit
 import os
 import json
 
-from Chatroom import Chatroom
-
 import pkg_resources
 templates_dir = pkg_resources.resource_filename(__name__, 'templates/')
 # dashboard_html_path = pkg_resources.resource_filename(__name__, 'templates/dashboard.html')
@@ -68,7 +66,7 @@ socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 # host = '0.0.0.0'
 # port = 9000 # THIS WILL BE CMD LINE ARGUMENT
 # chatroom = Chatroom(host, port, socketio)
-c.start()
+# c.start()
 
 # import atexit
 # atexit.register(c.stop_thread)

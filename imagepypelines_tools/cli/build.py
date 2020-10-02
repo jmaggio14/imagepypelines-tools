@@ -1,10 +1,10 @@
 import subprocess
 from .util import check_docker
 
-from . import DOCKERFILE
-from . import BUILD_DIR
-from . import DASHBOARD_LATEST_TAG
-from . import DASHBOARD_VERSION_TAG
+from .. import DOCKERFILE
+from .. import BUILD_DIR
+from .. import DASHBOARD_LATEST_TAG
+from .. import DASHBOARD_VERSION_TAG
 
 
 

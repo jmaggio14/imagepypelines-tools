@@ -1,7 +1,7 @@
 import subprocess
 from .util import check_docker, check_if_tag_exists_on_dockerhub
 
-from . import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
+from .. import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
 
 
 def pull(parser, args):

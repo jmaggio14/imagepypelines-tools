@@ -4,7 +4,7 @@ import sys
 from ..app import socketio, app
 from ..Chatroom import Chatroom
 from .util import check_docker
-from . import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
+from .. import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
 
 
 DEFAULT_DASHBAORD_IP = "0.0.0.0"
@@ -25,7 +25,7 @@ def dashboard(parser, args):
                         type=str)
     parser.add_argument("port",
                         help="port number of the dashboard",
-                        default=DEFAULT_DASHBAORD_PORT,
+                        default=DEFAULT_DASHBOARD_PORT,
                         type=int)
     parser.add_argument('-c',
                         "--chatroom-port",
