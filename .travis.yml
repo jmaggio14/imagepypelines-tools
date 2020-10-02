@@ -1,0 +1,56 @@
+language: python
+
+os:
+  # - windows # Python not supported yet for travis windows builds 12/11/2018
+  - linux
+  # - osx # Python not supported yet for travis osx builds 12/11/2018
+
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      - node
+
+install:
+  # install imagepypelines-tools
+  - pip install .
+
+  # build the dashboard files
+  - cd ip-client
+  - npm i
+  - ng build --prod
+
+script:
+  # license enforcer
+  - python enforcer.py
+
+  # run tests
+  - py.test --cov=./imagepypelines --ignore=setup.py --verbose
+
+  # build the docker dashboard image
+  - imagepypelines build
+
+  # test the dashboard
+  # ...
+  # ...
+  # ...
+
+
+after_success:
+  # logging into docker
+  - echo "$DOCKER_PASS" | docker login -u jmaggio14 --password-stdin
+
+  # upload docker images to dockerhub
+deploy:
+  provider: script
+  script: bash imagepypelines push
+  on:
+    branch: master
+    tags: true
