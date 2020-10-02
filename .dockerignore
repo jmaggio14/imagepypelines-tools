@@ -1,0 +1,8 @@
+imagepypelines_tools.egg-info
+imagepypelines_tools/dockerfiles
+imagepypelines_tools/__pycache__
+.git
+build
+dist
+*.md
+*.rst
