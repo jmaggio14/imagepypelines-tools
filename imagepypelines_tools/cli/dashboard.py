@@ -69,13 +69,9 @@ def _docker_dashboard(parser, args):
     # --restricted_access --> something for restricted access
     check_docker()
 
-
-    tag = DASHBOARD_LATEST_TAG
-    # TODO: uncomment once version dashboard tags are supported
-    # if args.latest:
-    #     tag = DASHBOARD_LATEST_TAG
-    # else:
-    #     tag = DASHBOARD_VERSION_TAG
+    tag = DASHBOARD_VERSION_TAG
+    if args.latest:
+        tag = DASHBOARD_LATEST_TAG
 
     cmd = ['docker',
             'run',
