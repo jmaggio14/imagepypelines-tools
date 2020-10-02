@@ -4,7 +4,7 @@ import sys
 from ..app import socketio, app
 from ..Chatroom import Chatroom
 from .util import check_docker
-from . import GENERAL_DASHBOARD_TAG, VERSION_DASHBOARD_TAG
+from . import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
 
 
 DEFAULT_DASHBAORD_IP = "0.0.0.0"
@@ -70,12 +70,12 @@ def _docker_dashboard(parser, args):
     check_docker()
 
 
-    tag = GENERAL_DASHBOARD_TAG
+    tag = DASHBOARD_LATEST_TAG
     # TODO: uncomment once version dashboard tags are supported
     # if args.latest:
-    #     tag = GENERAL_DASHBOARD_TAG
+    #     tag = DASHBOARD_LATEST_TAG
     # else:
-    #     tag = VERSION_DASHBOARD_TAG
+    #     tag = DASHBOARD_VERSION_TAG
 
     cmd = ['docker',
             'run',

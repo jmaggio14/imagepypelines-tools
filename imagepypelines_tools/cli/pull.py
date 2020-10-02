@@ -1,7 +1,7 @@
 import subprocess
 from .util import check_docker, check_if_tag_exists_on_dockerhub
 
-from . import GENERAL_DASHBOARD_TAG, VERSION_DASHBOARD_TAG
+from . import DASHBOARD_LATEST_TAG, DASHBOARD_VERSION_TAG
 
 
 def pull(parser, args):
@@ -10,11 +10,11 @@ def pull(parser, args):
     check_docker()
     cmd = ['docker',
             'pull',
-            GENERAL_DASHBOARD_TAG,
+            DASHBOARD_LATEST_TAG,
             ]
 
 
-    # if check_if_tag_exists_on_dockerhub(VERSION_DASHBOARD_TAG):
-    #     cmd.append(VERSION_DASHBOARD_TAG)
+    if check_if_tag_exists_on_dockerhub(DASHBOARD_VERSION_TAG):
+        cmd.append(DASHBOARD_VERSION_TAG)
 
     subprocess.run(cmd)

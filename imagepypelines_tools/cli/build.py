@@ -3,8 +3,8 @@ from .util import check_docker
 
 from . import DOCKERFILE
 from . import BUILD_DIR
-from . import GENERAL_DASHBOARD_TAG
-from . import VERSION_DASHBOARD_TAG
+from . import DASHBOARD_LATEST_TAG
+from . import DASHBOARD_VERSION_TAG
 
 
 
@@ -23,8 +23,8 @@ def build(parser, args):
     cmd = ['docker',
             'build',
             '--pull',
-            '--tag',GENERAL_DASHBOARD_TAG,
-            # '--tag',VERSION_DASHBOARD_TAG,
+            '--tag',DASHBOARD_LATEST_TAG,
+            '--tag',DASHBOARD_VERSION_TAG,
             '-f',DOCKERFILE,
             BUILD_DIR,
             ]

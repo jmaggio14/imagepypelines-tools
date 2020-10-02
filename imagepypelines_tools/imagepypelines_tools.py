@@ -62,9 +62,9 @@
 #
 #
 #
-# GENERAL_DASHBOARD_TAG = 'imagepypelines/imagepypelines-tools:dashboard'
+# DASHBOARD_LATEST_TAG = 'imagepypelines/imagepypelines-tools:dashboard'
 # # this tags the dashboard version to this version of iptools if it's built
-# VERSION_DASHBOARD_TAG = f"{GENERAL_DASHBOARD_TAG}-{__version__}"
+# DASHBOARD_VERSION_TAG = f"{DASHBOARD_LATEST_TAG}-{__version__}"
 #
 # CHATROOM_PORT = 9000
 # DASHBOARD_PORT = 5000
