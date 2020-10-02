@@ -25,9 +25,6 @@ RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
 USER dashuser
 
-# copy the project into this image
-COPY ./ /dash/imagepypelines-tools
-
 # BEGIN TEMPORARY LAYERS
 ################################################################################
 # TEMPORARY: which imagepypelines branch to clone and install here
@@ -36,26 +33,35 @@ ARG IP_BRANCH="develop"
 USER root
 RUN apk add --update git
 USER dashuser
+
 # TEMPORARY: fetch and install imagepypelines
 RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
     cd imagepypelines && \
-    pip install . && \
-    cd ..
+    pip install .
+
 ################################################################################
 # END TEMPORARY LAYERS
 
+# copy the project into this image
+COPY ./ /dash/imagepypelines-tools
+
 # build the dashboard
 # the files generated may already be in the image, but we'll run this command to be sure
-RUN cd /dash/imagepypelines-tools/ip-client && \
-    npm i && \
-    ng build:prod
+WORKDIR /dash/imagepypelines-tools/ip-client
+USER root
+RUN npm i && node_modules/.bin/ng build --prod
+USER dashuser
 
+# install ip-tools
+RUN cd /dash/imagepypelines-tools && \
+    pip install .
 
 # DEBUG - to setup an interactive shell - delete me!
-# USER root
-# RUN apk add --update bash vim
-# USER dashuser
-# ENTRYPOINT ["bash"]
-# END DEBUG - delete me
+USER root
+RUN apk add --update bash vim
+USER dashuser
+ENTRYPOINT ["bash"]
 
-ENTRYPOINT ["imagepypelines", "dashboard"]
+# END DEBUG - delete me
+# WORKDIR /dash
+# ENTRYPOINT ["imagepypelines", "dashboard"]
