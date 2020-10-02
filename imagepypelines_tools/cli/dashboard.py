@@ -21,10 +21,12 @@ def dashboard(parser, args):
 
     parser.add_argument("host",
                         help="IP address of the dashboard server to ping",
+                        nargs='?',
                         default=DEFAULT_DASHBAORD_IP,
                         type=str)
     parser.add_argument("port",
                         help="port number of the dashboard",
+                        nargs='?',
                         default=DEFAULT_DASHBOARD_PORT,
                         type=int)
     parser.add_argument('-c',
@@ -75,7 +77,8 @@ def _docker_dashboard(parser, args):
 
     cmd = ['docker',
             'run',
-            '--rm',
             '-p', f'{args.port}:{DEFAULT_DASHBOARD_PORT}',
             '-p', f'{args.chatroom_port}:{DEFAULT_CHATROOM_PORT}',
             tag]
+
+    subprocess.run(cmd)

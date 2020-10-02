@@ -11,7 +11,7 @@ COPY ip-client/tsconfig.app.json ./
 COPY ip-client/tsconfig.base.json ./
 COPY ip-client/src ./src/
 # output directy will be dist/ folder
-RUN node_modules/.bin/ng build --prod 
+RUN node_modules/.bin/ng build --prod
 
 # 2. Configure python image
 FROM python:3.8.5-alpine3.12
@@ -20,9 +20,8 @@ MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
 # add the flask and imagepypelines scripts to the path
 ENV PATH="/dash/.local/bin:${PATH}"
 
-# install minimum dependencies for numpy, cryptography, gevent, and node
-# TODO: Delete bash and vim
-RUN apk add --update make
+# install minimum dependencies forgevent
+RUN apk add --update libffi-dev gcc musl-dev make
 
 # setup user "dashuser" for our dashboard
 WORKDIR /dash
