@@ -2,7 +2,7 @@ import subprocess
 from .util import check_docker
 
 from .. import DOCKERFILE
-from .. import BUILD_DIR
+from .. import DOCKER_BUILD_CONTEXT
 from .. import DASHBOARD_LATEST_TAG
 from .. import DASHBOARD_VERSION_TAG
 
@@ -22,11 +22,10 @@ def build(parser, args):
 
     cmd = ['docker',
             'build',
-            '--pull',
             '--tag',DASHBOARD_LATEST_TAG,
             '--tag',DASHBOARD_VERSION_TAG,
             '-f',DOCKERFILE,
-            BUILD_DIR,
+            DOCKER_BUILD_CONTEXT,
             ]
     if args.no_cache:
         cmd.append('--no-cache')

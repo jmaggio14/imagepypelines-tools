@@ -1,12 +1,12 @@
-import pkg_resources
+import pkg_resources, os
 DOCKERFILE = pkg_resources.resource_filename(__name__, './dockerfiles/dashboard.Dockerfile')
-BUILD_DIR = pkg_resources.resource_filename(__name__, '.')
-del pkg_resources
+DOCKER_BUILD_CONTEXT = os.path.dirname(os.path.abspath(pkg_resources.resource_filename(__name__, '.')))
+del pkg_resources, os
 
 from .version_info import *
 
-DASHBOARD_LATEST_TAG = 'imagepypelines/imagepypelines-tools:latest'
+DASHBOARD_LATEST_TAG = 'imagepypelines/dashboard:latest'
 # this tags the dashboard version to this version of iptools if it's built
-DASHBOARD_VERSION_TAG = f"dashboard-{__version__}"
+DASHBOARD_VERSION_TAG = f"imagepypelines/dashboard:{__version__}"
 
 from .cli import main

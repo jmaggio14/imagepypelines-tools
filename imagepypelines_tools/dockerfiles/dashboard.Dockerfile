@@ -22,35 +22,12 @@ ENV PATH="/dash/.local/bin:${PATH}"
 
 # install minimum dependencies for numpy, cryptography, gevent, and node
 # TODO: Delete bash and vim
-RUN apk add --update gcc \
-                    gfortran \
-                    musl-dev \
-                    freetype-dev \
-                    libressl-dev \
-                    libffi-dev \
-                    make \
-                    ncurses \
-                    git
+RUN apk add --update make
 
 # setup user "dashuser" for our dashboard
 WORKDIR /dash
 RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
-
-# BEGIN TEMPORARY LAYERS
-################################################################################
-# TEMPORARY: which imagepypelines branch to clone and install here
-ARG IP_BRANCH="develop"
-
-# TEMPORARY: fetch and install imagepypelines
-# TODO: Make a tag or release, store it at the very top of this dockerfile, and download a static
-# version from there
-RUN git clone --single-branch -b $IP_BRANCH https://github.com/jmaggio14/imagepypelines.git && \
-    cd imagepypelines && \
-    pip install .
-
-################################################################################
-# END TEMPORARY LAYERS
 
 # copy the project into this image
 COPY ./ /dash/imagepypelines-tools
@@ -67,4 +44,4 @@ EXPOSE 9000
 
 USER dashuser
 
-ENTRYPOINT ["imagepypelines"]
+ENTRYPOINT ["imagepypelines", "dashboard"]

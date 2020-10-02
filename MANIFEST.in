@@ -1,2 +1,7 @@
 recursive-include imagepypelines_tools/dockerfiles *
 recursive-include imagepypelines_tools/templates *
+recursive-include ip-client *
+include .dockerignore
+include docker-compose.yaml
+include LICENSE
+include README.rst

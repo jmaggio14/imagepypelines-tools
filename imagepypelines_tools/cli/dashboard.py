@@ -76,6 +76,6 @@ def _docker_dashboard(parser, args):
     cmd = ['docker',
             'run',
             '--rm',
-            '-p', f'{args.port}:{DEFAULT_DASHBAORD_PORT}',
+            '-p', f'{args.port}:{DEFAULT_DASHBOARD_PORT}',
             '-p', f'{args.chatroom_port}:{DEFAULT_CHATROOM_PORT}',
             tag]
