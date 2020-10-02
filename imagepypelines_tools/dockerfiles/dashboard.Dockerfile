@@ -51,6 +51,7 @@ WORKDIR /dash/imagepypelines-tools/ip-client
 USER root
 RUN npm i && node_modules/.bin/ng build --prod
 USER dashuser
+WORKDIR /dash
 
 # install ip-tools
 RUN cd /dash/imagepypelines-tools && \
