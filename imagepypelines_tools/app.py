@@ -36,8 +36,6 @@ from flask_socketio import SocketIO, emit
 import os
 import json
 
-from Chatroom import Chatroom
-
 import pkg_resources
 templates_dir = pkg_resources.resource_filename(__name__, 'templates/')
 
@@ -49,10 +47,10 @@ app.debug = False
 app.secret_key = 'this_should_be_replaced_in_production!!!'
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
-host = '0.0.0.0'
-port = 9000 # THIS WILL BE CMD LINE ARGUMENT
-c = Chatroom(host, port, socketio)
-c.start()
+# host = '0.0.0.0'
+# port = 9000 # THIS WILL BE CMD LINE ARGUMENT
+# chatroom = Chatroom(host, port, socketio)
+# c.start()
 
 # import atexit
 # atexit.register(c.stop_thread)
