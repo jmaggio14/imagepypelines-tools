@@ -25,7 +25,7 @@ install:
   # build the dashboard files
   - cd ip-client
   - npm i
-  - ng build --prod
+  - ./node_modules/.bin/ng build --prod
 
 script:
   # license enforcer
