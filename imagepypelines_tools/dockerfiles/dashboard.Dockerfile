@@ -2,14 +2,14 @@
 FROM node:12.18.4-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
 WORKDIR /app
-COPY ip-client/package.json ./
-COPY ip-client/package-lock.json ./
+COPY imagepypelines_tools/ip-client/package.json ./
+COPY imagepypelines_tools/ip-client/package-lock.json ./
 RUN npm i
-COPY ip-client/angular.json ./
-COPY ip-client/tsconfig.json ./
-COPY ip-client/tsconfig.app.json ./
-COPY ip-client/tsconfig.base.json ./
-COPY ip-client/src ./src/
+COPY imagepypelines_tools/ip-client/angular.json ./
+COPY imagepypelines_tools/ip-client/tsconfig.json ./
+COPY imagepypelines_tools/ip-client/tsconfig.app.json ./
+COPY imagepypelines_tools/ip-client/tsconfig.base.json ./
+COPY imagepypelines_tools/ip-client/src ./src/
 # output directy will be dist/ folder
 RUN node_modules/.bin/ng build --prod
 

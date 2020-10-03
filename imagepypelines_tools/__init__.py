@@ -1,6 +1,7 @@
 import pkg_resources, os
 DOCKERFILE = pkg_resources.resource_filename(__name__, './dockerfiles/dashboard.Dockerfile')
-DOCKER_BUILD_CONTEXT = os.path.dirname(os.path.abspath(pkg_resources.resource_filename(__name__, '.')))
+DOCKER_BUILD_CONTEXT = os.path.abspath(pkg_resources.resource_filename(__name__, '.'))
+import pdb; pdb.set_trace()
 del pkg_resources, os
 
 from .version_info import *

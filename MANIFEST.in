@@ -1,6 +1,6 @@
 recursive-include imagepypelines_tools/dockerfiles *
 recursive-include imagepypelines_tools/templates *
-recursive-include ip-client *
+recursive-include imagepypelines_tools/ip-client *
 include .dockerignore
 include docker-compose.yaml
 include LICENSE
