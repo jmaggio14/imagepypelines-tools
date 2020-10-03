@@ -28,7 +28,6 @@ install:
 
   # build the dashboard files
   # install node
-  - curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
   - cd ip-client
   - npm i
   - ./node_modules/.bin/ng build --prod
