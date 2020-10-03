@@ -51,13 +51,13 @@ script:
 
 
 after_success:
-  # logging into docker
-  - echo "$DOCKER_PASS" | docker login -u jmaggio14 --password-stdin
+  # logging into docker (only on master)
+  # - test $TRAVIS_BRANCH = "master" && echo "$DOCKER_PASS" | docker login -u jmaggio14 --password-stdin
 
   # upload docker images to dockerhub
 deploy:
   provider: script
-  script: bash imagepypelines push
+  script: echo "$DOCKER_PASS" | docker login -u jmaggio14 --password-stdin && imagepypelines push
   on:
     branch: master
     tags: true
