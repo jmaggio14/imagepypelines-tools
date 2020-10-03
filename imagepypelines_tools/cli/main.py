@@ -45,3 +45,7 @@ def main():
     ############################################################################
     elif args.action == "ping":
         ping(parser, args)
+
+
+if __name__ == "__main__":
+    main()

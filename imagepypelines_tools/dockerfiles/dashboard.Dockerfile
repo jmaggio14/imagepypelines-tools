@@ -2,14 +2,14 @@
 FROM node:12.18.4-alpine3.12
 MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
 WORKDIR /app
-COPY imagepypelines_tools/ip-client/package.json ./
-COPY imagepypelines_tools/ip-client/package-lock.json ./
+COPY ip-client/package.json ./
+COPY ip-client/package-lock.json ./
 RUN npm i
-COPY imagepypelines_tools/ip-client/angular.json ./
-COPY imagepypelines_tools/ip-client/tsconfig.json ./
-COPY imagepypelines_tools/ip-client/tsconfig.app.json ./
-COPY imagepypelines_tools/ip-client/tsconfig.base.json ./
-COPY imagepypelines_tools/ip-client/src ./src/
+COPY ip-client/angular.json ./
+COPY ip-client/tsconfig.json ./
+COPY ip-client/tsconfig.app.json ./
+COPY ip-client/tsconfig.base.json ./
+COPY ip-client/src ./src/
 # output directy will be dist/ folder
 RUN node_modules/.bin/ng build --prod
 
@@ -30,11 +30,15 @@ RUN addgroup -S dashgroup && \
 
 # copy the project into this image
 COPY ./ /dash/imagepypelines-tools
-# install ip-tools
-RUN cd /dash/imagepypelines-tools && \
-    pip install .
+# manually install the requirements
+RUN pip install requests>=2.24.0  \
+                eventlet>=0.18.0,<0.24.0 \
+                Flask>=1.1.2 \
+                flask_socketio>=4.3.1 \
+                gevent>=20.6.2
 
-COPY --from=0 /app/dist/ip-client/ /dash/imagepypelines-tools/imagepypelines_tools/templates/
+
+COPY --from=0 /app/dist/ip-client/ /dash/imagepypelines-tools/templates/
 
 
 # Expose ports to communicate with the host. 5000 is for users, 9000 is for pipelines
@@ -43,4 +47,4 @@ EXPOSE 9000
 
 USER dashuser
 
-ENTRYPOINT ["imagepypelines", "dashboard"]
+ENTRYPOINT ["python /dash/imagepypelines-tools/imagepypelines_tools/cli/main.py", "dashboard"]
