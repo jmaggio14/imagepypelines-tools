@@ -16,10 +16,16 @@ services:
 
 before_install:
     # install node using this guide - https://github.com/nodesource/distributions
-    - export NODE_VERSION=node_12.x
-    - export DISTRO="$(lsb_release -s -c)"
-    - curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    - sudo apt-get install -y build-essential nodejs 
+    # - curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    # - sudo apt-get install -y build-essential nodejs nvm
+
+    # install node using this guide https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04
+    # install node version manager
+    - curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh -o install_nvm.sh
+    - bash install_nvm.sh
+    - source ~/.profile
+    - nvm install stable
+    - nvm use stable
 
 install:
   # install imagepypelines-tools
