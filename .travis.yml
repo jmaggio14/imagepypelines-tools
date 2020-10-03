@@ -1,8 +1,9 @@
 language:
     - python
     - node_js
+    
 node_js:
-    - 12
+    - lts/*
 
 os:
   # - windows # Python not supported yet for travis windows builds 12/11/2018
