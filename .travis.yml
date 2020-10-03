@@ -24,6 +24,7 @@ before_install:
     - echo "deb-src https://deb.nodesource.com/$NODE_VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
     - sudo apt-get update
     - sudo apt-get install nodejs
+    - node -v
 
 install:
   # install imagepypelines-tools
