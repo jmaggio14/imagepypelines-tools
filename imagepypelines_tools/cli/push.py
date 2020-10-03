@@ -1,5 +1,9 @@
+import subprocess
+
 from .. import DASHBOARD_LATEST_TAG
 from .. import DASHBOARD_VERSION_TAG
+
+from .util import check_docker
 
 def push(parser, args):
     """pushes the docker images to dockerhub - DEVS ONLY"""

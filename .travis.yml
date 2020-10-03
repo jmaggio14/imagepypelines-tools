@@ -16,7 +16,7 @@ services:
 addons:
   apt:
     packages:
-      - node
+      - node npm
 
 install:
   # install imagepypelines-tools
