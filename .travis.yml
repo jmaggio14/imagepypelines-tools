@@ -1,9 +1,5 @@
 language:
     - python
-    - node_js
-    
-node_js:
-    - lts/*
 
 os:
   # - windows # Python not supported yet for travis windows builds 12/11/2018
@@ -18,10 +14,10 @@ python:
 services:
   - docker
 
-# addons:
-#   apt:
-#     packages:
-#       - nodejs npm
+before_install:
+    # install node
+    - curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    - sudo apt-get install -y nodejs npm
 
 install:
   # install imagepypelines-tools
