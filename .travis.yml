@@ -19,7 +19,7 @@ before_install:
     - export NODE_VERSION=node_12.x
     - export DISTRO="$(lsb_release -s -c)"
     - curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    - sudo apt-get install -y nodejs
+    - sudo apt-get install -y build-essential nodejs 
 
 install:
   # install imagepypelines-tools
