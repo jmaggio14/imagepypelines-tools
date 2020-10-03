@@ -59,5 +59,7 @@ deploy:
   provider: script
   script: echo "$DOCKER_PASS" | docker login -u jmaggio14 --password-stdin && imagepypelines push
   on:
-    branch: master
+    branch:
+        - master
+        - develop
     tags: true
