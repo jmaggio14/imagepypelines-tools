@@ -25,6 +25,8 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install nodejs
     - node -v
+    - nvm alias default 12.18.4
+    - node -v
 
 install:
   # install imagepypelines-tools
