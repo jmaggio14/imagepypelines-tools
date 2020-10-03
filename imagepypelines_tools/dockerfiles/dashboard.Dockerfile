@@ -44,4 +44,4 @@ EXPOSE 9000
 USER dashuser
 ENV PYTHONPATH="/dash"
 
-ENTRYPOINT ["python", "/dash/imagepypelines_tools/cli/main.py", "dashboard"]
+ENTRYPOINT ["python", "-c", "import imagepypelines_tools as ipt; ipt.cli.dashboard()"]

@@ -3,9 +3,11 @@ from subprocess import DEVNULL
 import sys
 import urllib.request
 
-REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/imagepypelines-tools/tags"
+REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/dashboard/tags"
 
-
+__all__ = ['check_docker',
+            'make_ping_pipeline',
+            'check_if_tag_exists_on_dockerhub']
 ################################################################################
 def check_docker():
     """runs a system command to check if docker or nvidia docker is

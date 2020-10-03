@@ -30,7 +30,7 @@ install:
 
   # build the dashboard files
   # install node
-  - cd ip-client
+  - cd imagepypelines_tools/ip-client
   - npm i
   - ./node_modules/.bin/ng build --prod
 
@@ -39,7 +39,7 @@ script:
   # - python enforcer.py
 
   # run tests
-  # - py.test 
+  # - py.test
 
   # build the docker dashboard image
   - imagepypelines build

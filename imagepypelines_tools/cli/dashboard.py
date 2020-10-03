@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import argparse
 
 from ..app import socketio, app
 from ..Chatroom import Chatroom
@@ -11,13 +12,15 @@ DEFAULT_DASHBAORD_IP = "0.0.0.0"
 DEFAULT_DASHBOARD_PORT = 5000
 DEFAULT_CHATROOM_PORT = 9000
 
-def dashboard(parser, args):
+def dashboard(parser=None, args=None):
     """launches the dashboard"""
     # ideas for additonal flags (I just chose explicit names for now -JM)
     #
     # --timeout  --> timeout if no pipelines or clients connect to it
     # --from_file --> pulls config from a file
     # --restricted_access --> something for restricted access
+    if not parser:
+        parser = argparse.ArgumentParser()
 
     parser.add_argument("host",
                         help="IP address of the dashboard server to ping",
