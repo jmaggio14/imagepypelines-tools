@@ -6,6 +6,10 @@ os:
   - linux
   # - osx # Python not supported yet for travis osx builds 12/11/2018
 
+env:
+    - NODE_VERSION=node_lts.x
+    - DISTRO="$(lsb_release -s -c)"
+
 python:
   - 3.6
   - 3.7
@@ -15,10 +19,13 @@ services:
   - docker
 
 before_install:
-    # install node
-    - curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    # install node using this guide - https://github.com/nodesource/distributions
+    - curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
     - sudo apt-get install -y nodejs
-    # - sudo apt-get install -y npm
+    - echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+    - echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+    - sudo apt-get update
+    - sudo apt-get install nodejs
 
 install:
   # install imagepypelines-tools
