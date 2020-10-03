@@ -29,4 +29,9 @@ def build(parser, args):
             ]
     if args.no_cache:
         cmd.append('--no-cache')
-    subprocess.run(cmd)
+    proc = subprocess.run(cmd)
+
+    # check the return code
+    if proc.return_code != 0:
+        print("build process failed.")
+        proc.check_returncode()

@@ -39,7 +39,7 @@ script:
   # - python enforcer.py
 
   # run tests
-  - py.test --cov=./imagepypelines --ignore=setup.py --verbose
+  # - py.test 
 
   # build the docker dashboard image
   - imagepypelines build
