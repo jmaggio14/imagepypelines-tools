@@ -32,6 +32,6 @@ def build(parser, args):
     proc = subprocess.run(cmd)
 
     # check the return code
-    if proc.return_code != 0:
+    if proc.returncode != 0:
         print("build process failed.")
         proc.check_returncode()
