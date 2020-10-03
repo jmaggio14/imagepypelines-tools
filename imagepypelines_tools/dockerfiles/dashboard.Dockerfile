@@ -20,8 +20,9 @@ MAINTAINER Jeff Maggio, Ryan Hartzell, Joe Bartelmo, Jai Mehra
 # add the flask and imagepypelines scripts to the path
 ENV PATH="/dash/.local/bin:${PATH}"
 
-# install minimum dependencies forgevent
+# install minimum dependencies for gevent & iptools
 RUN apk add --update libffi-dev gcc musl-dev make
+RUN pip install requests>=2.24.0 eventlet>=0.18.0 Flask>=1.1.2 flask_socketio>=4.3.1 gevent>=20.6.2
 
 # setup user "dashuser" for our dashboard
 WORKDIR /dash
@@ -29,16 +30,11 @@ RUN addgroup -S dashgroup && \
     adduser -S dashuser -G dashgroup -h /dash
 
 # copy the project into this image
-COPY ./ /dash/imagepypelines-tools
+COPY ./ /dash/imagepypelines_tools
 # manually install the requirements
-RUN pip install requests>=2.24.0  \
-                eventlet>=0.18.0,<0.24.0 \
-                Flask>=1.1.2 \
-                flask_socketio>=4.3.1 \
-                gevent>=20.6.2
 
 
-COPY --from=0 /app/dist/ip-client/ /dash/imagepypelines-tools/templates/
+COPY --from=0 /app/dist/ip-client/ /dash/imagepypelines_tools/templates/
 
 
 # Expose ports to communicate with the host. 5000 is for users, 9000 is for pipelines
@@ -46,5 +42,6 @@ EXPOSE 5000
 EXPOSE 9000
 
 USER dashuser
+ENV PYTHONPATH="/dash"
 
-ENTRYPOINT ["python /dash/imagepypelines-tools/imagepypelines_tools/cli/main.py", "dashboard"]
+ENTRYPOINT ["python", "/dash/imagepypelines_tools/cli/main.py", "dashboard"]
