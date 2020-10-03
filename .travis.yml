@@ -1,4 +1,8 @@
-language: python
+language:
+    - python
+    - node_js
+node_js:
+    - 12
 
 os:
   # - windows # Python not supported yet for travis windows builds 12/11/2018
@@ -23,6 +27,8 @@ install:
   - pip install .
 
   # build the dashboard files
+  # install node
+  - curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
   - cd ip-client
   - npm i
   - ./node_modules/.bin/ng build --prod
