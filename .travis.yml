@@ -17,10 +17,10 @@ python:
 services:
   - docker
 
-addons:
-  apt:
-    packages:
-      - nodejs npm
+# addons:
+#   apt:
+#     packages:
+#       - nodejs npm
 
 install:
   # install imagepypelines-tools
