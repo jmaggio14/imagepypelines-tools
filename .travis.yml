@@ -16,12 +16,12 @@ services:
 
 before_install:
     # install node using this guide - https://github.com/nodesource/distributions
-    - export NODE_VERSION=node_lts.x
+    - export NODE_VERSION=node_12.x
     - export DISTRO="$(lsb_release -s -c)"
     - curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
     - sudo apt-get install -y nodejs
-    - echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-    - echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+    - echo "deb https://deb.nodesource.com/$NODE_VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+    - echo "deb-src https://deb.nodesource.com/$NODE_VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
     - sudo apt-get update
     - sudo apt-get install nodejs
 
