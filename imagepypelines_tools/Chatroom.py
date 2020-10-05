@@ -9,11 +9,11 @@ import threading
 # __ Chatroom Object _________________________________________________________
 class Chatroom(BaseCommThread):
 
-    def __init__(self, host, port, socketio):
+    def __init__(self, app, host='0.0.0.0', port=9000):
         super().__init__()
         self.host = host
         self.port = port
-        self.dashboard = socketio
+        self.dashboard = app
         self.events = EventQueue()  # Class that queues events
         self.sessions = {} # List of all available tcp sessions (including host)
         self.msg_buff = {}
@@ -64,7 +64,6 @@ class Chatroom(BaseCommThread):
 
     def parse_session_msg(self, c, msg):
         _msg = loads(msg)
-        print('\n***************************************\n')
         if _msg['type'] == 'graph':
             uuid = _msg['uuid']
             self.sessions[c]['uuid'] = uuid
@@ -88,6 +87,7 @@ class Chatroom(BaseCommThread):
         return msg
 
     def parse_dashboard_msgs(self, msg_list):
+        # RH - definitely some debug (easter eggs?) printing going on here lol
         for msg in msg_list:
             print("_msg content is.....   ", msg)
 
@@ -113,14 +113,14 @@ class Chatroom(BaseCommThread):
         s = tcp.connect(self.host, self.port) # Grab server object (Chatroom host)
         sock = s.sock
         self.sessions[sock] = None  # Add host to sessions list
-        print(self.sessions)
+        print("\nSessions (INIT):   ", self.sessions)
         # __ Dashboard Event Loop Start ______________________________________
         while getattr(t, 'running', True):  # Run until signaled to DIE
             ready2read, ready2write, _ = select.select(self.sessions, self.sessions, [], 0.1)
             for c in ready2read:
                 if c is sock:  # If there is a Pipeline requesting a connection
                     self.connect(c)
-                    print("Here are our current sessions:  ", self.sessions)
+                    print("Sessions (CURRENT):   ", self.sessions)
                     continue
                 # If we get to this point then a client has sent a message
                 msg = self.read(c)

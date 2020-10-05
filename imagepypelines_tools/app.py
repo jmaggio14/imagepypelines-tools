@@ -1,3 +1,4 @@
+print("Beginning Dashboard setup...\n")
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on available packages.
@@ -20,7 +21,7 @@ if async_mode is None:
     if async_mode is None:
         async_mode = 'threading'
 
-    print('async_mode is ' + async_mode)
+    print(f"Dashboard will use '{async_mode}' backend for asynchronous operation.")
 
 # monkey patching is necessary because this application uses a background
 # thread
@@ -31,6 +32,7 @@ elif async_mode == 'gevent':
     from gevent import monkey
     monkey.patch_all()
 
+from .Chatroom import Chatroom
 from flask import Flask, flash, redirect, render_template, request, session, abort, g, jsonify, send_file
 from flask_socketio import SocketIO, emit
 import os
@@ -39,7 +41,8 @@ import json
 import pkg_resources
 templates_dir = pkg_resources.resource_filename(__name__, 'templates/')
 
-# CHATROOM_ACTIVE = False
+# SETUP CONFIG VARIABLES
+MESSAGING_BACKEND = 'SyncTCP' # default
 
 app = Flask(__name__)
 app.debug = False
@@ -47,13 +50,19 @@ app.debug = False
 app.secret_key = 'this_should_be_replaced_in_production!!!'
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
-# host = '0.0.0.0'
-# port = 9000 # THIS WILL BE CMD LINE ARGUMENT
-# chatroom = Chatroom(host, port, socketio)
-# c.start()
+# RH - Realizing we're going to want to set the backend programatically, so we
+# should wrap this chatroom instantiation in a function which can be imported
+# and subsequently executed to return the 'correct' chatroom instance. This will
+# be important when we want to try different messaging backends.
+# Instantiate the chatroom based on backend set. Backend defaults to "SyncTCP"
+if MESSAGING_BACKEND == "SyncTCP":
+    print("Chatroom will use the native, synchronous TCP Server backend.")
+    chatroom = Chatroom(socketio)
 
-# import atexit
-# atexit.register(c.stop_thread)
+else:
+    # Else we default back to our failsafe synchronous TCP Server chatroom
+    print("An invalid backend may have been supplied. Defaulting to the native, \
+                synchronous TCP Server backend for Chatroom operations.")
 
 ################################################################################
 # Basic Flask application funcs (html handling, rerouting, other basic web shit)
@@ -72,16 +81,16 @@ def serve_asset_directory(path):
 
 @app.route("/api/sessions")
 def get_sessions():
-    uuids = [v['uuid'] for v in c.sessions.values() if v is not None]
+    uuids = [v['uuid'] for v in chatroom.sessions.values() if v is not None]
     for uuid in uuids:
-        c.push(json.dumps({'uuid':uuid}))
+        chatroom.push(json.dumps({'uuid':uuid}))
     print(uuids)
     return jsonify(uuids)
 
 # Helper for grabbing value out of chatroom's socket map using pipeline's uuid (could be expanded to other keys!!!)
 # SHOULD BE MOVED TO CHATROOM OBJECT AS INSTANCE METHOD
 def check_metadata(uuid):
-    for v in c.sessions.values():
+    for v in chatroom.sessions.values():
         if v is None:
             continue
         if v['uuid'] == uuid:
@@ -91,7 +100,7 @@ def check_metadata(uuid):
 # This new route should handle all requests for cached messages for any connected pipeline and any supported msg_type
 @app.route("/api/session/<uuid>/<msg_type>")
 def get_status(uuid=None, msg_type=None):
-    ids = [v['uuid'] for v in c.sessions.values() if v is not None]
+    ids = [v['uuid'] for v in chatroom.sessions.values() if v is not None]
     if (uuid is None or uuid not in ids):
         abort(404)
 
@@ -101,6 +110,7 @@ def get_status(uuid=None, msg_type=None):
         return jsonify(metadata[msg_type])
     else:
         abort(404)
+
 ################################################################################
 # Client generated event processors
 ################################################################################
@@ -131,5 +141,6 @@ def edit(data):
     send_to_chatroom(data)
 
 if __name__ == '__main__':
+    chatroom.start()
     socketio.run(app, host='0.0.0.0',port=5000)
-    c.stop_thread()
+    chatroom.stop_thread()

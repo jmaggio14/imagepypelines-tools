@@ -117,7 +117,7 @@ class TCPServer(BaseTCP):
             port(int): port to host on, leave as 0 for the OS to choose
                 a port for you
         """
-        print(host, port)
+        print(f"TCPServer started at {host}:{port}")
         self._s.bind( (host,port) )  # <-- bind socket server to host & port
         self._s.setblocking(0)
         self._s.listen(MAX_UNACCEPTED_CONNECTIONS)  # <-- max of 10 unaccepted connections before not accepting anymore
@@ -183,8 +183,13 @@ class BaseCommThread(threading.Thread):
               This only works if the running thread is not hanging, this will
               prevent the while loop from re-evaluating its condition
         '''
+        # RH - put these messages back in as they're useful for debug. Would be
+        #      good to move logger and other utilities from imagepypelines into
+        #      iptools for consistency (and so we can use stuff like the logger)
+        print(f"\n\nClosing {self.name} thread...")
         self.running = False
         self.join()
+        print(f"{self.name} has stopped.")
 
 
 ################################################################################
