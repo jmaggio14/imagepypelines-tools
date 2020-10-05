@@ -22,7 +22,7 @@ ENV PATH="/dash/.local/bin:${PATH}"
 
 # install minimum dependencies for gevent & iptools
 RUN apk add --update libffi-dev gcc musl-dev make
-RUN pip install requests>=2.24.0 eventlet>=0.18.0 Flask>=1.1.2 flask_socketio>=4.3.1 gevent>=20.6.2
+RUN pip install requests>=2.24.0 eventlet>=0.18.0 Flask>=1.1.2 flask_socketio>=4.3.1 gevent>=20.6.2 docker
 
 # setup user "dashuser" for our dashboard
 WORKDIR /dash
