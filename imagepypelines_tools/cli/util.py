@@ -2,6 +2,7 @@ import subprocess
 from subprocess import DEVNULL
 import sys
 import urllib.request
+import time
 
 REGISTRY_URL = "https://registry.hub.docker.com/v1/repositories/imagepypelines/dashboard/tags"
 
