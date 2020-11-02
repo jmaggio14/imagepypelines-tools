@@ -27,6 +27,7 @@ def check_docker():
 ################################################################################
 def make_ping_pipeline():
     import imagepypelines as ip
+    import time
 
     # make a few blocks
     @ip.blockify()
@@ -61,7 +62,6 @@ def make_ping_pipeline():
                 ('D','E') : (block2, 'C', 'A'),
                 ('F','G') : (block3, 'D', 'B'),
                 'H' : (block4, 'A', 'D', 'F'),
-
             }
 
     pipeline = ip.Pipeline(tasks, name='TestPipeline')

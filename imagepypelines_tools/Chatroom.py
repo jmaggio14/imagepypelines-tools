@@ -6,6 +6,7 @@ from typing import Tuple
 import select
 import threading
 
+
 # __ Chatroom Object _________________________________________________________
 class Chatroom(BaseCommThread):
 
@@ -23,6 +24,7 @@ class Chatroom(BaseCommThread):
         del self.msg_buff[self.sessions[c]['uuid']]
         c.close()
         del self.sessions[c]
+        print("Sessions (CURRENT):   ", self.sessions)
 
     def disconnect_all(self):
         clients = [c for c in self.sessions if self.sessions[c] is not None]
@@ -36,7 +38,11 @@ class Chatroom(BaseCommThread):
         data = b''
         while len(data) < length:
             remaining = length - len(data)
-            data += c.recv(min(remaining, 4096))
+            try:
+                data += c.recv(min(remaining, 4096))
+            except BlockingIOError as err:
+                print(f"ERROR received when reading from socket{c}:\n{err}")
+                break
         return data
 
     @staticmethod
@@ -81,6 +87,8 @@ class Chatroom(BaseCommThread):
             pass
         elif _msg['type'] == 'delete':
             pass
+        elif _msg['type'] == 'log':
+            pass
         else:
             pass
 
@@ -117,6 +125,8 @@ class Chatroom(BaseCommThread):
         # __ Dashboard Event Loop Start ______________________________________
         while getattr(t, 'running', True):  # Run until signaled to DIE
             ready2read, ready2write, _ = select.select(self.sessions, self.sessions, [], 0.1)
+            ready2read = [c for c in ready2read if c.fileno() != -1]
+            ready2write = [c for c in ready2write if c.fileno() != -1]
             for c in ready2read:
                 if c is sock:  # If there is a Pipeline requesting a connection
                     self.connect(c)
@@ -130,6 +140,8 @@ class Chatroom(BaseCommThread):
                     self.dashboard.emit('pipeline-update', msg, broadcast=True)
                 else: # If they sent nothing (which for TCP, happens when a client disconnects)
                     self.disconnect_client(c)
+                    if c in ready2write:
+                        ready2write.remove(c)
 
             # Now check if any scheduled task is ready to be run
             msgs = self.events.run_scheduled_tasks()  # Runs any scheduled task
